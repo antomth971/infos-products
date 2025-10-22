@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: web-scraper
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false  # Cette variable sera définie manuellement dans le dashboard Render

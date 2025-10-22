@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Scraper</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Web Scraper</h1>
+            <p>Extrayez les informations d'une page web</p>
+        </header>
+
+        <div class="input-section">
+            <form id="scrapeForm">
+                <div class="input-group">
+                    <textarea
+                        id="urlInput"
+                        placeholder="Entrez une ou plusieurs URLs (une par ligne)"
+                        required
+                        rows="3"
+                    ></textarea>
+                    <button type="submit" id="scrapeButton">
+                        Scraper
+                    </button>
+                </div>
+            </form>
+
+            <!-- Loader -->
+            <div id="loader" class="loader hidden">
+                <div class="spinner"></div>
+                <p>Extraction des données en cours...</p>
+            </div>
+
+            <!-- Message d'erreur -->
+            <div id="errorMessage" class="error-message hidden"></div>
+
+            <!-- Barre de recherche -->
+            <div class="search-section">
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Rechercher par nom..."
+                >
+            </div>
+
+            <!-- Bouton Export Excel -->
+            <div class="export-section">
+                <button id="exportExcelBtn" class="export-btn">
+                    📊 Exporter en Excel
+                </button>
+            </div>
+        </div>
+
+        <div class="content-wrapper">
+            <!-- Liste des éléments scrapés -->
+            <div class="items-list">
+                <h2>Éléments extraits</h2>
+                <div id="itemsList" class="list">
+                    <p class="empty-message">Aucun élément pour le moment</p>
+                </div>
+            </div>
+
+            <!-- Détails de l'élément sélectionné -->
+            <div class="item-details">
+                <h2>Détails</h2>
+                <div id="itemDetails" class="details">
+                    <p class="empty-message">Sélectionnez un élément pour voir ses détails</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
