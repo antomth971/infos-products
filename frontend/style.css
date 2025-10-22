@@ -202,6 +202,12 @@ header p {
     font-size: 1.5rem;
 }
 
+.item-count {
+    font-size: 1rem;
+    color: #667eea;
+    font-weight: 600;
+}
+
 .list {
     display: flex;
     flex-direction: column;

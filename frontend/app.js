@@ -20,6 +20,7 @@ class App {
         this.errorMessage = document.getElementById('errorMessage');
         this.itemsList = document.getElementById('itemsList');
         this.itemDetails = document.getElementById('itemDetails');
+        this.itemCount = document.getElementById('itemCount');
 
         this.init();
     }
@@ -254,6 +255,9 @@ class App {
     // Afficher la liste des éléments
     renderList() {
         const items = this.filteredItems;
+
+        // Mettre à jour le compteur
+        this.itemCount.textContent = `(${items.length})`;
 
         if (items.length === 0) {
             this.itemsList.innerHTML = '<p class="empty-message">Aucun élément pour le moment</p>';
