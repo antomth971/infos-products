@@ -275,7 +275,7 @@ class App {
             item.addEventListener('click', (e) => {
                 // Ne pas sélectionner si on clique sur le bouton supprimer
                 if (!e.target.classList.contains('delete-btn')) {
-                    const id = parseInt(item.dataset.id);
+                    const id = item.dataset.id;
                     this.selectItem(id);
                 }
             });
@@ -284,7 +284,7 @@ class App {
         // Ajouter les événements de clic pour suppression
         this.itemsList.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const id = parseInt(btn.dataset.id);
+                const id = btn.dataset.id;
                 this.deleteItem(id, e);
             });
         });
