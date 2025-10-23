@@ -1,0 +1,106 @@
+{
+  "startTime": "2025-10-23T15:52:30.071Z",
+  "totalUrls": 20,
+  "processed": 20,
+  "added": 4,
+  "skipped": 15,
+  "errors": 1,
+  "details": {
+    "added": [
+      {
+        "url": "https://www.vevor.fr/machine-a-polir-c_11005/vevor-sableuse-sous-vide-106-l-sans-poussiere-avec-systeme-d-aspiration-1200-w-p_010315853034",
+        "title": "VEVOR Sableuse sous vide 106 L, sableuse sans poussière avec système d'aspiration intégré 1200 W pour contrôle de la poussière, recyclage des abrasifs, machine de sablage abrasif robuste 60-110 PSI",
+        "supplier": "Vevor",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.vevor.fr/compresseurs-de-ressorts-c_10324/vevor-kit-compresseur-ressort-amortisseur-pour-voiture-force-de-compression-1-t-course-320-mm-tendeur-de-ressort-verin-hydraulique-4-5-t-operation-a-pied-pour-demonter-ressorts-de-suspension-auto-suv-p_010965229806",
+        "title": "VEVOR Kit Compresseur Ressort Amortisseur pour Voiture Force de Compression 1 T Course 320 mm Tendeur de Ressort Vérin Hydraulique 4,5 T Opération à Pied pour Démonter Ressorts de Suspension Auto SUV",
+        "supplier": "Vevor",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.vevor.fr/onduleur-sinusoidal-modifie-c_10763/vevor-onduleur-a-onde-sinusoidale-modifiee-1500-w-onduleur-cc-12-v-a-ca-230-v-avec-2-prises-ac-2-ports-usb-1-port-type-c-6-fusibles-de-rechange-pour-petits-appareils-domestiques-smartphone-pc-p_010841269058",
+        "title": "VEVOR Onduleur à onde sinusoïdale modifiée, 1500 W, onduleur CC 12 V à CA 230 V avec 2 prises AC, 2 ports USB, 1 port Type-C, 6 fusibles de rechange, pour petits appareils domestiques, smartphone, pc",
+        "supplier": "Vevor",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.vevor.fr/friteuses-commerciales-c_12012/double-friteuse-electrique-professionnelle-2-cuve-inox-frites-2x10l-5000w-neuf-p_010564844208",
+        "title": "VEVOR Friteuse Électrique Commerciale 5000 W, Friteuse à Huile de Comptoir, en Acier Inoxydable, Grande Capacité de 24 L, avec Double Panier Amovible, pour Poulet Frit Snack-Bars Cuisine, Argenté",
+        "supplier": "Vevor",
+        "usedPuppeteer": true
+      }
+    ],
+    "skipped": [
+      {
+        "url": "https://www.vevor.fr/refrigerateur-portable-pour-vehicules-c_10723/vevor-mini-glaciere-voiture-congelateur-portable-45w-15l-12-24v-cc-100-240-ac-p_010826316724",
+        "reason": "Déjà scannée"
+      },
+      {
+        "url": "https://www.vevor.fr/extracteur-de-fluide-c_10350/vevor-pompe-de-remplissage-huile-transmission-systeme-de-remplissage-huile-7-5-l-p_010777631723",
+        "reason": "Déjà scannée"
+      },
+      {
+        "url": "https://www.vevor.fr/boites-superieures-et-sacs-de-queue-c_13459/vevor-top-case-boite-superieure-moto-universelle-en-pp-48-l-565-x-500-x-380-mm-p_010867564682",
+        "reason": "Déjà scannée"
+      },
+      {
+        "url": "https://www.vevor.fr/barrieres-de-securite-pour-lits-c_12422/vevor-potence-de-lit-barre-trapeze-mobilite-de-lit-autoportante-capacite-113-4kg-p_010754844617",
+        "reason": "Déjà scannée"
+      },
+      {
+        "url": "https://www.amazon.fr/RibasuBB-remplissage-automatique-Automatique-Multifonctionnel/dp/B0B87PJSN2",
+        "reason": "Déjà scannée"
+      },
+      {
+        "url": "https://www.vevor.fr/barres-de-toit-porte-bagages-c_11513/vevor-barre-transversale-de-toit-universelle-135-cm-pour-rail-lateral-sureleve-p_010309030456",
+        "reason": "Déjà scannée"
+      },
+      {
+        "url": "https://www.vevor.fr/barres-de-toit-porte-bagages-c_11513/vevor-barre-transversale-de-toit-universelle-123-cm-pour-rail-lateral-sureleve-p_010498518880",
+        "reason": "Déjà scannée"
+      },
+      {
+        "url": "https://www.vevor.fr/barres-de-toit-porte-bagages-c_11513/vevor-barre-transversale-de-toit-universelle-135-8-cm-max-rail-lateral-rainure-p_010295444905",
+        "reason": "Déjà scannée"
+      },
+      {
+        "url": "https://www.amazon.de/-/en/Professional-Construction-Aluminium-Leveling-Devices/dp/B0CDL7RSSW",
+        "reason": "Déjà scannée"
+      },
+      {
+        "url": "https://www.vevor.fr/pompe-de-circulation-c_11097/pompe-a-eau-pression-booster-lps20-12-100-couplage-nouvelle-pompe-a-chaleur-p_010318030409",
+        "reason": "Déjà scannée"
+      },
+      {
+        "url": "https://www.vevor.fr/chariot-de-soudage-c_12105/vevor-chariot-de-soudage-a-3-niveaux-chariot-poste-a-souder-capacite-charge-181-4-kg-roues-360-chaines-securite-stockage-reservoirs-chariot-soudure-mig-pour-atelier-tig-arc-mma-decoupeur-plasma-p_010860377269",
+        "reason": "Déjà scannée"
+      },
+      {
+        "url": "https://www.vevor.fr/moteurs-iec-a-usage-general-c_13251/vevor-moteur-1-1kw-2800tr-min-ca-220-240v-7-1a-monophase-arbre-a-clavette-24mm-p_010504808769",
+        "reason": "Déjà scannée"
+      },
+      {
+        "url": "https://www.vevor.fr/bacs-d-etagere-c_12473/vevor-etagere-bac-a-bec-plastique-48-boites-rangement-empilables-atelier-garage-avec-panneaux-muraux-organisateur-outils-pour-ecrous-boulons-vis-clous-perles-boutons-petites-pieces-noir-rouge-p_010778131640",
+        "reason": "Déjà scannée"
+      },
+      {
+        "url": "https://www.vevor.fr/presses-a-imprimer-c_11148/vevor-presse-a-chaud-pour-impression-de-tasse-620-w-machine-sublimation-31-85-cl-p_010195842463",
+        "reason": "Déjà scannée"
+      },
+      {
+        "url": "https://www.vevor.fr/trancheuse-c_10662/vevor-trancheuse-electrique-commerciale-240-w-trancheuse-a-jambon-lame-250-mm-350-400-tr-min-trancheuse-charcuterie-en-acier-inoxydable-et-alu-pour-couper-en-tranches-viande-fromage-legumes-fruits-p_010365477068",
+        "reason": "Déjà scannée"
+      }
+    ],
+    "errors": [
+      {
+        "url": "https://www.zesso.com/fr_fr/baninni-poussette-double-luiz-noir.html",
+        "error": "Site non pris en charge"
+      }
+    ]
+  },
+  "endTime": "2025-10-23T15:53:25.891Z",
+  "duration": "55s"
+}

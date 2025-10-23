@@ -7,6 +7,8 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 const mongoose = require('mongoose');
 const path = require('path');
+const fs = require('fs').promises;
+const fsSync = require('fs');
 const XLSX = require('xlsx');
 const puppeteer = require('puppeteer');
 const session = require('express-session');
@@ -1017,6 +1019,222 @@ app.post('/api/download-image', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Erreur lors du téléchargement de l\'image'
+    });
+  }
+});
+
+// Endpoint pour traiter plusieurs URLs en lot (traitement backend en arrière-plan)
+app.post('/api/scrape-batch', async (req, res) => {
+  try {
+    const { urls } = req.body;
+
+    if (!urls || !Array.isArray(urls) || urls.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Un tableau d\'URLs est requis'
+      });
+    }
+
+    // Répondre immédiatement au client
+    res.json({
+      success: true,
+      message: `Traitement de ${urls.length} URL(s) démarré en arrière-plan`,
+      totalUrls: urls.length
+    });
+
+    // Traiter les URLs en arrière-plan (sans bloquer la réponse)
+    processBatchInBackground(urls);
+
+  } catch (error) {
+    console.error('Erreur lors du démarrage du traitement en lot:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors du démarrage du traitement'
+    });
+  }
+});
+
+// Fonction pour traiter les URLs en arrière-plan
+async function processBatchInBackground(urls) {
+  const results = {
+    startTime: new Date().toISOString(),
+    totalUrls: urls.length,
+    processed: 0,
+    added: 0,
+    skipped: 0,
+    errors: 0,
+    details: {
+      added: [],
+      skipped: [],
+      errors: []
+    }
+  };
+
+  console.log(`\n🚀 Démarrage du traitement en lot de ${urls.length} URL(s)...`);
+
+  for (let i = 0; i < urls.length; i++) {
+    const url = urls[i].trim();
+    console.log(`\n[${i + 1}/${urls.length}] Traitement de: ${url}`);
+
+    try {
+      // Détecter le fournisseur
+      const supplier = detectSupplier(url);
+      if (!supplier) {
+        results.errors++;
+        results.details.errors.push({
+          url,
+          error: 'Site non pris en charge'
+        });
+        results.processed++;
+        continue;
+      }
+
+      console.log(`Fournisseur détecté: ${supplier.config.name}`);
+
+      // Vérifier si l'URL a déjà été scannée
+      const existingProduct = await Product.findOne({ url });
+      if (existingProduct) {
+        console.log('⚠️ URL déjà scannée, ignorée');
+        results.skipped++;
+        results.details.skipped.push({
+          url,
+          reason: 'Déjà scannée'
+        });
+        results.processed++;
+        continue;
+      }
+
+      // Récupérer le contenu de la page
+      let html;
+      let usedPuppeteer = false;
+
+      if (supplier.config.requiresPuppeteer) {
+        console.log(`⚡ ${supplier.config.name} nécessite Puppeteer...`);
+        html = await fetchWithPuppeteer(url);
+        usedPuppeteer = true;
+      } else {
+        try {
+          console.log('Tentative avec axios...');
+          const response = await axios.get(url, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+              'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7'
+            },
+            timeout: 15000,
+            maxRedirects: 5
+          });
+          html = response.data;
+        } catch (axiosError) {
+          if (axiosError.response && axiosError.response.status === 403) {
+            console.log('❌ Erreur 403, utilisation de Puppeteer...');
+            html = await fetchWithPuppeteer(url);
+            usedPuppeteer = true;
+          } else {
+            throw axiosError;
+          }
+        }
+      }
+
+      const $ = cheerio.load(html);
+
+      // Extraire les données
+      const selectors = supplier.config.selectors;
+      const title = extractTitle($, selectors);
+      const price = extractPrice($, selectors.price);
+      const description = extractDescription($, selectors.description);
+      const images = extractImages($, selectors.images, url);
+
+      console.log('✓ Données extraites:', title);
+
+      // Sauvegarder dans MongoDB
+      const newProduct = new Product({
+        name: title,
+        price: price || 'indispo',
+        description: description,
+        images: images,
+        url: url,
+        supplier: supplier.config.name
+      });
+
+      await newProduct.save();
+
+      results.added++;
+      results.details.added.push({
+        url,
+        title,
+        supplier: supplier.config.name,
+        usedPuppeteer
+      });
+
+      console.log(`✅ [${i + 1}/${urls.length}] Produit ajouté avec succès`);
+
+    } catch (error) {
+      console.error(`❌ [${i + 1}/${urls.length}] Erreur:`, error.message);
+      results.errors++;
+      results.details.errors.push({
+        url,
+        error: error.message
+      });
+    }
+
+    results.processed++;
+
+    // Petit délai pour ne pas surcharger
+    await new Promise(resolve => setTimeout(resolve, 500));
+  }
+
+  results.endTime = new Date().toISOString();
+
+  // Calculer la durée
+  const startTime = new Date(results.startTime);
+  const endTime = new Date(results.endTime);
+  const durationMs = endTime - startTime;
+  const durationSec = Math.floor(durationMs / 1000);
+  results.duration = `${durationSec}s`;
+
+  console.log('\n✅ Traitement en lot terminé !');
+  console.log(`   - Ajoutés: ${results.added}`);
+  console.log(`   - Ignorés: ${results.skipped}`);
+  console.log(`   - Erreurs: ${results.errors}`);
+  console.log(`   - Durée: ${results.duration}`);
+
+  // Sauvegarder les résultats dans un fichier JSON
+  try {
+    const resultsDir = path.join(__dirname, 'public');
+    if (!fsSync.existsSync(resultsDir)) {
+      fsSync.mkdirSync(resultsDir, { recursive: true });
+    }
+
+    const resultsPath = path.join(resultsDir, 'batch-results.json');
+    await fs.writeFile(resultsPath, JSON.stringify(results, null, 2), 'utf8');
+    console.log(`📄 Résultats enregistrés dans ${resultsPath}`);
+  } catch (error) {
+    console.error('❌ Erreur lors de l\'enregistrement des résultats:', error);
+  }
+}
+
+// Endpoint pour afficher les résultats du dernier traitement en lot
+app.get('/results', async (req, res) => {
+  try {
+    const resultsPath = path.join(__dirname, 'public', 'batch-results.json');
+
+    // Vérifier si le fichier existe
+    if (!fsSync.existsSync(resultsPath)) {
+      return res.status(404).json({
+        error: 'Aucun résultat de traitement en lot disponible'
+      });
+    }
+
+    // Lire et renvoyer le fichier JSON
+    const results = await fs.readFile(resultsPath, 'utf8');
+    const data = JSON.parse(results);
+
+    res.json(data);
+  } catch (error) {
+    console.error('Erreur lors de la lecture des résultats:', error);
+    res.status(500).json({
+      error: 'Erreur lors de la lecture des résultats'
     });
   }
 });

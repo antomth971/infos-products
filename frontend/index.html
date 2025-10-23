@@ -57,7 +57,12 @@
         <div class="content-wrapper">
             <!-- Liste des éléments scrapés -->
             <div class="items-list">
-                <h2>Éléments extraits <span id="itemCount" class="item-count">(0)</span></h2>
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+                    <h2 style="margin: 0;">Éléments extraits <span id="itemCount" class="item-count">(0)</span></h2>
+                    <select id="supplierFilter" style="padding: 0.5rem; border-radius: 8px; border: 1px solid #e0e0e0; font-size: 0.9rem; cursor: pointer;">
+                        <option value="">Tous les fournisseurs</option>
+                    </select>
+                </div>
                 <div id="itemsList" class="list">
                     <p class="empty-message">Aucun élément pour le moment</p>
                 </div>

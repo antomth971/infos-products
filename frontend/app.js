@@ -11,11 +11,13 @@ class App {
         this.allItems = [];
         this.filteredItems = [];
         this.isAuthenticated = false;
+        this.currentSupplier = '';
 
         // Éléments du DOM
         this.form = document.getElementById('scrapeForm');
         this.urlInput = document.getElementById('urlInput');
         this.searchInput = document.getElementById('searchInput');
+        this.supplierFilter = document.getElementById('supplierFilter');
         this.exportExcelBtn = document.getElementById('exportExcelBtn');
         this.loader = document.getElementById('loader');
         this.errorMessage = document.getElementById('errorMessage');
@@ -33,6 +35,7 @@ class App {
         // Événements
         this.form.addEventListener('submit', (e) => this.handleSubmit(e));
         this.searchInput.addEventListener('input', (e) => this.handleSearch(e));
+        this.supplierFilter.addEventListener('change', (e) => this.handleSupplierFilter(e));
         this.exportExcelBtn.addEventListener('click', () => this.exportToExcel());
 
         // Charger les éléments existants
@@ -71,11 +74,33 @@ class App {
             if (result.success) {
                 this.allItems = result.data;
                 this.filteredItems = [...this.allItems];
+                this.populateSupplierFilter();
                 this.renderList();
             }
         } catch (error) {
             console.error('Erreur lors du chargement des items:', error);
         }
+    }
+
+    // Remplir le select avec les fournisseurs uniques
+    populateSupplierFilter() {
+        // Extraire les fournisseurs uniques
+        const suppliers = [...new Set(this.allItems.map(item => item.supplier).filter(s => s))];
+        suppliers.sort();
+
+        // Vider le select (sauf l'option "Tous")
+        this.supplierFilter.innerHTML = '<option value="">Tous les fournisseurs</option>';
+
+        // Ajouter les fournisseurs
+        suppliers.forEach(supplier => {
+            const option = document.createElement('option');
+            option.value = supplier;
+            option.textContent = supplier;
+            if (supplier === this.currentSupplier) {
+                option.selected = true;
+            }
+            this.supplierFilter.appendChild(option);
+        });
     }
 
     // Afficher le loader
@@ -95,18 +120,36 @@ class App {
         this.errorMessage.classList.remove('hidden');
     }
 
+    // Gérer le filtre par fournisseur
+    handleSupplierFilter(e) {
+        this.currentSupplier = e.target.value;
+        this.applyFilters();
+    }
+
     // Gérer la recherche
     handleSearch(e) {
-        const searchTerm = e.target.value.toLowerCase().trim();
+        this.applyFilters();
+    }
 
-        if (searchTerm === '') {
-            this.filteredItems = [...this.allItems];
-        } else {
-            this.filteredItems = this.allItems.filter(item =>
+    // Appliquer tous les filtres (recherche + fournisseur)
+    applyFilters() {
+        const searchTerm = this.searchInput.value.toLowerCase().trim();
+
+        let filtered = [...this.allItems];
+
+        // Filtrer par fournisseur
+        if (this.currentSupplier) {
+            filtered = filtered.filter(item => item.supplier === this.currentSupplier);
+        }
+
+        // Filtrer par recherche
+        if (searchTerm) {
+            filtered = filtered.filter(item =>
                 item.name && item.name.toLowerCase().includes(searchTerm)
             );
         }
 
+        this.filteredItems = filtered;
         this.renderList();
     }
 
@@ -171,59 +214,52 @@ class App {
         }
     }
 
-    // Traiter plusieurs URLs en lot
+    // Traiter plusieurs URLs en lot (envoi au backend pour traitement en arrière-plan)
     async processBatchUrls(urls) {
-        const totalUrls = urls.length;
-        let processedCount = 0;
-        let addedCount = 0;
-        const skippedUrls = [];
-        const errorUrls = [];
-
-        // Afficher le loader avec progression
         this.showLoader();
         const loaderText = this.loader.querySelector('p');
+        loaderText.textContent = `Envoi de ${urls.length} URL(s) au serveur...`;
 
-        for (const url of urls) {
-            processedCount++;
-            loaderText.textContent = `Traitement des URLs: ${processedCount}/${totalUrls}`;
+        try {
+            const response = await fetch(`${API_URL}/api/scrape-batch`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ urls })
+            });
 
-            try {
-                const response = await fetch(`${API_URL}/api/scrape`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({ url })
-                });
+            const result = await response.json();
 
-                const result = await response.json();
+            if (result.success) {
+                // Réinitialiser le formulaire
+                this.urlInput.value = '';
+                this.hideLoader();
 
-                if (result.success) {
-                    addedCount++;
-                } else if (result.alreadyScanned) {
-                    skippedUrls.push(url);
-                } else {
-                    errorUrls.push({ url, error: result.error });
-                }
-            } catch (error) {
-                console.error('Erreur pour', url, ':', error);
-                errorUrls.push({ url, error: error.message });
+                // Afficher un message de confirmation avec lien vers les résultats
+                const message = `✅ Traitement démarré !\n\n${result.message}\n\nLe traitement continue en arrière-plan.\nVous pouvez fermer cette page.\n\nConsultez les résultats sur : ${window.location.origin}/results`;
+                alert(message);
+
+                // Recharger les items toutes les 5 secondes pendant 30 secondes
+                let refreshCount = 0;
+                const refreshInterval = setInterval(async () => {
+                    await this.loadItems();
+                    refreshCount++;
+                    if (refreshCount >= 6) {
+                        clearInterval(refreshInterval);
+                    }
+                }, 5000);
+
+            } else {
+                this.hideLoader();
+                alert('❌ ' + (result.error || 'Erreur lors du traitement'));
             }
-
-            // Petit délai pour éviter de surcharger le serveur
-            await new Promise(resolve => setTimeout(resolve, 100));
+        } catch (error) {
+            console.error('Erreur:', error);
+            this.hideLoader();
+            alert('❌ Erreur de connexion au serveur');
         }
-
-        // Recharger la liste des items
-        await this.loadItems();
-
-        // Réinitialiser le formulaire
-        this.urlInput.value = '';
-        this.hideLoader();
-
-        // Afficher le récapitulatif
-        this.showBatchSummary(addedCount, skippedUrls, errorUrls);
     }
 
     // Afficher le récapitulatif du traitement en lot
