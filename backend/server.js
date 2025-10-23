@@ -16,7 +16,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/web-scraper';
 
-// Codes d'accès (écrits en dur)
+// Codes d'accès (écrits en dur - personnalisables via .env)
 const ACCESS_CODE = process.env.ACCESS_CODE || 'ABC12345'; // Code pour accéder au site
 const DELETE_CODE = process.env.DELETE_CODE || 'DEL98765'; // Code pour supprimer un produit
 

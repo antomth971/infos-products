@@ -22,7 +22,7 @@ infos_product/
 ## Fonctionnalités
 
 ### 🔐 Sécurité
-- **Authentification par code d'accès** (8 caractères)
+- **Authentification par code d'accès** personnalisable
 - **Session sécurisée de 4 heures** sur l'appareil
 - **Protection des suppressions** avec code de confirmation différent
 - Redirection automatique vers la page de login si non connecté
