@@ -10,6 +10,7 @@ class App {
         this.currentItemId = null;
         this.allItems = [];
         this.filteredItems = [];
+        this.isAuthenticated = false;
 
         // Éléments du DOM
         this.form = document.getElementById('scrapeForm');
@@ -26,6 +27,9 @@ class App {
     }
 
     async init() {
+        // Vérifier l'authentification avant tout
+        await this.checkAuthentication();
+
         // Événements
         this.form.addEventListener('submit', (e) => this.handleSubmit(e));
         this.searchInput.addEventListener('input', (e) => this.handleSearch(e));
@@ -35,10 +39,33 @@ class App {
         await this.loadItems();
     }
 
+    // Vérifier si l'utilisateur est authentifié
+    async checkAuthentication() {
+        try {
+            const response = await fetch(`${API_URL}/api/auth/check`, {
+                credentials: 'include'
+            });
+            const result = await response.json();
+
+            if (!result.authenticated) {
+                // Rediriger vers la page de login
+                window.location.href = '/login.html';
+                return;
+            }
+
+            this.isAuthenticated = true;
+        } catch (error) {
+            console.error('Erreur lors de la vérification de l\'authentification:', error);
+            window.location.href = '/login.html';
+        }
+    }
+
     // Charger tous les items depuis l'API
     async loadItems() {
         try {
-            const response = await fetch(`${API_URL}/api/items`);
+            const response = await fetch(`${API_URL}/api/items`, {
+                credentials: 'include'
+            });
             const result = await response.json();
 
             if (result.success) {
@@ -112,6 +139,7 @@ class App {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify({ url })
             });
 
@@ -165,6 +193,7 @@ class App {
                     headers: {
                         'Content-Type': 'application/json',
                     },
+                    credentials: 'include',
                     body: JSON.stringify({ url })
                 });
 
@@ -221,17 +250,26 @@ class App {
         alert(message);
     }
 
-    // Supprimer un item
+    // Supprimer un item (nécessite un code de suppression)
     async deleteItem(id, event) {
         event.stopPropagation(); // Empêcher la sélection de l'item
 
-        if (!confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')) {
+        // Demander le code de suppression
+        const deleteCode = prompt('⚠️ SUPPRESSION\n\nPour confirmer la suppression, veuillez entrer le code de suppression :');
+
+        // Si l'utilisateur annule ou laisse vide
+        if (!deleteCode) {
             return;
         }
 
         try {
             const response = await fetch(`${API_URL}/api/items/${id}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ deleteCode: deleteCode.trim() })
             });
 
             const result = await response.json();
@@ -245,10 +283,14 @@ class App {
 
                 // Recharger la liste
                 await this.loadItems();
+                alert('✅ Élément supprimé avec succès');
+            } else {
+                // Afficher l'erreur (code invalide, etc.)
+                alert('❌ ' + (result.error || 'Erreur lors de la suppression'));
             }
         } catch (error) {
             console.error('Erreur lors de la suppression:', error);
-            alert('Erreur lors de la suppression de l\'élément');
+            alert('❌ Erreur lors de la suppression de l\'élément');
         }
     }
 
@@ -478,6 +520,7 @@ class App {
                             headers: {
                                 'Content-Type': 'application/json',
                             },
+                            credentials: 'include',
                             body: JSON.stringify({ url: imageUrl })
                         });
 
@@ -561,7 +604,9 @@ class App {
             this.exportExcelBtn.textContent = '⏳ Export en cours...';
 
             // Appeler l'API pour générer le fichier Excel
-            const response = await fetch(`${API_URL}/api/export/excel`);
+            const response = await fetch(`${API_URL}/api/export/excel`, {
+                credentials: 'include'
+            });
 
             if (!response.ok) {
                 const error = await response.json();

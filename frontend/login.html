@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accès sécurisé</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .login-box h1 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        .login-box p {
+            margin: 0 0 30px 0;
+            color: #666;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .login-input {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: monospace;
+            letter-spacing: 2px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .login-button {
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .login-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+        }
+
+        .login-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .lock-icon {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="lock-icon">🔒</div>
+            <h1>Accès Sécurisé</h1>
+            <p>Veuillez entrer le code d'accès</p>
+
+            <form class="login-form" id="loginForm">
+                <input
+                    type="text"
+                    id="codeInput"
+                    class="login-input"
+                    placeholder="CODE"
+                    maxlength="8"
+                    required
+                    autocomplete="off"
+                >
+                <button type="submit" class="login-button" id="submitButton">
+                    Accéder
+                </button>
+                <div class="error-message" id="errorMessage"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Configuration de l'API
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000'
+            : window.location.origin;
+
+        const loginForm = document.getElementById('loginForm');
+        const codeInput = document.getElementById('codeInput');
+        const submitButton = document.getElementById('submitButton');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Focus automatique sur l'input
+        codeInput.focus();
+
+        // Gérer la soumission du formulaire
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const code = codeInput.value.trim();
+
+            if (!code) {
+                showError('Veuillez entrer un code');
+                return;
+            }
+
+            // Désactiver le bouton pendant la vérification
+            submitButton.disabled = true;
+            submitButton.textContent = 'Vérification...';
+            errorMessage.classList.remove('show');
+
+            try {
+                const response = await fetch(`${API_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ code })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Rediriger vers la page principale
+                    window.location.href = '/';
+                } else {
+                    showError(result.error || 'Code invalide');
+                    codeInput.value = '';
+                    codeInput.focus();
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                showError('Erreur de connexion au serveur');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Accéder';
+            }
+        });
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+        }
+
+        // Convertir automatiquement en majuscules
+        codeInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.toUpperCase();
+        });
+    </script>
+</body>
+</html>

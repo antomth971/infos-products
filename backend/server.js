@@ -9,11 +9,16 @@ const mongoose = require('mongoose');
 const path = require('path');
 const XLSX = require('xlsx');
 const puppeteer = require('puppeteer');
+const session = require('express-session');
 const Product = require('./models/Product');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/web-scraper';
+
+// Codes d'accès (écrits en dur)
+const ACCESS_CODE = process.env.ACCESS_CODE || 'ABC12345'; // Code pour accéder au site
+const DELETE_CODE = process.env.DELETE_CODE || 'DEL98765'; // Code pour supprimer un produit
 
 // Connexion à MongoDB
 mongoose.connect(MONGODB_URI)
@@ -25,8 +30,23 @@ mongoose.connect(MONGODB_URI)
 });
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
 app.use(express.json());
+
+// Configuration des sessions (durée de 4h)
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'votre-secret-super-secret-a-changer',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 4 * 60 * 60 * 1000, // 4 heures en millisecondes
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production' // HTTPS en production
+  }
+}));
 
 // Servir les fichiers statiques du frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
@@ -436,6 +456,58 @@ function cleanImageUrl(url) {
   return url;
 }
 
+// ===== Routes d'authentification =====
+
+// Vérifier si l'utilisateur est connecté
+app.get('/api/auth/check', (req, res) => {
+  res.json({
+    authenticated: req.session.authenticated === true
+  });
+});
+
+// Route de connexion (vérifier le code d'accès)
+app.post('/api/auth/login', (req, res) => {
+  const { code } = req.body;
+
+  if (!code) {
+    return res.status(400).json({
+      success: false,
+      error: 'Code requis'
+    });
+  }
+
+  if (code === ACCESS_CODE) {
+    req.session.authenticated = true;
+    return res.json({
+      success: true,
+      message: 'Accès autorisé'
+    });
+  } else {
+    return res.status(401).json({
+      success: false,
+      error: 'Code invalide'
+    });
+  }
+});
+
+// Route de déconnexion
+app.post('/api/auth/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({
+        success: false,
+        error: 'Erreur lors de la déconnexion'
+      });
+    }
+    res.json({
+      success: true,
+      message: 'Déconnexion réussie'
+    });
+  });
+});
+
+// ===== Fin des routes d'authentification =====
+
 // Fonction pour récupérer le HTML avec Puppeteer (pour contourner les protections anti-bot)
 async function fetchWithPuppeteer(url) {
   let browser;
@@ -716,7 +788,7 @@ app.post('/api/scrape', async (req, res) => {
 // Récupérer tous les items
 app.get('/api/items', async (req, res) => {
   try {
-    const items = await Product.find().sort({ createdAt: -1 });
+    const items = await Product.find().sort({ createdAt: 1 });
     res.json({
       success: true,
       data: items.map(item => ({
@@ -733,12 +805,38 @@ app.get('/api/items', async (req, res) => {
   }
 });
 
-// Supprimer un item
+// Supprimer un item (nécessite le code de suppression)
 app.delete('/api/items/:id', async (req, res) => {
   try {
+    // Vérifier si l'utilisateur est connecté
+    if (!req.session.authenticated) {
+      return res.status(403).json({
+        success: false,
+        error: 'Accès non autorisé. Veuillez vous connecter.'
+      });
+    }
+
+    // Vérifier le code de suppression
+    const { deleteCode } = req.body;
+
+    if (!deleteCode) {
+      return res.status(400).json({
+        success: false,
+        error: 'Code de suppression requis'
+      });
+    }
+
+    if (deleteCode !== DELETE_CODE) {
+      return res.status(401).json({
+        success: false,
+        error: 'Code de suppression invalide'
+      });
+    }
+
+    // Si tout est OK, supprimer le produit
     const id = req.params.id;
     await Product.findByIdAndDelete(id);
-    const items = await Product.find().sort({ createdAt: -1 });
+    const items = await Product.find().sort({ createdAt: 1 });
     res.json({
       success: true,
       data: items.map(item => ({
@@ -758,7 +856,7 @@ app.delete('/api/items/:id', async (req, res) => {
 // Export Excel
 app.get('/api/export/excel', async (req, res) => {
   try {
-    const items = await Product.find().sort({ createdAt: -1 });
+    const items = await Product.find().sort({ createdAt: 1 });
 
     if (items.length === 0) {
       return res.status(404).json({
@@ -929,5 +1027,9 @@ app.get('/api/health', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Serveur démarré sur http://localhost:${PORT}`);
+  console.log(`\n✓ Serveur démarré sur http://localhost:${PORT}`);
+  console.log(`\n🔐 Codes d'accès :`);
+  console.log(`   - Code d'accès au site : ${ACCESS_CODE}`);
+  console.log(`   - Code de suppression : ${DELETE_CODE}`);
+  console.log(`\n⏱️  Durée de session : 4 heures\n`);
 });
