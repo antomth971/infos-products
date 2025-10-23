@@ -49,9 +49,8 @@
             border-radius: 8px;
             font-size: 1rem;
             font-family: monospace;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             text-align: center;
-            text-transform: uppercase;
             transition: all 0.3s ease;
         }
 
@@ -121,7 +120,7 @@
                     type="text"
                     id="codeInput"
                     class="login-input"
-                    placeholder="CODE"
+                    placeholder="Code d'accès"
                     required
                     autocomplete="off"
                 >
@@ -196,11 +195,6 @@
             errorMessage.textContent = message;
             errorMessage.classList.add('show');
         }
-
-        // Convertir automatiquement en majuscules
-        codeInput.addEventListener('input', (e) => {
-            e.target.value = e.target.value.toUpperCase();
-        });
     </script>
 </body>
 </html>
