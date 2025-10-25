@@ -35,6 +35,10 @@ class App {
         this.lastQRCode = null; // Dernier QR code scanné
         this.lastQRTime = 0; // Timestamp du dernier scan
 
+        // Keep-alive pour les traitements longs
+        this.keepAliveInterval = null;
+        this.autoRefreshInterval = null;
+
         this.init();
     }
 
@@ -283,19 +287,19 @@ class App {
                 this.urlInput.value = '';
                 this.hideLoader();
 
-                // Afficher un message de confirmation avec lien vers les résultats
-                const message = `✅ Traitement démarré !\n\n${result.message}\n\nLe traitement continue en arrière-plan.\nVous pouvez fermer cette page.\n\nConsultez les résultats sur : ${window.location.origin}/results`;
+                // Afficher un message de confirmation
+                const message = `✅ Traitement démarré !\n\n${result.message}\n\nLe traitement continue en arrière-plan.\nLa page se mettra à jour automatiquement.\n\n⚠️ Gardez cette page ouverte pour maintenir le serveur actif.`;
                 alert(message);
 
-                // Recharger les items toutes les 5 secondes pendant 30 secondes
-                let refreshCount = 0;
-                const refreshInterval = setInterval(async () => {
-                    await this.loadItems();
-                    refreshCount++;
-                    if (refreshCount >= 6) {
-                        clearInterval(refreshInterval);
-                    }
-                }, 5000);
+                // Démarrer le keep-alive pour maintenir le serveur actif
+                this.startKeepAlive();
+
+                // Recharger les items automatiquement toutes les 10 secondes
+                // Calcul du temps estimé : ~10 secondes par URL
+                const estimatedTime = urls.length * 10; // en secondes
+                const maxRefreshTime = Math.max(estimatedTime, 600); // minimum 10 minutes
+
+                this.startAutoRefresh(maxRefreshTime);
 
             } else {
                 this.hideLoader();
@@ -305,6 +309,76 @@ class App {
             console.error('Erreur:', error);
             this.hideLoader();
             alert('❌ Erreur de connexion au serveur');
+        }
+    }
+
+    // Démarrer le keep-alive pour maintenir le serveur actif
+    startKeepAlive() {
+        // Arrêter l'intervalle existant si présent
+        if (this.keepAliveInterval) {
+            clearInterval(this.keepAliveInterval);
+        }
+
+        console.log('🔄 Keep-alive démarré (ping toutes les 30 secondes)');
+
+        // Envoyer un ping toutes les 30 secondes
+        this.keepAliveInterval = setInterval(async () => {
+            try {
+                await fetch(`${API_URL}/api/health`, {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                console.log('✓ Ping serveur envoyé');
+            } catch (error) {
+                console.error('❌ Erreur ping serveur:', error);
+            }
+        }, 30000); // 30 secondes
+    }
+
+    // Arrêter le keep-alive
+    stopKeepAlive() {
+        if (this.keepAliveInterval) {
+            clearInterval(this.keepAliveInterval);
+            this.keepAliveInterval = null;
+            console.log('⏹️ Keep-alive arrêté');
+        }
+    }
+
+    // Démarrer le refresh automatique
+    startAutoRefresh(maxDuration) {
+        // Arrêter l'intervalle existant si présent
+        if (this.autoRefreshInterval) {
+            clearInterval(this.autoRefreshInterval);
+        }
+
+        console.log(`🔄 Auto-refresh démarré pour ${Math.round(maxDuration / 60)} minutes`);
+
+        let elapsedTime = 0;
+        const refreshFrequency = 10000; // 10 secondes
+
+        // Refresh immédiat
+        this.loadItems();
+
+        // Puis refresh périodique
+        this.autoRefreshInterval = setInterval(async () => {
+            await this.loadItems();
+            elapsedTime += refreshFrequency;
+
+            // Arrêter après le temps estimé
+            if (elapsedTime >= maxDuration * 1000) {
+                this.stopAutoRefresh();
+                this.stopKeepAlive();
+                console.log('✅ Auto-refresh et keep-alive arrêtés (temps écoulé)');
+            }
+        }, refreshFrequency);
+    }
+
+    // Arrêter le refresh automatique
+    stopAutoRefresh() {
+        if (this.autoRefreshInterval) {
+            clearInterval(this.autoRefreshInterval);
+            this.autoRefreshInterval = null;
+            console.log('⏹️ Auto-refresh arrêté');
         }
     }
 
@@ -893,5 +967,11 @@ class App {
 
 // Initialiser l'application au chargement de la page
 document.addEventListener('DOMContentLoaded', () => {
-    new App();
+    const app = new App();
+
+    // Nettoyer les intervalles quand la page se ferme
+    window.addEventListener('beforeunload', () => {
+        app.stopKeepAlive();
+        app.stopAutoRefresh();
+    });
 });
