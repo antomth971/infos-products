@@ -29,6 +29,13 @@ class App {
         this.closeScannerBtn = document.getElementById('closeScannerBtn');
         this.qrScannerStatus = document.getElementById('qrScannerStatus');
 
+        // Modal de choix du mode
+        this.modeChoiceModal = document.getElementById('modeChoiceModal');
+        this.closeModeChoiceBtn = document.getElementById('closeModeChoiceBtn');
+        this.modeUrlCount = document.getElementById('modeUrlCount');
+        this.modeVisibleBtn = document.getElementById('modeVisibleBtn');
+        this.modeBackgroundBtn = document.getElementById('modeBackgroundBtn');
+
         // Instance du scanner QR
         this.html5QrCode = null;
         this.isProcessingQR = false; // Flag pour éviter les scans multiples
@@ -38,6 +45,9 @@ class App {
         // Keep-alive pour les traitements longs
         this.keepAliveInterval = null;
         this.autoRefreshInterval = null;
+
+        // URLs en attente de traitement (pour la modal de choix)
+        this.pendingUrls = null;
 
         this.init();
     }
@@ -53,6 +63,18 @@ class App {
         this.exportExcelBtn.addEventListener('click', () => this.exportToExcel());
         this.scanForUrlButton.addEventListener('click', () => this.scanForUrls());
         this.closeScannerBtn.addEventListener('click', () => this.closeScanner());
+
+        // Event listeners pour la modal de choix du mode
+        this.closeModeChoiceBtn.addEventListener('click', () => this.closeModeChoice());
+        this.modeVisibleBtn.addEventListener('click', () => this.handleModeChoice('visible'));
+        this.modeBackgroundBtn.addEventListener('click', () => this.handleModeChoice('background'));
+
+        // Fermer la modal si on clique sur le fond
+        this.modeChoiceModal.addEventListener('click', (e) => {
+            if (e.target === this.modeChoiceModal) {
+                this.closeModeChoice();
+            }
+        });
 
         // Charger les éléments existants
         await this.loadItems();
@@ -214,24 +236,40 @@ class App {
         const urls = input.split('\n').map(u => u.trim()).filter(u => u.length > 0);
 
         if (urls.length > 1) {
-            // Demander à l'utilisateur le mode de traitement
-            const choice = confirm(
-                `🔄 Mode de traitement pour ${urls.length} URL(s)\n\n` +
-                `✅ OK : Mode VISIBLE (voir la progression en temps réel)\n` +
-                `❌ Annuler : Mode ARRIÈRE-PLAN (traitement invisible, plus rapide)\n\n` +
-                `Choisissez votre mode :`
-            );
-
-            if (choice) {
-                // Mode visible : traitement synchrone avec progression
-                await this.processBatchUrlsSync(urls);
-            } else {
-                // Mode arrière-plan : traitement async
-                await this.processBatchUrls(urls);
-            }
+            // Afficher la modal de choix du mode
+            this.showModeChoice(urls);
         } else {
             // Traitement d'une seule URL
             await this.processSingleUrl(urls[0]);
+        }
+    }
+
+    // Afficher la modal de choix du mode
+    showModeChoice(urls) {
+        this.pendingUrls = urls;
+        this.modeUrlCount.textContent = urls.length;
+        this.modeChoiceModal.classList.remove('hidden');
+    }
+
+    // Fermer la modal de choix du mode
+    closeModeChoice() {
+        this.modeChoiceModal.classList.add('hidden');
+        this.pendingUrls = null;
+    }
+
+    // Gérer le choix du mode
+    async handleModeChoice(mode) {
+        if (!this.pendingUrls) return;
+
+        const urls = this.pendingUrls;
+        this.closeModeChoice();
+
+        if (mode === 'visible') {
+            // Mode visible : traitement synchrone avec progression
+            await this.processBatchUrlsSync(urls);
+        } else if (mode === 'background') {
+            // Mode arrière-plan : traitement async
+            await this.processBatchUrls(urls);
         }
     }
 

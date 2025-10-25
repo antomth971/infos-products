@@ -154,6 +154,56 @@
             background: #d1ecf1;
             color: #0c5460;
         }
+
+        /* Styles pour la modal de choix du mode */
+        .choice-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .choice-btn {
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .choice-btn:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .choice-btn-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .choice-btn-desc {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .mode-info {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #555;
+            font-size: 0.95rem;
+        }
     </style>
 </head>
 <body>
@@ -190,6 +240,37 @@
                     </div>
                     <div id="qrReader" style="width: 100%;"></div>
                     <div id="qrScannerStatus" class="scanner-status"></div>
+                </div>
+            </div>
+
+            <!-- Modal de choix du mode de traitement -->
+            <div id="modeChoiceModal" class="modal hidden">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>🔄 Mode de traitement</h3>
+                        <button id="closeModeChoiceBtn" class="close-btn">✕</button>
+                    </div>
+                    <div class="mode-info">
+                        <strong id="modeUrlCount"></strong> URLs détectées. Choisissez le mode de traitement :
+                    </div>
+                    <div class="choice-buttons">
+                        <button id="modeVisibleBtn" class="choice-btn">
+                            <div class="choice-btn-title">
+                                👁️ Mode Visible
+                            </div>
+                            <div class="choice-btn-desc">
+                                Suivez la progression en temps réel. Recommandé pour de nombreuses URLs. La page reste bloquée pendant le traitement.
+                            </div>
+                        </button>
+                        <button id="modeBackgroundBtn" class="choice-btn">
+                            <div class="choice-btn-title">
+                                🚀 Mode Arrière-plan
+                            </div>
+                            <div class="choice-btn-desc">
+                                Traitement rapide et invisible. Idéal pour quelques URLs. La page se met à jour automatiquement.
+                            </div>
+                        </button>
+                    </div>
                 </div>
             </div>
 
