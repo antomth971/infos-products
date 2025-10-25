@@ -1239,8 +1239,142 @@ app.get('/results', async (req, res) => {
   }
 });
 
+// Endpoint pour rechercher sur DuckDuckGo et trouver un lien Vevor
+app.post('/api/search-vevor', async (req, res) => {
+  try {
+    const { query } = req.body;
+
+    if (!query) {
+      return res.status(400).json({
+        success: false,
+        error: 'Query est requis'
+      });
+    }
+
+    console.log(`🔍 Recherche DuckDuckGo pour: "${query}"`);
+
+    // Utiliser DuckDuckGo HTML avec paramètres français
+    // kl=fr-fr : Région française
+    // kp=-2 : Désactiver le filtre parental strict
+    const searchUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(query)}&kl=fr-fr`;
+
+    const response = await axios.get(searchUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'fr-FR,fr;q=0.9',
+      },
+      timeout: 10000
+    });
+
+    const $ = cheerio.load(response.data);
+    const linksSet = new Set(); // Utiliser un Set pour éviter les doublons automatiquement
+
+    // Fonction pour normaliser les URLs et éviter les doublons
+    const normalizeUrl = (url) => {
+      try {
+        let normalized = url.toLowerCase().trim();
+        // Supprimer les paramètres de tracking courants
+        normalized = normalized.split('?')[0].split('#')[0];
+        // Supprimer le trailing slash
+        normalized = normalized.replace(/\/$/, '');
+        // Normaliser www
+        normalized = normalized.replace(/^https?:\/\/(www\.)?/, 'https://');
+        return normalized;
+      } catch (e) {
+        return url;
+      }
+    };
+
+    // DuckDuckGo HTML utilise des sélecteurs simples
+    $('.result__a').each((_, elem) => {
+      const href = $(elem).attr('href');
+      if (href) {
+        // DuckDuckGo utilise des redirections, extraire l'URL réelle
+        try {
+          const urlMatch = href.match(/uddg=([^&]+)/);
+          if (urlMatch) {
+            const actualUrl = decodeURIComponent(urlMatch[1]);
+            if (actualUrl.startsWith('http') &&
+                !actualUrl.includes('duckduckgo.com') &&
+                !actualUrl.includes('youtube.com')) {
+              linksSet.add(normalizeUrl(actualUrl));
+            }
+          }
+        } catch (e) {
+          // Ignorer les erreurs de parsing
+        }
+      }
+    });
+
+    // Méthode alternative : liens directs
+    $('.result__url').each((_, elem) => {
+      const text = $(elem).text().trim();
+      if (text && text.startsWith('http')) {
+        if (!text.includes('duckduckgo.com') &&
+            !text.includes('youtube.com')) {
+          linksSet.add(normalizeUrl(text));
+        }
+      }
+    });
+
+    // Convertir le Set en Array
+    const links = Array.from(linksSet);
+
+    console.log(`📊 ${links.length} liens trouvés`);
+
+    if (links.length > 0) {
+      console.log('🔗 Premiers liens:');
+      links.slice(0, 5).forEach((link, i) => {
+        console.log(`   ${i + 1}. ${link}`);
+      });
+    }
+
+    // Chercher un lien avec "vevor" DANS LE DOMAINE (pas juste dans l'URL)
+    const vevorLink = links.slice(0, 10).find(link => {
+      try {
+        const url = new URL(link);
+        const hostname = url.hostname.toLowerCase();
+        // Vérifier que "vevor" est dans le nom de domaine
+        return hostname.includes('vevor');
+      } catch (e) {
+        return false;
+      }
+    });
+
+    if (vevorLink) {
+      console.log(`✅ Lien Vevor officiel trouvé: ${vevorLink}`);
+      return res.json({
+        success: true,
+        url: vevorLink
+      });
+    } else if (links.length > 0) {
+      // Si aucun lien Vevor trouvé mais qu'il y a des liens, prendre le premier
+      console.log(`⚠️ Aucun domaine Vevor trouvé, utilisation du premier résultat: ${links[0]}`);
+      return res.json({
+        success: true,
+        url: links[0]
+      });
+    } else {
+      console.log('❌ Aucun lien trouvé dans les résultats de recherche');
+      return res.json({
+        success: false,
+        error: 'Aucun lien trouvé pour ce produit'
+      });
+    }
+
+  } catch (error) {
+    console.error('Erreur lors de la recherche:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la recherche',
+      details: error.message
+    });
+  }
+});
+
 // Route de test
-app.get('/api/health', (req, res) => {
+app.get('/api/health', (_req, res) => {
   res.json({ status: 'OK', message: 'API is running' });
 });
 

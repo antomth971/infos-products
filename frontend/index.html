@@ -53,6 +53,107 @@
         body.authenticated #mainContent {
             display: block;
         }
+
+        /* Styles pour le bouton Scanner QR */
+        .scan-btn {
+            width: 100%;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .scan-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(17, 153, 142, 0.4);
+        }
+
+        /* Styles pour la modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #667eea;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: #667eea;
+        }
+
+        .scanner-status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .scanner-status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .scanner-status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .scanner-status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
     </style>
 </head>
 <body>
@@ -70,8 +171,28 @@
             <p>Extrayez les informations d'une page web</p>
         </header>
 
+        <!-- Bouton Export Excel -->
+        <div class="export-section">
+            <button id="exportExcelBtn" class="export-btn">
+                📊 Exporter en Excel
+            </button>
+        </div>
+
         <div class="input-section">
-            <button id="scanForUrl" type="button">Scanner les URLs</button>
+            <button id="scanForUrl" type="button" class="scan-btn">📷 Scanner un QR Code</button>
+
+            <!-- Modal pour le scanner QR -->
+            <div id="qrScannerModal" class="modal hidden">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Scanner un QR Code</h3>
+                        <button id="closeScannerBtn" class="close-btn">✕</button>
+                    </div>
+                    <div id="qrReader" style="width: 100%;"></div>
+                    <div id="qrScannerStatus" class="scanner-status"></div>
+                </div>
+            </div>
+
             <form id="scrapeForm">
                 <div class="input-group">
                     <textarea
@@ -94,27 +215,20 @@
 
             <!-- Message d'erreur -->
             <div id="errorMessage" class="error-message hidden"></div>
-
-            <!-- Barre de recherche -->
-            <div class="search-section">
-                <input
-                    type="text"
-                    id="searchInput"
-                    placeholder="Rechercher par nom ou date (ex: 23 octobre 2025)..."
-                >
-            </div>
-
-            <!-- Bouton Export Excel -->
-            <div class="export-section">
-                <button id="exportExcelBtn" class="export-btn">
-                    📊 Exporter en Excel
-                </button>
-            </div>
         </div>
 
         <div class="content-wrapper">
             <!-- Liste des éléments scrapés -->
             <div class="items-list">
+                <!-- Barre de recherche -->
+                <div class="search-section">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Rechercher par nom ou date (ex: 23 octobre 2025)..."
+                    >
+                </div>
+
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
                     <h2 style="margin: 0;">Éléments extraits <span id="itemCount" class="item-count">(0)</span></h2>
                     <select id="supplierFilter" style="padding: 0.5rem; border-radius: 8px; border: 1px solid #e0e0e0; font-size: 0.9rem; cursor: pointer;">
@@ -139,6 +253,7 @@
     <!-- Fin du contenu principal -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

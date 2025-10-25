@@ -25,6 +25,15 @@ class App {
         this.itemDetails = document.getElementById('itemDetails');
         this.itemCount = document.getElementById('itemCount');
         this.scanForUrlButton = document.getElementById('scanForUrl');
+        this.qrScannerModal = document.getElementById('qrScannerModal');
+        this.closeScannerBtn = document.getElementById('closeScannerBtn');
+        this.qrScannerStatus = document.getElementById('qrScannerStatus');
+
+        // Instance du scanner QR
+        this.html5QrCode = null;
+        this.isProcessingQR = false; // Flag pour éviter les scans multiples
+        this.lastQRCode = null; // Dernier QR code scanné
+        this.lastQRTime = 0; // Timestamp du dernier scan
 
         this.init();
     }
@@ -39,6 +48,7 @@ class App {
         this.supplierFilter.addEventListener('change', (e) => this.handleSupplierFilter(e));
         this.exportExcelBtn.addEventListener('click', () => this.exportToExcel());
         this.scanForUrlButton.addEventListener('click', () => this.scanForUrls());
+        this.closeScannerBtn.addEventListener('click', () => this.closeScanner());
 
         // Charger les éléments existants
         await this.loadItems();
@@ -730,17 +740,154 @@ class App {
         div.textContent = text;
         return div.innerHTML;
     }
-    // Scanner les URLs (fonctionnalité à implémenter selon les besoins)
+    // Ouvrir le scanner QR
     async scanForUrls() {
-        await navigator.mediaDevices
-        .getUserMedia({ audio: false, video: true })
-        .then(function (stream) {
-            console.log(stream);
-        })
-        .catch(function (err) {
-            /* handle the error */
-            console.error('Erreur lors de l\'accès à la caméra :', err);
-        });
+        try {
+            // Afficher la modal
+            this.qrScannerModal.classList.remove('hidden');
+            this.qrScannerStatus.textContent = '';
+            this.qrScannerStatus.className = 'scanner-status';
+
+            // Initialiser le scanner
+            this.html5QrCode = new Html5Qrcode("qrReader");
+
+            const config = {
+                fps: 10,
+                qrbox: { width: 250, height: 250 }
+            };
+
+            // Démarrer le scan
+            await this.html5QrCode.start(
+                { facingMode: "environment" }, // Caméra arrière
+                config,
+                (decodedText) => {
+                    // QR Code scanné avec succès
+                    console.log(`QR Code scanné: ${decodedText}`);
+                    this.processQRCode(decodedText);
+                },
+                (errorMessage) => {
+                    // Erreur silencieuse (normal pendant le scan)
+                }
+            );
+
+        } catch (err) {
+            console.error('Erreur lors du démarrage du scanner:', err);
+            this.showScannerStatus('Impossible d\'accéder à la caméra. Vérifiez les permissions.', 'error');
+        }
+    }
+
+    // Fermer le scanner
+    async closeScanner() {
+        if (this.html5QrCode) {
+            try {
+                await this.html5QrCode.stop();
+                this.html5QrCode.clear();
+            } catch (err) {
+                console.error('Erreur lors de l\'arrêt du scanner:', err);
+            }
+        }
+        // Réinitialiser les flags de scan
+        this.isProcessingQR = false;
+        this.lastQRCode = null;
+        this.lastQRTime = 0;
+
+        this.qrScannerModal.classList.add('hidden');
+    }
+
+    // Afficher un statut dans le scanner
+    showScannerStatus(message, type) {
+        this.qrScannerStatus.textContent = message;
+        this.qrScannerStatus.className = `scanner-status ${type}`;
+    }
+
+    // Traiter le QR code scanné
+    async processQRCode(qrText) {
+        const now = Date.now();
+        const DEBOUNCE_TIME = 3000; // 3 secondes entre chaque scan
+
+        // Vérifier si on est déjà en train de traiter un QR code
+        if (this.isProcessingQR) {
+            console.log('⏳ Traitement en cours, scan ignoré');
+            return;
+        }
+
+        // Vérifier si c'est le même QR code récemment scanné
+        if (this.lastQRCode === qrText && (now - this.lastQRTime) < DEBOUNCE_TIME) {
+            console.log(`⏭️ QR code identique scanné il y a ${Math.round((now - this.lastQRTime) / 1000)}s, ignoré`);
+            return;
+        }
+
+        // Marquer comme en cours de traitement
+        this.isProcessingQR = true;
+        this.lastQRCode = qrText;
+        this.lastQRTime = now;
+
+        this.showScannerStatus('QR Code détecté ! Traitement en cours...', 'info');
+
+        // Extraire la plus grande chaîne si plusieurs chaînes séparées par "-"
+        let query = qrText;
+        if (qrText.includes('-')) {
+            const parts = qrText.split('-');
+            // Garder la plus grande chaîne
+            query = parts.reduce((longest, current) =>
+                current.length > longest.length ? current : longest
+            , '');
+            console.log(`Chaîne extraite: "${query}" (original: "${qrText}")`);
+        }
+
+        try {
+            // Appeler le backend pour rechercher sur DuckDuckGo
+            this.showScannerStatus(`Recherche du produit "${query}"...`, 'info');
+
+            const response = await fetch(`${API_URL}/api/search-vevor`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ query })
+            });
+
+            const result = await response.json();
+
+            if (result.success && result.url) {
+                // Lien Vevor trouvé !
+                this.showScannerStatus(`✅ Lien Vevor trouvé !`, 'success');
+
+                // Ajouter l'URL au textarea
+                const currentValue = this.urlInput.value.trim();
+                if (currentValue) {
+                    this.urlInput.value = currentValue + '\n' + result.url;
+                } else {
+                    this.urlInput.value = result.url;
+                }
+
+                console.log(`URL ajoutée: ${result.url}`);
+
+                // Réinitialiser le flag et fermer le scanner après 2 secondes
+                setTimeout(() => {
+                    this.isProcessingQR = false;
+                    this.closeScanner();
+                }, 2000);
+
+            } else {
+                // Aucun lien Vevor trouvé
+                this.showScannerStatus(
+                    `❌ ${result.error || 'Aucun lien Vevor trouvé'}`,
+                    'error'
+                );
+                // Réinitialiser le flag après 2 secondes
+                setTimeout(() => {
+                    this.isProcessingQR = false;
+                }, 2000);
+            }
+
+        } catch (error) {
+            console.error('Erreur lors du traitement du QR code:', error);
+            this.showScannerStatus('❌ Erreur lors de la recherche', 'error');
+            // Réinitialiser le flag en cas d'erreur
+            this.isProcessingQR = false;
+        }
     }
 }
 

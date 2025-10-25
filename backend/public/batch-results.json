@@ -1,153 +1,27 @@
 {
-  "startTime": "2025-10-23T18:22:39.015Z",
-  "totalUrls": 23,
-  "processed": 23,
-  "added": 22,
-  "skipped": 0,
-  "errors": 1,
+  "startTime": "2025-10-25T16:00:49.334Z",
+  "totalUrls": 2,
+  "processed": 2,
+  "added": 1,
+  "skipped": 1,
+  "errors": 0,
   "details": {
     "added": [
       {
-        "url": "https://eur.vevor.com/off-grid-solar-inverter-c_10764/vevor-hybrid-solar-inverter-charger-3500w-230v-with-build-in-60a-mppt-controller-p_010705754540?lang=sv",
-        "title": "VEVOR Hybrid Solar Inverter, 3500W, Ren Sinusvåg Off-Grid Inverter Laddare, 230V AC Allt-i-ett Power Inverter med Inbyggd 60A MPPT Solar Laddningsregulator, Stödjer Solenergi Hybrid Laddning",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/nettoyeur-a-ultrasons-c_11064/vevor-nettoyeur-a-ultrasons-22-l-double-frequence-avec-chauffage-et-minuterie-p_010847568126",
-        "title": "VEVOR Nettoyeur à Ultrasons 22 L, Bac Ultrasons à Double Fréquence, Appareil de Nettoyage Ultrasonique en Acier Inoxydable, avec Chauffage et Minuterie, pour Bijoux Lunettes Montres, Clinique Labo",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.amazon.fr/Pizzello-dext%C3%A9rieur-cuisson-%C3%A9pluche-pizza-couvercle/dp/B09V13V8NG",
-        "title": "Pizzello Four à pizza d'extérieur Four à pizza au feu de bois pour la cuisson de 2 pizzas Machine à pizza d'extérieur avec pierre à pizza, épluche-pizza, couvercle",
-        "supplier": "Amazon",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.amazon.pl/XUANYU-nierozl%C4%85czne-karmnikami-wewn%C4%99trzna-zewn%C4%99trzna/dp/B0BWV6LL6G",
-        "title": "XUANYU Voliera klatka dla ptaków nierozłączne papugi Calopsite papugi, metalowa klatka Voliera z karmnikami, klatka wewnętrzna i zewnętrzna (biała 46×36 × 92 cm)",
-        "supplier": "Amazon",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/chargeur-portable-vehicules-electriques-c_11497/vevor-cable-de-charge-ev-type-2-a-type-2-charger-voiture-electrique-16a-5m-3-6kw-p_010134667033",
-        "title": "VEVOR Câble de Recharge EV de Type 2 à Type 2 Chargement Monophasé Véhicule Électrique 16 A 3,6 kW 5 m IP66 Étanche avec Sac de Transport pour IEC62196 Véhicule Électrique Hybride Rechargeable CE TÜV",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/friteuses-commerciales-c_12012/vevor-friteuse-a-bain-d-huile-electrique-commerciale-avec-panier-3000-w-9-l-bar-p_010750487831",
-        "title": "VEVOR Friteuse commerciale 3000 W, friteuses à bain d'huile électrique avec panier, en acier inox, 9 L, avec contrôle du temps et de la température, protection contre la surchauffe, pour restaurant",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.manomano.fr/p/vevor-chauffe-plat-buffet-18-l-bain-marie-electrique-1200-w-buffet-chauffant-de-comptoir-en-acier-inoxydable-utilisation-humide-ou-seche-pour-rechauffer-les-aliments-restauration-soiree-fete-85843652",
-        "title": "VEVOR Chauffe-Plat Buffet 18 L, Bain-Marie Electrique 1200 W, Buffet Chauffant de Comptoir, en Acier Inoxydable, Utilisation Humide ou Seche, pour Rechauffer les Aliments Restauration Soiree Fete",
+        "url": "https://manomano.fr/p/vevor-grille-de-protection-gouttiere-127-mm-pare-feuilles-pour-gouttieres-aluminium-13pcs-longueur-totale-159-m-trou-4-mm-epaisseur-05-mm-protege-gouttiere-anti-feuille-pour-tout-type-toit-gouttiere-82920036",
+        "title": "VEVOR Grille de Protection Gouttiere 127 mm Pare-feuilles pour Gouttieres Aluminium 13PCS Longueur Totale 15,9 m Trou 4 mm Epaisseur 0,5 mm Protege-gouttiere Anti-feuille pour Tout Type Toit Gouttiere",
         "supplier": "Manomano",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/aspirateur-c_11407/vevor-aspirateur-eau-et-poussiere-d-atelier-sec-humide-30-l-6-cv-max-argente-p_010603862437",
-        "title": "VEVOR Aspirateur eau et poussière 30 L, aspirateur d'atelier sec humide portable inox, 6 CV max, aspiration soufflerie efficaces avec buse, roulettes, pour tapis, débris, poils d'animaux, argent noir",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/boite-de-rangement-pour-forets-c_10511/vevor-distributeur-de-forets-29-compartiments-etiquetes-1-13-mm-boite-de-rangement-pour-forets-a-3-tiroirs-coffret-vide-pour-foret-37-5x20x20-cm-identification-facile-empilable-rangement-meche-atelier-p_010697848410",
-        "title": "VEVOR Distributeur de Forets 29 Compartiments Étiquetés 1-13 mm Boîte de Rangement pour Forets à 3 Tiroirs Coffret Vide pour Foret 37,5x20x20 cm Identification Facile Empilable Rangement Mèche Atelier",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/affuteuse-de-foret-c_10118/vevor-affuteuse-de-forets-285x135x160-mm-affuteuse-de-fraises-3-13-mm-angle-de-decharge-de-la-levre-et-angle-de-pointe-ajustable-95-135-affuteuse-portable-avec-11-pinces-de-serrage-meule-cbn-sdc-p_010667411002",
-        "title": "VEVOR Affuteuse de Forets 285x135x160 mm Affûteuse de Fraises 3-13 mm Angle de Décharge de la Lèvre et Angle de Pointe Ajustable 95°-135° Affûteuse Portable avec 11 Pinces de Serrage, Meule CBN & SDC",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/nettoyeur-a-ultrasons-c_11064/vevor-nettoyeur-a-ultrasons-de-disques-vinyle-6-l-avec-support-de-sechage-p_010180385843",
-        "title": "VEVOR Nettoyeur à Ultrasons de Disques Vinyle 6 L avec Support de Séchage",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/cles-a-chocs-pneumatiques-c_10041/vevor-cle-a-chocs-pneumatique-3-8-pistolet-de-percussion-entrainement-carre-690-pi-lb-couple-de-desserrage-10000-tr-min-pour-taches-camions-equipements-amateur-automobile-mecanicien-professionnel-p_010133962481",
-        "title": "VEVOR Clé à chocs pneumatique 3/8\" pistolet de percussion entraînement carré 690 pi-lb couple de desserrage 10000 tr/min pour tâches camions, équipements, amateur automobile, mécanicien professionnel",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/cric-de-plancher-c_11489/vevor-cric-rouleur-cric-de-plancher-a-profil-bas-2-tonnes-piston-unique-garage-p_010760609021",
-        "title": "VEVOR Cric Rouleur 2 tonnes, Cric de Plancher Hydraulique à Profil Bas, Hauteur de Levage 125,2-335 mm, Pompe de Levage Rapide à Piston Unique, pour Lever Camion SUV Entretien Automobile Atelier",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/palan-a-cable-electrique-c_10453/vevor-treuil-a-cable-electrique-1000-kg-palan-electrique-avec-telecommande-sans-fil-1600-w-treuil-palan-10-m-min-hauteur-de-levage-cable-simple-12-m-moteur-en-cuivre-pur-pour-garages-entrepots-usines-p_010327272938",
-        "title": "VEVOR Treuil à Câble Électrique 1000 kg Palan Électrique avec Télécommande sans Fil 1600 W Treuil-Palan 10 m/min Hauteur de Levage Câble Simple 12 m Moteur en Cuivre Pur pour Garages Entrepôts Usines",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/table-d-appoint-c_12207/vevor-table-console-en-acrylique-transparent-table-d-appoint-964-x-381-x-740-mm-table-d-entree-de-20-mm-d-epaisseur-charge-maximale-50-kg-bout-de-canape-rangement-pour-salon-chambre-terrasse-cafe-p_010412421492",
-        "title": "VEVOR Table Console en Acrylique Transparent Table d'Appoint 964 x 381 x 740 mm Table d'Entrée de 20 mm d’Épaisseur Charge Maximale 50 kg Bout de Canapé Rangement pour Salon Chambre Terrasse Café",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/coffres-forts-biometriques-c_10272/vevor-armoire-a-6-8-fusils-coffre-fort-pour-armes-a-feu-avec-clavier-numerique-p_010626319001",
-        "title": "VEVOR Armoire à 6-8 Fusils, Coffre-Fort pour Armes à Feu 2 Façons de Verrouillage par Clavier Numérique et Clés, avec Étagère Amovible et Système d'Alarme, Accès Rapide, pour Sécurité Domicile",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.nl/garagevloermat-c_11210/vevor-garagevloermat-2235-2-x-5181-6-x-2-4-mm-werkplaatsvloer-820-850-g-m2-garagevloervilt-tpe-olieopvangmat-garagemat-servicemat-vloerbescherming-vloerpanelen-voor-garage-p_010592593363?lang=en",
-        "title": "VEVOR Garage Floor Mat, 2.25 x 5.2 M Waterproof Protection from Water,Snow, Rain,Mud and Oil for Cars, Non-slip Heavy Duty Containment Mat with TPE Anti-Leak Backing & Easy to Clean & Cuttable",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/presses-a-imprimer-c_11148/vevor-presse-a-chaud-machine-de-sublimation-textile-406x510-mm-pour-t-shirts-p_010831992426",
-        "title": "VEVOR Presse à Chaud 406x510 mm, Machine de Sublimation Textile 1700 W Chauffage Rapide, Presse à Chaleur Transfert par Sublimation, Numérique et Industrielle, pour T-shirts/Sacs/Oreillers, Noir",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/cric-de-transmission-c_11826/vevor-cric-de-transmission-hydraulique-roues-pivotantes-a-360-1322-lb-pour-ascenseur-de-voiture-p_010542379234",
-        "title": "VEVOR – cric de Transmission hydraulique, roues pivotantes à 360 °, 600 kg, pour ascenseur de voiture",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/machine-de-nettoyage-de-drain-c_10849/vevor-deboucheur-electrique-de-canalisation-30-m-x-12-7-mm-machine-de-nettoyage-tuyaux-alimentation-auto-nettoyeur-tubes-pro-4-coupeurs-commande-a-pied-pour-tuyaux-2-54-10-16-cm-wc-egouts-toilettes-p_010136707525",
-        "title": "VEVOR Déboucheur Électrique de Canalisation 30 m x 12,7 mm Machine de Nettoyage Tuyaux Alimentation Auto Nettoyeur Tubes Pro 4 Coupeurs Commande à Pied pour Tuyaux 50-100 mm WC Égouts Toilettes",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/plancha-electrique-c_10589/vevor-plancha-electrique-plaque-a-snacker-commerciale-4400-w-50-300-c-reglable-p_010923487023",
-        "title": "VEVOR Plancha Électrique 4400 W, Plaque à Snacker Commerciale, Plaque de Cuisson en Fer et Acier Inoxydable, Température Réglable 50-300 °C, 2 Pelles et 2 Brosses, pour Barbecue Restaurant Snack-Bar",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/gouttieres-accessoires-c_11204/vevor-protection-de-gouttiere-5-po-de-large-52-pi-de-longueur-couverture-en-maille-protection-contre-les-debris-de-feuilles-p_010790564011",
-        "title": "VEVOR Grille de Protection Gouttière 127 mm Pare-feuilles pour Gouttières Aluminium 13PCS Longueur Totale 15,9 m Trou 4 mm Épaisseur 0,5 mm Protège-gouttière Anti-feuille pour Tout Type Toit Gouttière",
-        "supplier": "Vevor",
         "usedPuppeteer": true
       }
     ],
-    "skipped": [],
-    "errors": [
+    "skipped": [
       {
-        "url": "https://www.tinkco.com/cartouches/7683-hp-305xl-noir-et-couleur-lot-de-2-cartouches-grande-capacite-compatibles-hp-305xl-noir-et-couleur-tinpackhe305xl",
-        "error": "Site non pris en charge"
+        "url": "https://manomano.fr/p/vevor-grille-de-protection-gouttiere-127-mm-pare-feuilles-pour-gouttieres-aluminium-13pcs-longueur-totale-159-m-trou-4-mm-epaisseur-05-mm-protege-gouttiere-anti-feuille-pour-tout-type-toit-gouttiere-82920036",
+        "reason": "Déjà scannée"
       }
-    ]
+    ],
+    "errors": []
   },
-  "endTime": "2025-10-23T18:27:51.091Z",
-  "duration": "312s"
+  "endTime": "2025-10-25T16:01:03.602Z",
+  "duration": "14s"
 }
