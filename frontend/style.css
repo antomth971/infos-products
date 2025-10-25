@@ -111,6 +111,9 @@ header p {
 .loader p {
     color: #666;
     font-size: 0.95rem;
+    white-space: pre-line; /* Permet les retours à la ligne */
+    word-break: break-word;
+    max-width: 100%;
 }
 
 /* Message d'erreur */

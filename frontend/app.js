@@ -214,8 +214,21 @@ class App {
         const urls = input.split('\n').map(u => u.trim()).filter(u => u.length > 0);
 
         if (urls.length > 1) {
-            // Traitement en lot
-            await this.processBatchUrls(urls);
+            // Demander à l'utilisateur le mode de traitement
+            const choice = confirm(
+                `🔄 Mode de traitement pour ${urls.length} URL(s)\n\n` +
+                `✅ OK : Mode VISIBLE (voir la progression en temps réel)\n` +
+                `❌ Annuler : Mode ARRIÈRE-PLAN (traitement invisible, plus rapide)\n\n` +
+                `Choisissez votre mode :`
+            );
+
+            if (choice) {
+                // Mode visible : traitement synchrone avec progression
+                await this.processBatchUrlsSync(urls);
+            } else {
+                // Mode arrière-plan : traitement async
+                await this.processBatchUrls(urls);
+            }
         } else {
             // Traitement d'une seule URL
             await this.processSingleUrl(urls[0]);
@@ -262,6 +275,73 @@ class App {
             this.showError('Erreur de connexion au serveur. Assurez-vous que le backend est démarré.');
             this.hideLoader();
         }
+    }
+
+    // Traiter plusieurs URLs en mode SYNCHRONE avec progression visible
+    async processBatchUrlsSync(urls) {
+        const loaderText = this.loader.querySelector('p');
+        let successCount = 0;
+        let errorCount = 0;
+        let skippedCount = 0;
+
+        this.showLoader();
+
+        for (let i = 0; i < urls.length; i++) {
+            const url = urls[i];
+
+            // Mettre à jour le loader avec la progression détaillée
+            const shortUrl = url.length > 60 ? url.substring(0, 60) + '...' : url;
+            loaderText.textContent = `Traitement en cours...\n\n` +
+                `📊 Progression : ${i + 1}/${urls.length}\n` +
+                `🔗 ${shortUrl}\n\n` +
+                `✅ Réussis : ${successCount} | ⚠️ Ignorés : ${skippedCount} | ❌ Erreurs : ${errorCount}`;
+
+            try {
+                const response = await fetch(`${API_URL}/api/scrape`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ url })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    successCount++;
+                    console.log(`✅ [${i + 1}/${urls.length}] Succès: ${url}`);
+                    // Recharger la liste pour montrer le nouveau produit
+                    await this.loadItems();
+                } else if (result.alreadyScanned) {
+                    skippedCount++;
+                    console.log(`⚠️ [${i + 1}/${urls.length}] Déjà scanné: ${url}`);
+                } else {
+                    errorCount++;
+                    console.error(`❌ [${i + 1}/${urls.length}] Erreur: ${url} - ${result.error}`);
+                }
+            } catch (error) {
+                errorCount++;
+                console.error(`❌ [${i + 1}/${urls.length}] Erreur réseau: ${url}`, error);
+            }
+
+            // Petit délai entre chaque requête pour ne pas surcharger
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+
+        // Recharger la liste complète
+        await this.loadItems();
+
+        // Réinitialiser le formulaire
+        this.urlInput.value = '';
+        this.hideLoader();
+
+        // Afficher le récapitulatif
+        const message = `📊 Traitement terminé !\n\n` +
+            `✅ ${successCount} produit(s) ajouté(s)\n` +
+            `⚠️ ${skippedCount} URL(s) déjà scannée(s)\n` +
+            `❌ ${errorCount} erreur(s)`;
+        alert(message);
     }
 
     // Traiter plusieurs URLs en lot (envoi au backend pour traitement en arrière-plan)
