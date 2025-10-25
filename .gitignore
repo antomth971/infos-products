@@ -4,7 +4,7 @@ node_modules/
 # Base de données
 backend/database.json
 backend/database.json.backup
-
+backend/public/batch-results.json
 # Logs
 *.log
 npm-debug.log*

@@ -24,6 +24,7 @@ class App {
         this.itemsList = document.getElementById('itemsList');
         this.itemDetails = document.getElementById('itemDetails');
         this.itemCount = document.getElementById('itemCount');
+        this.scanForUrlButton = document.getElementById('scanForUrl');
 
         this.init();
     }
@@ -37,6 +38,7 @@ class App {
         this.searchInput.addEventListener('input', (e) => this.handleSearch(e));
         this.supplierFilter.addEventListener('change', (e) => this.handleSupplierFilter(e));
         this.exportExcelBtn.addEventListener('click', () => this.exportToExcel());
+        this.scanForUrlButton.addEventListener('click', () => this.scanForUrls());
 
         // Charger les éléments existants
         await this.loadItems();
@@ -57,6 +59,9 @@ class App {
             }
 
             this.isAuthenticated = true;
+
+            // Afficher le contenu maintenant que l'utilisateur est authentifié
+            document.body.classList.add('authenticated');
         } catch (error) {
             console.error('Erreur lors de la vérification de l\'authentification:', error);
             window.location.href = '/login.html';
@@ -131,6 +136,30 @@ class App {
         this.applyFilters();
     }
 
+    // Formater une date en texte français pour la recherche
+    formatDateForSearch(isoString) {
+        if (!isoString) return '';
+
+        const date = new Date(isoString);
+        const options = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        };
+
+        // Format complet : "23 octobre 2025"
+        const fullFormat = date.toLocaleDateString('fr-FR', options);
+
+        // Format court : "23/10/2025"
+        const shortFormat = date.toLocaleDateString('fr-FR');
+
+        // Format ISO : "2025-10-23"
+        const isoFormat = date.toISOString().split('T')[0];
+
+        // Retourner tous les formats possibles en minuscules
+        return `${fullFormat} ${shortFormat} ${isoFormat}`.toLowerCase();
+    }
+
     // Appliquer tous les filtres (recherche + fournisseur)
     applyFilters() {
         const searchTerm = this.searchInput.value.toLowerCase().trim();
@@ -142,11 +171,18 @@ class App {
             filtered = filtered.filter(item => item.supplier === this.currentSupplier);
         }
 
-        // Filtrer par recherche
+        // Filtrer par recherche (nom + date de création)
         if (searchTerm) {
-            filtered = filtered.filter(item =>
-                item.name && item.name.toLowerCase().includes(searchTerm)
-            );
+            filtered = filtered.filter(item => {
+                // Recherche dans le nom
+                const matchName = item.name && item.name.toLowerCase().includes(searchTerm);
+
+                // Recherche dans la date de création
+                const dateSearchText = this.formatDateForSearch(item.createdAt);
+                const matchDate = dateSearchText.includes(searchTerm);
+
+                return matchName || matchDate;
+            });
         }
 
         this.filteredItems = filtered;
@@ -693,6 +729,18 @@ class App {
         const div = document.createElement('div');
         div.textContent = text;
         return div.innerHTML;
+    }
+    // Scanner les URLs (fonctionnalité à implémenter selon les besoins)
+    async scanForUrls() {
+        await navigator.mediaDevices
+        .getUserMedia({ audio: false, video: true })
+        .then(function (stream) {
+            console.log(stream);
+        })
+        .catch(function (err) {
+            /* handle the error */
+            console.error('Erreur lors de l\'accès à la caméra :', err);
+        });
     }
 }
 
