@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produits Ignorés - Web Scraper</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .container {
+            max-width: 1400px;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .back-btn {
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-card.duplicates {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .stat-card.errors {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 2rem;
+            min-height: 500px;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h3 {
+            margin: 0 0 1rem 0;
+            color: #333;
+            font-size: 1.2rem;
+        }
+
+        .menu-item {
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .menu-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .menu-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .content-area {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .dates-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .date-card {
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .date-card:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+
+        .date-card-date {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .date-card-count {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .products-list {
+            margin-top: 1rem;
+        }
+
+        .product-item {
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .product-item.duplicate {
+            border-left-color: #f5576c;
+        }
+
+        .product-item.error {
+            border-left-color: #fee140;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-url {
+            font-size: 0.9rem;
+            color: #667eea;
+            word-break: break-all;
+            margin-bottom: 0.5rem;
+            text-decoration: none;
+        }
+
+        .product-url:hover {
+            text-decoration: underline;
+        }
+
+        .product-reason {
+            font-size: 0.9rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #999;
+            padding: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .loader {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(102, 126, 234, 0.2);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .breadcrumb a {
+            color: #667eea;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-section">
+            <div>
+                <h1>Produits Ignorés</h1>
+                <p>Doublons et erreurs détectés lors des ajouts</p>
+            </div>
+            <a href="/" class="back-btn">← Retour</a>
+        </div>
+
+        <!-- Statistiques -->
+        <div class="stats-section">
+            <div class="stat-card">
+                <div class="stat-label">Total</div>
+                <div class="stat-value" id="totalCount">0</div>
+            </div>
+            <div class="stat-card duplicates">
+                <div class="stat-label">Doublons</div>
+                <div class="stat-value" id="duplicatesCount">0</div>
+            </div>
+            <div class="stat-card errors">
+                <div class="stat-label">Erreurs</div>
+                <div class="stat-value" id="errorsCount">0</div>
+            </div>
+        </div>
+
+        <!-- Contenu principal -->
+        <div class="main-content">
+            <!-- Menu latéral -->
+            <div class="sidebar">
+                <h3>Type</h3>
+                <div class="menu-item active" data-type="doublon">
+                    🔁 Doublons
+                </div>
+                <div class="menu-item" data-type="erreur">
+                    ⚠️ Erreurs
+                </div>
+            </div>
+
+            <!-- Zone de contenu -->
+            <div class="content-area">
+                <div class="breadcrumb">
+                    <span id="breadcrumbType">Doublons</span>
+                    <span id="breadcrumbSeparator" style="display: none;">›</span>
+                    <a id="breadcrumbDate" style="display: none;"></a>
+                </div>
+                <div id="contentArea">
+                    <div class="loader">
+                        <div class="spinner"></div>
+                        <p>Chargement...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = window.location.hostname === 'localhost'
+            ? 'http://localhost:3000'
+            : '';
+
+        let currentType = 'doublon';
+        let currentDate = null;
+
+        // Charger les statistiques
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_URL}/api/ignored/stats`);
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById('totalCount').textContent = data.data.total;
+                    document.getElementById('duplicatesCount').textContent = data.data.duplicates;
+                    document.getElementById('errorsCount').textContent = data.data.errors;
+                }
+            } catch (error) {
+                console.error('Erreur lors du chargement des statistiques:', error);
+            }
+        }
+
+        // Charger les dates pour un type
+        async function loadDates(type) {
+            const contentArea = document.getElementById('contentArea');
+            contentArea.innerHTML = '<div class="loader"><div class="spinner"></div><p>Chargement...</p></div>';
+
+            try {
+                const response = await fetch(`${API_URL}/api/ignored/${type}/dates`);
+                const data = await response.json();
+
+                if (data.success && data.data.length > 0) {
+                    contentArea.innerHTML = '<div class="dates-list"></div>';
+                    const datesList = contentArea.querySelector('.dates-list');
+
+                    data.data.forEach(item => {
+                        const dateCard = document.createElement('div');
+                        dateCard.className = 'date-card';
+                        dateCard.innerHTML = `
+                            <div class="date-card-date">${formatDate(item.date)}</div>
+                            <div class="date-card-count">${item.count} produit(s)</div>
+                        `;
+                        dateCard.onclick = () => loadProducts(type, item.date);
+                        datesList.appendChild(dateCard);
+                    });
+                } else {
+                    contentArea.innerHTML = '<div class="empty-message">Aucune donnée disponible</div>';
+                }
+            } catch (error) {
+                console.error('Erreur lors du chargement des dates:', error);
+                contentArea.innerHTML = '<div class="empty-message">Erreur lors du chargement</div>';
+            }
+        }
+
+        // Charger les produits pour une date
+        async function loadProducts(type, date) {
+            currentDate = date;
+            updateBreadcrumb();
+
+            const contentArea = document.getElementById('contentArea');
+            contentArea.innerHTML = '<div class="loader"><div class="spinner"></div><p>Chargement...</p></div>';
+
+            try {
+                const response = await fetch(`${API_URL}/api/ignored/${type}/by-date/${date}`);
+                const data = await response.json();
+
+                if (data.success && data.data.length > 0) {
+                    contentArea.innerHTML = '<div class="products-list"></div>';
+                    const productsList = contentArea.querySelector('.products-list');
+
+                    data.data.forEach(item => {
+                        const productItem = document.createElement('div');
+                        productItem.className = `product-item ${type === 'doublon' ? 'duplicate' : 'error'}`;
+                        productItem.innerHTML = `
+                            ${item.name ? `<div class="product-name">${item.name}</div>` : ''}
+                            <a href="${item.url}" target="_blank" class="product-url">${item.url}</a>
+                            <div class="product-reason">Raison: ${item.reason}</div>
+                        `;
+                        productsList.appendChild(productItem);
+                    });
+                } else {
+                    contentArea.innerHTML = '<div class="empty-message">Aucun produit pour cette date</div>';
+                }
+            } catch (error) {
+                console.error('Erreur lors du chargement des produits:', error);
+                contentArea.innerHTML = '<div class="empty-message">Erreur lors du chargement</div>';
+            }
+        }
+
+        // Formater une date
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            // Ajouter un jour pour compenser le décalage de timezone
+            date.setDate(date.getDate() + 1);
+            return date.toLocaleDateString('fr-FR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // Mettre à jour le breadcrumb
+        function updateBreadcrumb() {
+            const breadcrumbType = document.getElementById('breadcrumbType');
+            const breadcrumbSeparator = document.getElementById('breadcrumbSeparator');
+            const breadcrumbDate = document.getElementById('breadcrumbDate');
+
+            breadcrumbType.textContent = currentType === 'doublon' ? 'Doublons' : 'Erreurs';
+
+            if (currentDate) {
+                breadcrumbSeparator.style.display = 'inline';
+                breadcrumbDate.style.display = 'inline';
+                breadcrumbDate.textContent = formatDate(currentDate);
+                breadcrumbDate.onclick = () => {
+                    currentDate = null;
+                    updateBreadcrumb();
+                    loadDates(currentType);
+                };
+            } else {
+                breadcrumbSeparator.style.display = 'none';
+                breadcrumbDate.style.display = 'none';
+            }
+        }
+
+        // Gérer le clic sur les items du menu
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', () => {
+                // Retirer la classe active de tous les items
+                document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+
+                // Ajouter la classe active à l'item cliqué
+                item.classList.add('active');
+
+                // Charger les dates pour le type sélectionné
+                currentType = item.dataset.type;
+                currentDate = null;
+                updateBreadcrumb();
+                loadDates(currentType);
+            });
+        });
+
+        // Initialiser
+        loadStats();
+        loadDates(currentType);
+    </script>
+</body>
+</html>

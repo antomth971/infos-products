@@ -19,6 +19,7 @@ class App {
         this.searchInput = document.getElementById('searchInput');
         this.supplierFilter = document.getElementById('supplierFilter');
         this.exportExcelBtn = document.getElementById('exportExcelBtn');
+        this.viewIgnoredBtn = document.getElementById('viewIgnoredBtn');
         this.loader = document.getElementById('loader');
         this.errorMessage = document.getElementById('errorMessage');
         this.itemsList = document.getElementById('itemsList');
@@ -28,6 +29,11 @@ class App {
         this.qrScannerModal = document.getElementById('qrScannerModal');
         this.closeScannerBtn = document.getElementById('closeScannerBtn');
         this.qrScannerStatus = document.getElementById('qrScannerStatus');
+
+        // Éléments pour la date personnalisée
+        this.useCustomDateCheckbox = document.getElementById('useCustomDate');
+        this.customDateInput = document.getElementById('customDateInput');
+        this.selectedDateDisplay = document.getElementById('selectedDateDisplay');
 
         // Modal de choix du mode
         this.modeChoiceModal = document.getElementById('modeChoiceModal');
@@ -61,6 +67,7 @@ class App {
         this.searchInput.addEventListener('input', (e) => this.handleSearch(e));
         this.supplierFilter.addEventListener('change', (e) => this.handleSupplierFilter(e));
         this.exportExcelBtn.addEventListener('click', () => this.exportToExcel());
+        this.viewIgnoredBtn.addEventListener('click', () => this.viewIgnoredProducts());
         this.scanForUrlButton.addEventListener('click', () => this.scanForUrls());
         this.closeScannerBtn.addEventListener('click', () => this.closeScanner());
 
@@ -76,8 +83,47 @@ class App {
             }
         });
 
+        // Event listeners pour la date personnalisée
+        this.useCustomDateCheckbox.addEventListener('change', () => this.toggleCustomDate());
+        this.customDateInput.addEventListener('change', () => this.updateDateDisplay());
+
         // Charger les éléments existants
         await this.loadItems();
+    }
+
+    // Gérer l'affichage du sélecteur de date
+    toggleCustomDate() {
+        if (this.useCustomDateCheckbox.checked) {
+            this.customDateInput.style.display = 'block';
+            this.selectedDateDisplay.style.display = 'inline';
+            this.updateDateDisplay();
+        } else {
+            this.customDateInput.style.display = 'none';
+            this.selectedDateDisplay.style.display = 'none';
+        }
+    }
+
+    // Mettre à jour l'affichage de la date
+    updateDateDisplay() {
+        if (this.customDateInput.value) {
+            const date = new Date(this.customDateInput.value + 'T00:00:00');
+            this.selectedDateDisplay.textContent = `📅 ${date.toLocaleDateString('fr-FR', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            })}`;
+        }
+    }
+
+    // Obtenir la date personnalisée si activée
+    getCustomDate() {
+        if (this.useCustomDateCheckbox.checked && this.customDateInput.value) {
+            console.log('📅 Date personnalisée activée:', this.customDateInput.value);
+            return this.customDateInput.value;
+        }
+        console.log('📅 Pas de date personnalisée (date actuelle sera utilisée)');
+        return null;
     }
 
     // Vérifier si l'utilisateur est authentifié
@@ -278,13 +324,19 @@ class App {
         this.showLoader();
 
         try {
+            const customDate = this.getCustomDate();
+            const requestBody = { url };
+            if (customDate) {
+                requestBody.customDate = customDate;
+            }
+
             const response = await fetch(`${API_URL}/api/scrape`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 credentials: 'include',
-                body: JSON.stringify({ url })
+                body: JSON.stringify(requestBody)
             });
 
             const result = await response.json();
@@ -317,6 +369,7 @@ class App {
 
     // Traiter plusieurs URLs en mode SYNCHRONE avec progression visible
     async processBatchUrlsSync(urls) {
+        const customDate = this.getCustomDate();
         const loaderText = this.loader.querySelector('p');
         let successCount = 0;
         let errorCount = 0;
@@ -335,13 +388,18 @@ class App {
                 `✅ Réussis : ${successCount} | ⚠️ Ignorés : ${skippedCount} | ❌ Erreurs : ${errorCount}`;
 
             try {
+                const requestBody = { url };
+                if (customDate) {
+                    requestBody.customDate = customDate;
+                }
+
                 const response = await fetch(`${API_URL}/api/scrape`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     credentials: 'include',
-                    body: JSON.stringify({ url })
+                    body: JSON.stringify(requestBody)
                 });
 
                 const result = await response.json();
@@ -385,17 +443,23 @@ class App {
     // Traiter plusieurs URLs en lot (envoi au backend pour traitement en arrière-plan)
     async processBatchUrls(urls) {
         this.showLoader();
+        const customDate = this.getCustomDate();
         const loaderText = this.loader.querySelector('p');
         loaderText.textContent = `Envoi de ${urls.length} URL(s) au serveur...`;
 
         try {
+            const requestBody = { urls };
+            if (customDate) {
+                requestBody.customDate = customDate;
+            }
+
             const response = await fetch(`${API_URL}/api/scrape-batch`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 credentials: 'include',
-                body: JSON.stringify({ urls })
+                body: JSON.stringify(requestBody)
             });
 
             const result = await response.json();
@@ -911,6 +975,11 @@ class App {
             this.exportExcelBtn.disabled = false;
             this.exportExcelBtn.textContent = '📊 Exporter en Excel';
         }
+    }
+
+    // Rediriger vers la page des produits ignorés
+    viewIgnoredProducts() {
+        window.location.href = '/ignored.html';
     }
 
     // Formater la date au format français

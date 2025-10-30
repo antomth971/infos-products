@@ -13,6 +13,7 @@ const XLSX = require('xlsx');
 const puppeteer = require('puppeteer');
 const session = require('express-session');
 const Product = require('./models/Product');
+const IgnoredProduct = require('./models/IgnoredProduct');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -664,15 +665,38 @@ async function fetchWithPuppeteer(url) {
 // Endpoint pour scraper une page
 app.post('/api/scrape', async (req, res) => {
   try {
-    const { url } = req.body;
+    const { url, customDate } = req.body;
 
     if (!url) {
       return res.status(400).json({ error: 'URL est requis' });
     }
 
+    // Utiliser la date personnalisée si fournie, sinon la date actuelle
+    let productDate;
+    if (customDate) {
+      // Parser la date en format YYYY-MM-DD et forcer l'heure à minuit (00:00:00) en temps local
+      const [year, month, day] = customDate.split('-').map(Number);
+      productDate = new Date(year, month - 1, day, 0, 0, 0, 0);
+      console.log(`📅 Utilisation de la date personnalisée: ${productDate.toLocaleDateString('fr-FR')}`);
+    } else {
+      productDate = new Date();
+    }
+
     // Détecter le fournisseur
     const supplier = detectSupplier(url);
     if (!supplier) {
+      // Enregistrer l'erreur (site non pris en charge)
+      const existingError = await IgnoredProduct.findOne({ url, type: 'erreur' });
+      if (!existingError) {
+        await IgnoredProduct.create({
+          url: url,
+          name: '',
+          type: 'erreur',
+          reason: 'Site non pris en charge',
+          date: productDate
+        });
+      }
+
       return res.status(400).json({
         success: false,
         error: 'Site non pris en charge, vérifier l\'URL'
@@ -684,6 +708,18 @@ app.post('/api/scrape', async (req, res) => {
     // Vérifier si l'URL a déjà été scannée
     const existingProduct = await Product.findOne({ url });
     if (existingProduct) {
+      // Enregistrer le doublon
+      const existingDuplicate = await IgnoredProduct.findOne({ url, type: 'doublon' });
+      if (!existingDuplicate) {
+        await IgnoredProduct.create({
+          url: url,
+          name: existingProduct.name,
+          type: 'doublon',
+          reason: 'URL déjà scannée',
+          date: productDate
+        });
+      }
+
       return res.status(409).json({
         success: false,
         error: 'URL déjà scannée',
@@ -762,10 +798,12 @@ app.post('/api/scrape', async (req, res) => {
       description: description,
       images: images,
       url: url,
-      supplier: supplier.config.name
+      supplier: supplier.config.name,
+      createdAt: productDate
     });
 
     await newProduct.save();
+    console.log(`✅ Produit sauvegardé avec la date: ${newProduct.createdAt.toLocaleDateString('fr-FR')}`);
 
     // Retourner les données extraites
     res.json({
@@ -1026,7 +1064,7 @@ app.post('/api/download-image', async (req, res) => {
 // Endpoint pour traiter plusieurs URLs en lot (traitement backend en arrière-plan)
 app.post('/api/scrape-batch', async (req, res) => {
   try {
-    const { urls } = req.body;
+    const { urls, customDate } = req.body;
 
     if (!urls || !Array.isArray(urls) || urls.length === 0) {
       return res.status(400).json({
@@ -1043,7 +1081,7 @@ app.post('/api/scrape-batch', async (req, res) => {
     });
 
     // Traiter les URLs en arrière-plan (sans bloquer la réponse)
-    processBatchInBackground(urls);
+    processBatchInBackground(urls, customDate);
 
   } catch (error) {
     console.error('Erreur lors du démarrage du traitement en lot:', error);
@@ -1055,7 +1093,18 @@ app.post('/api/scrape-batch', async (req, res) => {
 });
 
 // Fonction pour traiter les URLs en arrière-plan
-async function processBatchInBackground(urls) {
+async function processBatchInBackground(urls, customDate) {
+  // Utiliser la date personnalisée si fournie, sinon la date actuelle
+  let productDate;
+  if (customDate) {
+    // Parser la date en format YYYY-MM-DD et forcer l'heure à minuit (00:00:00) en temps local
+    const [year, month, day] = customDate.split('-').map(Number);
+    productDate = new Date(year, month - 1, day, 0, 0, 0, 0);
+    console.log(`📅 Utilisation de la date personnalisée: ${productDate.toLocaleDateString('fr-FR')}`);
+  } else {
+    productDate = new Date();
+  }
+
   const results = {
     startTime: new Date().toISOString(),
     totalUrls: urls.length,
@@ -1071,6 +1120,9 @@ async function processBatchInBackground(urls) {
   };
 
   console.log(`\n🚀 Démarrage du traitement en lot de ${urls.length} URL(s)...`);
+  if (customDate) {
+    console.log(`📅 Date personnalisée: ${productDate.toLocaleDateString('fr-FR')}`);
+  }
 
   for (let i = 0; i < urls.length; i++) {
     const url = urls[i].trim();
@@ -1080,6 +1132,18 @@ async function processBatchInBackground(urls) {
       // Détecter le fournisseur
       const supplier = detectSupplier(url);
       if (!supplier) {
+        // Enregistrer l'erreur (site non pris en charge)
+        const existingError = await IgnoredProduct.findOne({ url, type: 'erreur' });
+        if (!existingError) {
+          await IgnoredProduct.create({
+            url: url,
+            name: '',
+            type: 'erreur',
+            reason: 'Site non pris en charge',
+            date: productDate
+          });
+        }
+
         results.errors++;
         results.details.errors.push({
           url,
@@ -1095,6 +1159,19 @@ async function processBatchInBackground(urls) {
       const existingProduct = await Product.findOne({ url });
       if (existingProduct) {
         console.log('⚠️ URL déjà scannée, ignorée');
+
+        // Enregistrer le doublon
+        const existingDuplicate = await IgnoredProduct.findOne({ url, type: 'doublon' });
+        if (!existingDuplicate) {
+          await IgnoredProduct.create({
+            url: url,
+            name: existingProduct.name,
+            type: 'doublon',
+            reason: 'URL déjà scannée',
+            date: productDate
+          });
+        }
+
         results.skipped++;
         results.details.skipped.push({
           url,
@@ -1154,7 +1231,8 @@ async function processBatchInBackground(urls) {
         description: description,
         images: images,
         url: url,
-        supplier: supplier.config.name
+        supplier: supplier.config.name,
+        createdAt: productDate
       });
 
       await newProduct.save();
@@ -1372,6 +1450,120 @@ app.post('/api/search-vevor', async (req, res) => {
     });
   }
 });
+
+// ===== Routes pour les produits ignorés (doublons/erreurs) =====
+
+// Récupérer les dates disponibles pour un type (doublon ou erreur)
+app.get('/api/ignored/:type/dates', async (req, res) => {
+  try {
+    const { type } = req.params;
+
+    if (type !== 'doublon' && type !== 'erreur') {
+      return res.status(400).json({
+        success: false,
+        error: 'Type invalide. Utilisez "doublon" ou "erreur"'
+      });
+    }
+
+    // Récupérer toutes les dates uniques pour ce type
+    const dates = await IgnoredProduct.aggregate([
+      { $match: { type: type } },
+      {
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$date' } },
+          count: { $sum: 1 }
+        }
+      },
+      { $sort: { _id: -1 } }
+    ]);
+
+    res.json({
+      success: true,
+      data: dates.map(item => ({
+        date: item._id,
+        count: item.count
+      }))
+    });
+
+  } catch (error) {
+    console.error('Erreur lors de la récupération des dates:', error.message);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la récupération des dates'
+    });
+  }
+});
+
+// Récupérer les produits ignorés pour une date et un type spécifiques
+app.get('/api/ignored/:type/by-date/:date', async (req, res) => {
+  try {
+    const { type, date } = req.params;
+
+    if (type !== 'doublon' && type !== 'erreur') {
+      return res.status(400).json({
+        success: false,
+        error: 'Type invalide. Utilisez "doublon" ou "erreur"'
+      });
+    }
+
+    // Convertir la date string en Date
+    const startDate = new Date(date);
+    const endDate = new Date(date);
+    endDate.setDate(endDate.getDate() + 1);
+
+    const items = await IgnoredProduct.find({
+      type: type,
+      date: {
+        $gte: startDate,
+        $lt: endDate
+      }
+    }).sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      data: items.map(item => ({
+        id: item._id,
+        url: item.url,
+        name: item.name,
+        reason: item.reason,
+        date: item.date
+      }))
+    });
+
+  } catch (error) {
+    console.error('Erreur lors de la récupération des produits ignorés:', error.message);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la récupération des produits ignorés'
+    });
+  }
+});
+
+// Récupérer les statistiques générales
+app.get('/api/ignored/stats', async (req, res) => {
+  try {
+    const totalDuplicates = await IgnoredProduct.countDocuments({ type: 'doublon' });
+    const totalErrors = await IgnoredProduct.countDocuments({ type: 'erreur' });
+
+    res.json({
+      success: true,
+      data: {
+        duplicates: totalDuplicates,
+        errors: totalErrors,
+        total: totalDuplicates + totalErrors
+      }
+    });
+
+  } catch (error) {
+    console.error('Erreur lors de la récupération des statistiques:', error.message);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la récupération des statistiques'
+    });
+  }
+});
+
+// ===== Fin des routes pour les produits ignorés =====
 
 // Route de test
 app.get('/api/health', (_req, res) => {

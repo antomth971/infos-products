@@ -221,10 +221,13 @@
             <p>Extrayez les informations d'une page web</p>
         </header>
 
-        <!-- Bouton Export Excel -->
+        <!-- Boutons Export et Doublons/Erreurs -->
         <div class="export-section">
             <button id="exportExcelBtn" class="export-btn">
                 📊 Exporter en Excel
+            </button>
+            <button id="viewIgnoredBtn" class="export-btn" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); margin-left: 10px;">
+                🚫 Produits Doublons ou Erreurs
             </button>
         </div>
 
@@ -272,6 +275,26 @@
                         </button>
                     </div>
                 </div>
+            </div>
+
+            <!-- Sélecteur de date personnalisée -->
+            <div style="background: #f8f9ff; padding: 1rem; border-radius: 12px; margin-bottom: 1rem; border: 2px solid #667eea;">
+                <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                    <label style="font-weight: 600; color: #333; display: flex; align-items: center; gap: 0.5rem;">
+                        <input type="checkbox" id="useCustomDate" style="width: 18px; height: 18px; cursor: pointer;">
+                        Utiliser une date personnalisée
+                    </label>
+                    <input
+                        type="date"
+                        id="customDateInput"
+                        style="padding: 0.5rem; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 1rem; display: none;"
+                        value="2024-10-20"
+                    >
+                    <span id="selectedDateDisplay" style="color: #667eea; font-weight: 600; display: none;"></span>
+                </div>
+                <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: #666;">
+                    💡 Cochez pour ajouter les produits avec une date spécifique (ex: 20 octobre 2024)
+                </p>
             </div>
 
             <form id="scrapeForm">
