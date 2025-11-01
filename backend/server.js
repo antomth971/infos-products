@@ -14,6 +14,7 @@ const puppeteer = require('puppeteer');
 const session = require('express-session');
 const Product = require('./models/Product');
 const IgnoredProduct = require('./models/IgnoredProduct');
+const FacebookToken = require('./models/FacebookToken');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -1564,6 +1565,407 @@ app.get('/api/ignored/stats', async (req, res) => {
 });
 
 // ===== Fin des routes pour les produits ignorés =====
+
+// ===== Routes pour Facebook Marketplace =====
+
+// Variables Facebook
+const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID;
+const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
+const FACEBOOK_CALLBACK_URL = process.env.FACEBOOK_CALLBACK_URL || 'http://localhost:3000/api/facebook/callback';
+const FACEBOOK_PAGE_ID = process.env.FACEBOOK_PAGE_ID;
+
+// 1. Vérifier le statut de connexion Facebook
+app.get('/api/facebook/status', async (req, res) => {
+  try {
+    if (!req.session.authenticated) {
+      return res.status(403).json({
+        success: false,
+        error: 'Accès non autorisé. Veuillez vous connecter.'
+      });
+    }
+
+    // Vérifier si on a un token Facebook stocké
+    const token = await FacebookToken.findOne({});
+
+    res.json({
+      success: true,
+      connected: !!token,
+      pageId: token ? token.pageId : null
+    });
+  } catch (error) {
+    console.error('Erreur lors de la vérification du statut Facebook:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la vérification du statut'
+    });
+  }
+});
+
+// 2. Démarrer le processus OAuth Facebook
+app.get('/api/facebook/login', (req, res) => {
+  if (!req.session.authenticated) {
+    return res.status(403).json({
+      success: false,
+      error: 'Accès non autorisé. Veuillez vous connecter.'
+    });
+  }
+
+  // Permissions nécessaires pour Marketplace
+  const permissions = [
+    'pages_manage_posts',
+    'pages_read_engagement',
+    'catalog_management',
+    'business_management'
+  ].join(',');
+
+  const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?` +
+    `client_id=${FACEBOOK_APP_ID}` +
+    `&redirect_uri=${encodeURIComponent(FACEBOOK_CALLBACK_URL)}` +
+    `&scope=${permissions}` +
+    `&response_type=code`;
+
+  res.json({
+    success: true,
+    authUrl: authUrl
+  });
+});
+
+// 3. Callback OAuth Facebook
+app.get('/api/facebook/callback', async (req, res) => {
+  try {
+    const { code } = req.query;
+
+    if (!code) {
+      return res.redirect('/facebook-marketplace.html?error=no_code');
+    }
+
+    // Échanger le code contre un access token
+    const tokenResponse = await axios.get(`https://graph.facebook.com/v18.0/oauth/access_token`, {
+      params: {
+        client_id: FACEBOOK_APP_ID,
+        client_secret: FACEBOOK_APP_SECRET,
+        redirect_uri: FACEBOOK_CALLBACK_URL,
+        code: code
+      }
+    });
+
+    const userAccessToken = tokenResponse.data.access_token;
+
+    // Obtenir un token de longue durée (60 jours)
+    const longTokenResponse = await axios.get(`https://graph.facebook.com/v18.0/oauth/access_token`, {
+      params: {
+        grant_type: 'fb_exchange_token',
+        client_id: FACEBOOK_APP_ID,
+        client_secret: FACEBOOK_APP_SECRET,
+        fb_exchange_token: userAccessToken
+      }
+    });
+
+    const longLivedToken = longTokenResponse.data.access_token;
+
+    // Obtenir l'ID utilisateur
+    const meResponse = await axios.get(`https://graph.facebook.com/v18.0/me`, {
+      params: {
+        access_token: longLivedToken
+      }
+    });
+
+    const userId = meResponse.data.id;
+
+    // Obtenir le Page Access Token (ne expire jamais si la page est active)
+    const pagesResponse = await axios.get(`https://graph.facebook.com/v18.0/${userId}/accounts`, {
+      params: {
+        access_token: longLivedToken
+      }
+    });
+
+    // Trouver la page configurée ou prendre la première
+    let pageData = pagesResponse.data.data.find(page => page.id === FACEBOOK_PAGE_ID);
+    if (!pageData && pagesResponse.data.data.length > 0) {
+      pageData = pagesResponse.data.data[0]; // Prendre la première page par défaut
+    }
+
+    if (!pageData) {
+      return res.redirect('/facebook-marketplace.html?error=no_page');
+    }
+
+    // Sauvegarder le token dans MongoDB
+    await FacebookToken.findOneAndUpdate(
+      { userId: userId },
+      {
+        userId: userId,
+        accessToken: longLivedToken,
+        pageAccessToken: pageData.access_token,
+        pageId: pageData.id,
+        expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000), // 60 jours
+        updatedAt: Date.now()
+      },
+      { upsert: true, new: true }
+    );
+
+    console.log('✅ Token Facebook sauvegardé avec succès');
+    console.log('📄 Page ID:', pageData.id);
+    console.log('📄 Page Name:', pageData.name);
+
+    // Rediriger vers la page Facebook Marketplace avec succès
+    res.redirect('/facebook-marketplace.html?connected=true');
+
+  } catch (error) {
+    console.error('❌ Erreur lors de l\'authentification Facebook:', error.response?.data || error.message);
+    res.redirect('/facebook-marketplace.html?error=auth_failed');
+  }
+});
+
+// 4. Déconnecter Facebook
+app.post('/api/facebook/disconnect', async (req, res) => {
+  try {
+    if (!req.session.authenticated) {
+      return res.status(403).json({
+        success: false,
+        error: 'Accès non autorisé. Veuillez vous connecter.'
+      });
+    }
+
+    // Supprimer le token de la base de données
+    await FacebookToken.deleteMany({});
+
+    res.json({
+      success: true,
+      message: 'Déconnecté de Facebook avec succès'
+    });
+  } catch (error) {
+    console.error('Erreur lors de la déconnexion Facebook:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la déconnexion'
+    });
+  }
+});
+
+// 5. Récupérer toutes les annonces Marketplace depuis Facebook
+app.get('/api/facebook/listings', async (req, res) => {
+  try {
+    if (!req.session.authenticated) {
+      return res.status(403).json({
+        success: false,
+        error: 'Accès non autorisé. Veuillez vous connecter.'
+      });
+    }
+
+    // Récupérer le token Facebook
+    const tokenData = await FacebookToken.findOne({});
+    if (!tokenData) {
+      return res.status(401).json({
+        success: false,
+        error: 'Non connecté à Facebook. Veuillez vous connecter.'
+      });
+    }
+
+    // Récupérer les annonces Marketplace via l'API Graph
+    const response = await axios.get(
+      `https://graph.facebook.com/v18.0/${tokenData.pageId}/marketplace_listings`,
+      {
+        params: {
+          access_token: tokenData.pageAccessToken,
+          fields: 'id,name,description,price,availability,url,created_time'
+        }
+      }
+    );
+
+    res.json({
+      success: true,
+      data: response.data.data || []
+    });
+
+  } catch (error) {
+    console.error('Erreur lors de la récupération des annonces:', error.response?.data || error.message);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la récupération des annonces',
+      details: error.response?.data?.error?.message || error.message
+    });
+  }
+});
+
+// 6. Créer une annonce Marketplace depuis un produit
+app.post('/api/facebook/listings', async (req, res) => {
+  try {
+    if (!req.session.authenticated) {
+      return res.status(403).json({
+        success: false,
+        error: 'Accès non autorisé. Veuillez vous connecter.'
+      });
+    }
+
+    const { productId, title, price, description, category } = req.body;
+
+    if (!productId || !title || !price || !description) {
+      return res.status(400).json({
+        success: false,
+        error: 'Tous les champs sont requis'
+      });
+    }
+
+    // Récupérer le token Facebook
+    const tokenData = await FacebookToken.findOne({});
+    if (!tokenData) {
+      return res.status(401).json({
+        success: false,
+        error: 'Non connecté à Facebook. Veuillez vous connecter.'
+      });
+    }
+
+    // Récupérer le produit pour obtenir les images
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        error: 'Produit non trouvé'
+      });
+    }
+
+    // Créer l'annonce sur Facebook Marketplace
+    const listingData = {
+      name: title,
+      description: description,
+      price: price,
+      availability: 'in stock'
+    };
+
+    const response = await axios.post(
+      `https://graph.facebook.com/v18.0/${tokenData.pageId}/marketplace_listings`,
+      listingData,
+      {
+        params: {
+          access_token: tokenData.pageAccessToken
+        }
+      }
+    );
+
+    res.json({
+      success: true,
+      data: response.data,
+      message: 'Annonce créée avec succès sur Facebook Marketplace'
+    });
+
+  } catch (error) {
+    console.error('Erreur lors de la création de l\'annonce:', error.response?.data || error.message);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la création de l\'annonce',
+      details: error.response?.data?.error?.message || error.message
+    });
+  }
+});
+
+// 7. Modifier une annonce Marketplace
+app.put('/api/facebook/listings/:listingId', async (req, res) => {
+  try {
+    if (!req.session.authenticated) {
+      return res.status(403).json({
+        success: false,
+        error: 'Accès non autorisé. Veuillez vous connecter.'
+      });
+    }
+
+    const { listingId } = req.params;
+    const { title, price, description } = req.body;
+
+    if (!title || !price || !description) {
+      return res.status(400).json({
+        success: false,
+        error: 'Tous les champs sont requis'
+      });
+    }
+
+    // Récupérer le token Facebook
+    const tokenData = await FacebookToken.findOne({});
+    if (!tokenData) {
+      return res.status(401).json({
+        success: false,
+        error: 'Non connecté à Facebook. Veuillez vous connecter.'
+      });
+    }
+
+    // Modifier l'annonce
+    const listingData = {
+      name: title,
+      description: description,
+      price: price
+    };
+
+    const response = await axios.post(
+      `https://graph.facebook.com/v18.0/${listingId}`,
+      listingData,
+      {
+        params: {
+          access_token: tokenData.pageAccessToken
+        }
+      }
+    );
+
+    res.json({
+      success: true,
+      message: 'Annonce modifiée avec succès'
+    });
+
+  } catch (error) {
+    console.error('Erreur lors de la modification de l\'annonce:', error.response?.data || error.message);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la modification de l\'annonce',
+      details: error.response?.data?.error?.message || error.message
+    });
+  }
+});
+
+// 8. Supprimer une annonce Marketplace
+app.delete('/api/facebook/listings/:listingId', async (req, res) => {
+  try {
+    if (!req.session.authenticated) {
+      return res.status(403).json({
+        success: false,
+        error: 'Accès non autorisé. Veuillez vous connecter.'
+      });
+    }
+
+    const { listingId } = req.params;
+
+    // Récupérer le token Facebook
+    const tokenData = await FacebookToken.findOne({});
+    if (!tokenData) {
+      return res.status(401).json({
+        success: false,
+        error: 'Non connecté à Facebook. Veuillez vous connecter.'
+      });
+    }
+
+    // Supprimer l'annonce
+    await axios.delete(
+      `https://graph.facebook.com/v18.0/${listingId}`,
+      {
+        params: {
+          access_token: tokenData.pageAccessToken
+        }
+      }
+    );
+
+    res.json({
+      success: true,
+      message: 'Annonce supprimée avec succès'
+    });
+
+  } catch (error) {
+    console.error('Erreur lors de la suppression de l\'annonce:', error.response?.data || error.message);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la suppression de l\'annonce',
+      details: error.response?.data?.error?.message || error.message
+    });
+  }
+});
+
+// ===== Fin des routes pour Facebook Marketplace =====
 
 // Route de test
 app.get('/api/health', (_req, res) => {

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion Facebook Marketplace</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Loader d'authentification */
+        #authLoader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        #authLoader .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        #authLoader p {
+            color: white;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        #mainContent {
+            display: none;
+        }
+
+        body.authenticated #authLoader {
+            display: none;
+        }
+
+        body.authenticated #mainContent {
+            display: block;
+        }
+
+        /* Styles spécifiques Facebook Marketplace */
+        .fb-header {
+            background: linear-gradient(135deg, #1877f2 0%, #0d5ebd 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .fb-header h1 {
+            margin: 0 0 0.5rem 0;
+            font-size: 2rem;
+        }
+
+        .fb-header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .fb-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .fb-tab {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .fb-tab:hover {
+            color: #1877f2;
+        }
+
+        .fb-tab.active {
+            color: #1877f2;
+            border-bottom-color: #1877f2;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .fb-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .fb-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .fb-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .fb-card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .fb-card-meta {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .fb-card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .fb-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .fb-btn-primary {
+            background: #1877f2;
+            color: white;
+        }
+
+        .fb-btn-primary:hover {
+            background: #0d5ebd;
+        }
+
+        .fb-btn-secondary {
+            background: #e4e6eb;
+            color: #333;
+        }
+
+        .fb-btn-secondary:hover {
+            background: #d8dadf;
+        }
+
+        .fb-btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .fb-btn-danger:hover {
+            background: #c82333;
+        }
+
+        .product-selector {
+            background: #f8f9ff;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .product-item {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .product-item:hover {
+            border-color: #1877f2;
+            box-shadow: 0 2px 8px rgba(24, 119, 242, 0.2);
+        }
+
+        .product-item.selected {
+            border-color: #1877f2;
+            background: #e8f4ff;
+        }
+
+        .product-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-item-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .product-item-price {
+            color: #1877f2;
+            font-weight: 600;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: #1877f2;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+        }
+
+        .close-btn:hover {
+            color: #1877f2;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #1877f2;
+            box-shadow: 0 0 0 3px rgba(24, 119, 242, 0.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-published {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-draft {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #1877f2;
+            text-decoration: none;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loader d'authentification -->
+    <div id="authLoader">
+        <div class="spinner"></div>
+        <p>Vérification de l'authentification...</p>
+    </div>
+
+    <!-- Contenu principal -->
+    <div id="mainContent">
+        <div class="container">
+            <a href="/" class="back-link">← Retour à l'accueil</a>
+
+            <div class="fb-header">
+                <h1>Gestion Facebook Marketplace</h1>
+                <p>Gérez vos publications, modifiez et ajoutez des produits</p>
+            </div>
+
+            <!-- Onglets -->
+            <div class="fb-tabs">
+                <button class="fb-tab active" data-tab="publications">
+                    Mes Publications
+                </button>
+                <button class="fb-tab" data-tab="add-product">
+                    Ajouter un Produit
+                </button>
+            </div>
+
+            <!-- Contenu des onglets -->
+
+            <!-- Onglet: Mes Publications -->
+            <div class="tab-content active" id="tab-publications">
+                <!-- Statut de connexion Facebook -->
+                <div id="facebookStatus" style="margin-bottom: 2rem;">
+                    <!-- Sera rempli dynamiquement -->
+                </div>
+
+                <div id="publicationsList">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📦</div>
+                        <p>Connectez-vous à Facebook pour voir vos annonces</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Onglet: Ajouter un Produit -->
+            <div class="tab-content" id="tab-add-product">
+                <div class="product-selector">
+                    <h3>Sélectionnez un produit à publier</h3>
+                    <div class="search-section" style="margin-top: 1rem;">
+                        <input
+                            type="text"
+                            id="productSearch"
+                            placeholder="Rechercher un produit..."
+                        >
+                    </div>
+                    <div class="product-grid" id="productGrid">
+                        <div class="empty-state">
+                            <p>Chargement des produits...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal d'édition de publication -->
+    <div id="editModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Modifier la publication</h2>
+                <button class="close-btn" id="closeEditModal">✕</button>
+            </div>
+            <form id="editForm">
+                <div class="form-group">
+                    <label for="editTitle">Titre</label>
+                    <input type="text" id="editTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="editPrice">Prix</label>
+                    <input type="text" id="editPrice" required>
+                </div>
+                <div class="form-group">
+                    <label for="editDescription">Description</label>
+                    <textarea id="editDescription" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editCategory">Catégorie</label>
+                    <select id="editCategory">
+                        <option value="electronics">Électronique</option>
+                        <option value="home">Maison & Jardin</option>
+                        <option value="sports">Sports & Loisirs</option>
+                        <option value="tools">Outils</option>
+                        <option value="other">Autre</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" class="fb-btn fb-btn-secondary" id="cancelEdit">
+                        Annuler
+                    </button>
+                    <button type="submit" class="fb-btn fb-btn-primary">
+                        Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de création de publication -->
+    <div id="createModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Créer une publication</h2>
+                <button class="close-btn" id="closeCreateModal">✕</button>
+            </div>
+            <form id="createForm">
+                <div class="form-group">
+                    <label for="createTitle">Titre</label>
+                    <input type="text" id="createTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="createPrice">Prix</label>
+                    <input type="text" id="createPrice" required>
+                </div>
+                <div class="form-group">
+                    <label for="createDescription">Description</label>
+                    <textarea id="createDescription" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="createCategory">Catégorie</label>
+                    <select id="createCategory">
+                        <option value="electronics">Électronique</option>
+                        <option value="home">Maison & Jardin</option>
+                        <option value="sports">Sports & Loisirs</option>
+                        <option value="tools">Outils</option>
+                        <option value="other">Autre</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" class="fb-btn fb-btn-secondary" id="cancelCreate">
+                        Annuler
+                    </button>
+                    <button type="submit" class="fb-btn fb-btn-primary">
+                        Créer la publication
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="facebook-marketplace.js"></script>
+</body>
+</html>
