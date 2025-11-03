@@ -253,7 +253,7 @@ class App {
             filtered = filtered.filter(item => item.supplier === this.currentSupplier);
         }
 
-        // Filtrer par recherche (nom + date de création)
+        // Filtrer par recherche (nom + date de création + source + URL)
         if (searchTerm) {
             filtered = filtered.filter(item => {
                 // Recherche dans le nom
@@ -263,7 +263,13 @@ class App {
                 const dateSearchText = this.formatDateForSearch(item.createdAt);
                 const matchDate = dateSearchText.includes(searchTerm);
 
-                return matchName || matchDate;
+                // Recherche dans la source (fournisseur)
+                const matchSupplier = item.supplier && item.supplier.toLowerCase().includes(searchTerm);
+
+                // Recherche dans l'URL
+                const matchUrl = item.url && item.url.toLowerCase().includes(searchTerm);
+
+                return matchName || matchDate || matchSupplier || matchUrl;
             });
         }
 

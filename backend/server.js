@@ -794,7 +794,7 @@ app.post('/api/scrape', async (req, res) => {
 
     // Ajouter à la base de données
     const newProduct = new Product({
-      name: title,
+      name: title || 'Produit sans titre',
       price: price || 'indispo',
       description: description,
       images: images,
@@ -818,6 +818,33 @@ app.post('/api/scrape', async (req, res) => {
 
   } catch (error) {
     console.error('Erreur lors du scraping:', error);
+
+    // Enregistrer l'erreur dans IgnoredProduct pour ne pas perdre la trace
+    try {
+      const { url, customDate } = req.body;
+      let productDate;
+      if (customDate) {
+        const [year, month, day] = customDate.split('-').map(Number);
+        productDate = new Date(year, month - 1, day, 0, 0, 0, 0);
+      } else {
+        productDate = new Date();
+      }
+
+      const existingError = await IgnoredProduct.findOne({ url, type: 'erreur' });
+      if (!existingError) {
+        await IgnoredProduct.create({
+          url: url,
+          name: '',
+          type: 'erreur',
+          reason: error.message,
+          date: productDate
+        });
+        console.log(`📝 Erreur enregistrée dans les produits ignorés`);
+      }
+    } catch (saveError) {
+      console.error(`❌ Impossible d'enregistrer l'erreur:`, saveError.message);
+    }
+
     res.status(500).json({
       success: false,
       error: 'Erreur lors du scraping de la page',
@@ -1227,7 +1254,7 @@ async function processBatchInBackground(urls, customDate) {
 
       // Sauvegarder dans MongoDB
       const newProduct = new Product({
-        name: title,
+        name: title || 'Produit sans titre',
         price: price || 'indispo',
         description: description,
         images: images,
@@ -1250,6 +1277,24 @@ async function processBatchInBackground(urls, customDate) {
 
     } catch (error) {
       console.error(`❌ [${i + 1}/${urls.length}] Erreur:`, error.message);
+
+      // Enregistrer l'erreur dans IgnoredProduct pour ne pas perdre la trace
+      try {
+        const existingError = await IgnoredProduct.findOne({ url, type: 'erreur' });
+        if (!existingError) {
+          await IgnoredProduct.create({
+            url: url,
+            name: '',
+            type: 'erreur',
+            reason: error.message,
+            date: productDate
+          });
+          console.log(`📝 Erreur enregistrée dans les produits ignorés`);
+        }
+      } catch (saveError) {
+        console.error(`❌ Impossible d'enregistrer l'erreur:`, saveError.message);
+      }
+
       results.errors++;
       results.details.errors.push({
         url,
