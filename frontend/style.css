@@ -230,6 +230,20 @@ header p {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 15px;
+}
+
+.list-item-number {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #667eea;
+    min-width: 40px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.list-item.active .list-item-number {
+    color: white;
 }
 
 .list-item:hover {

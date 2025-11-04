@@ -380,6 +380,7 @@ class App {
         let successCount = 0;
         let errorCount = 0;
         let skippedCount = 0;
+        let minuteOffset = 0; // Compteur pour l'incrémentation des minutes
 
         this.showLoader();
 
@@ -397,6 +398,7 @@ class App {
                 const requestBody = { url };
                 if (customDate) {
                     requestBody.customDate = customDate;
+                    requestBody.minuteOffset = minuteOffset;
                 }
 
                 const response = await fetch(`${API_URL}/api/scrape`, {
@@ -412,6 +414,7 @@ class App {
 
                 if (result.success) {
                     successCount++;
+                    minuteOffset++; // Incrémenter l'offset pour le prochain produit ajouté
                     console.log(`✅ [${i + 1}/${urls.length}] Succès: ${url}`);
                     // Recharger la liste pour montrer le nouveau produit
                     await this.loadItems();
@@ -650,8 +653,9 @@ class App {
             return;
         }
 
-        this.itemsList.innerHTML = items.map(item => `
+        this.itemsList.innerHTML = items.map((item, index) => `
             <div class="list-item ${item.id === this.currentItemId ? 'active' : ''}" data-id="${item.id}">
+                <div class="list-item-number">(${index + 1})</div>
                 <div class="list-item-content">
                     <div class="list-item-name">${this.escapeHtml(item.name || 'Sans titre')}</div>
                     <div class="list-item-id">ID: ${item.id}${item.price ? ' • ' + this.escapeHtml(item.price) : ''}</div>

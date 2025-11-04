@@ -666,7 +666,7 @@ async function fetchWithPuppeteer(url) {
 // Endpoint pour scraper une page
 app.post('/api/scrape', async (req, res) => {
   try {
-    const { url, customDate } = req.body;
+    const { url, customDate, minuteOffset } = req.body;
 
     if (!url) {
       return res.status(400).json({ error: 'URL est requis' });
@@ -678,7 +678,14 @@ app.post('/api/scrape', async (req, res) => {
       // Parser la date en format YYYY-MM-DD et forcer l'heure à minuit (00:00:00) en temps local
       const [year, month, day] = customDate.split('-').map(Number);
       productDate = new Date(year, month - 1, day, 0, 0, 0, 0);
-      console.log(`📅 Utilisation de la date personnalisée: ${productDate.toLocaleDateString('fr-FR')}`);
+
+      // Si un offset de minutes est fourni, l'appliquer
+      if (typeof minuteOffset === 'number' && minuteOffset >= 0) {
+        productDate.setMinutes(minuteOffset);
+        console.log(`📅 Utilisation de la date personnalisée avec offset: ${productDate.toLocaleString('fr-FR')}`);
+      } else {
+        console.log(`📅 Utilisation de la date personnalisée: ${productDate.toLocaleDateString('fr-FR')}`);
+      }
     } else {
       productDate = new Date();
     }
@@ -1123,14 +1130,14 @@ app.post('/api/scrape-batch', async (req, res) => {
 // Fonction pour traiter les URLs en arrière-plan
 async function processBatchInBackground(urls, customDate) {
   // Utiliser la date personnalisée si fournie, sinon la date actuelle
-  let productDate;
+  let baseProductDate;
   if (customDate) {
     // Parser la date en format YYYY-MM-DD et forcer l'heure à minuit (00:00:00) en temps local
     const [year, month, day] = customDate.split('-').map(Number);
-    productDate = new Date(year, month - 1, day, 0, 0, 0, 0);
-    console.log(`📅 Utilisation de la date personnalisée: ${productDate.toLocaleDateString('fr-FR')}`);
+    baseProductDate = new Date(year, month - 1, day, 0, 0, 0, 0);
+    console.log(`📅 Utilisation de la date personnalisée: ${baseProductDate.toLocaleDateString('fr-FR')}`);
   } else {
-    productDate = new Date();
+    baseProductDate = new Date();
   }
 
   const results = {
@@ -1149,8 +1156,11 @@ async function processBatchInBackground(urls, customDate) {
 
   console.log(`\n🚀 Démarrage du traitement en lot de ${urls.length} URL(s)...`);
   if (customDate) {
-    console.log(`📅 Date personnalisée: ${productDate.toLocaleDateString('fr-FR')}`);
+    console.log(`📅 Date personnalisée: ${baseProductDate.toLocaleDateString('fr-FR')}`);
   }
+
+  // Compteur pour incrémenter les minutes lors de l'ajout avec date personnalisée
+  let minuteOffset = 0;
 
   for (let i = 0; i < urls.length; i++) {
     const url = urls[i].trim();
@@ -1168,7 +1178,7 @@ async function processBatchInBackground(urls, customDate) {
             name: '',
             type: 'erreur',
             reason: 'Site non pris en charge',
-            date: productDate
+            date: baseProductDate
           });
         }
 
@@ -1196,7 +1206,7 @@ async function processBatchInBackground(urls, customDate) {
             name: existingProduct.name,
             type: 'doublon',
             reason: 'URL déjà scannée',
-            date: productDate
+            date: baseProductDate
           });
         }
 
@@ -1252,6 +1262,18 @@ async function processBatchInBackground(urls, customDate) {
 
       console.log('✓ Données extraites:', title);
 
+      // Calculer la date pour ce produit
+      // Si date personnalisée : incrémenter les minutes pour chaque produit ajouté
+      let productDate;
+      if (customDate) {
+        productDate = new Date(baseProductDate);
+        productDate.setMinutes(minuteOffset);
+        console.log(`📅 Produit ${minuteOffset + 1} - Date: ${productDate.toLocaleString('fr-FR')}`);
+        minuteOffset++; // Incrémenter pour le prochain produit
+      } else {
+        productDate = baseProductDate;
+      }
+
       // Sauvegarder dans MongoDB
       const newProduct = new Product({
         name: title || 'Produit sans titre',
@@ -1287,7 +1309,7 @@ async function processBatchInBackground(urls, customDate) {
             name: '',
             type: 'erreur',
             reason: error.message,
-            date: productDate
+            date: baseProductDate
           });
           console.log(`📝 Erreur enregistrée dans les produits ignorés`);
         }
