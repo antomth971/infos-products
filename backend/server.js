@@ -115,7 +115,7 @@ const SUPPLIERS_CONFIG = {
       }
     }
   },
-  'www.manomano.fr': {
+  'www.manomano.': {
     name: 'Manomano',
     requiresPuppeteer: true, // Protection anti-bot + contenu dynamique
     selectors: {
@@ -521,6 +521,7 @@ async function fetchWithPuppeteer(url) {
     // Détecter le site pour des stratégies spéciales
     const isLeroyMerlin = url.includes('leroymerlin');
     const isAmazon = url.includes('amazon');
+    const isVevor = url.includes('vevor');
 
     // Configuration pour l'environnement de production
     const puppeteerConfig = {
@@ -574,10 +575,19 @@ async function fetchWithPuppeteer(url) {
 
     // Naviguer vers la page avec une stratégie plus permissive
     try {
-      await page.goto(url, {
-        waitUntil: 'domcontentloaded', // Plus rapide que networkidle2
-        timeout: 45000
-      });
+      if (isVevor) {
+        // Pour Vevor : attendre networkidle0 pour s'assurer que toutes les navigations sont terminées
+        console.log('⚡ Vevor - Attente de la fin de toutes les navigations...');
+        await page.goto(url, {
+          waitUntil: 'networkidle0', // Attendre qu'il n'y ait plus de requêtes réseau
+          timeout: 60000 // Timeout plus long pour Vevor
+        });
+      } else {
+        await page.goto(url, {
+          waitUntil: 'domcontentloaded', // Plus rapide que networkidle2
+          timeout: 45000
+        });
+      }
     } catch (error) {
       console.log('⚠️ Timeout initial, tentative avec load...');
       await page.goto(url, {
@@ -594,8 +604,8 @@ async function fetchWithPuppeteer(url) {
     await new Promise(resolve => setTimeout(resolve, 1000));
     await page.mouse.move(200, 200);
 
-    // Attendre plus longtemps pour Leroy Merlin (challenge anti-bot)
-    const waitTime = isLeroyMerlin ? 15000 : 8000;
+    // Attendre plus longtemps pour Leroy Merlin (challenge anti-bot) et Vevor (navigations multiples)
+    const waitTime = isLeroyMerlin ? 15000 : (isVevor ? 10000 : 8000);
     console.log(`⏳ Attente de ${waitTime/1000} secondes...`);
     await new Promise(resolve => setTimeout(resolve, waitTime));
 
@@ -638,11 +648,39 @@ async function fetchWithPuppeteer(url) {
     }
 
     // Attendre encore un peu après le chargement des éléments
-    const finalWait = isLeroyMerlin ? 5000 : (isAmazon ? 2000 : 2000);
+    const finalWait = isLeroyMerlin ? 5000 : (isAmazon ? 2000 : (isVevor ? 3000 : 2000));
     await new Promise(resolve => setTimeout(resolve, finalWait));
 
-    // Récupérer le HTML
-    const html = await page.content();
+    // Récupérer le HTML avec gestion des erreurs de frame détaché
+    let html;
+    let retries = 0;
+    const maxRetries = 3;
+
+    while (retries < maxRetries) {
+      try {
+        html = await page.content();
+        break; // Si succès, sortir de la boucle
+      } catch (error) {
+        retries++;
+        if (error.message.includes('detached Frame')) {
+          console.log(`⚠️ Frame détaché, tentative ${retries}/${maxRetries}...`);
+          if (retries < maxRetries) {
+            // Attendre un peu avant de réessayer
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Réactualiser la page si nécessaire
+            try {
+              await page.reload({ waitUntil: 'networkidle0', timeout: 30000 });
+            } catch (reloadError) {
+              console.log('⚠️ Erreur lors du rechargement, on continue...');
+            }
+          } else {
+            throw error; // Propager l'erreur si toutes les tentatives ont échoué
+          }
+        } else {
+          throw error; // Propager les autres erreurs immédiatement
+        }
+      }
+    }
 
     // Debug: Sauvegarder un aperçu du HTML pour Leroy Merlin
     if (url.includes('leroymerlin')) {
@@ -694,16 +732,13 @@ app.post('/api/scrape', async (req, res) => {
     const supplier = detectSupplier(url);
     if (!supplier) {
       // Enregistrer l'erreur (site non pris en charge)
-      const existingError = await IgnoredProduct.findOne({ url, type: 'erreur' });
-      if (!existingError) {
-        await IgnoredProduct.create({
-          url: url,
-          name: '',
-          type: 'erreur',
-          reason: 'Site non pris en charge',
-          date: productDate
-        });
-      }
+      await IgnoredProduct.create({
+        url: url,
+        name: '',
+        type: 'erreur',
+        reason: 'Site non pris en charge',
+        date: productDate
+      });
 
       return res.status(400).json({
         success: false,
@@ -716,17 +751,14 @@ app.post('/api/scrape', async (req, res) => {
     // Vérifier si l'URL a déjà été scannée
     const existingProduct = await Product.findOne({ url });
     if (existingProduct) {
-      // Enregistrer le doublon
-      const existingDuplicate = await IgnoredProduct.findOne({ url, type: 'doublon' });
-      if (!existingDuplicate) {
-        await IgnoredProduct.create({
-          url: url,
-          name: existingProduct.name,
-          type: 'doublon',
-          reason: 'URL déjà scannée',
-          date: productDate
-        });
-      }
+      // Enregistrer le doublon (à chaque fois, pour garder un historique)
+      await IgnoredProduct.create({
+        url: url,
+        name: existingProduct.name,
+        type: 'doublon',
+        reason: 'URL déjà scannée',
+        date: productDate
+      });
 
       return res.status(409).json({
         success: false,
@@ -837,17 +869,14 @@ app.post('/api/scrape', async (req, res) => {
         productDate = new Date();
       }
 
-      const existingError = await IgnoredProduct.findOne({ url, type: 'erreur' });
-      if (!existingError) {
-        await IgnoredProduct.create({
-          url: url,
-          name: '',
-          type: 'erreur',
-          reason: error.message,
-          date: productDate
-        });
-        console.log(`📝 Erreur enregistrée dans les produits ignorés`);
-      }
+      await IgnoredProduct.create({
+        url: url,
+        name: '',
+        type: 'erreur',
+        reason: error.message,
+        date: productDate
+      });
+      console.log(`📝 Erreur enregistrée dans les produits ignorés`);
     } catch (saveError) {
       console.error(`❌ Impossible d'enregistrer l'erreur:`, saveError.message);
     }
@@ -1171,16 +1200,13 @@ async function processBatchInBackground(urls, customDate) {
       const supplier = detectSupplier(url);
       if (!supplier) {
         // Enregistrer l'erreur (site non pris en charge)
-        const existingError = await IgnoredProduct.findOne({ url, type: 'erreur' });
-        if (!existingError) {
-          await IgnoredProduct.create({
-            url: url,
-            name: '',
-            type: 'erreur',
-            reason: 'Site non pris en charge',
-            date: baseProductDate
-          });
-        }
+        await IgnoredProduct.create({
+          url: url,
+          name: '',
+          type: 'erreur',
+          reason: 'Site non pris en charge',
+          date: baseProductDate
+        });
 
         results.errors++;
         results.details.errors.push({
@@ -1198,17 +1224,14 @@ async function processBatchInBackground(urls, customDate) {
       if (existingProduct) {
         console.log('⚠️ URL déjà scannée, ignorée');
 
-        // Enregistrer le doublon
-        const existingDuplicate = await IgnoredProduct.findOne({ url, type: 'doublon' });
-        if (!existingDuplicate) {
-          await IgnoredProduct.create({
-            url: url,
-            name: existingProduct.name,
-            type: 'doublon',
-            reason: 'URL déjà scannée',
-            date: baseProductDate
-          });
-        }
+        // Enregistrer le doublon (à chaque fois, pour garder un historique)
+        await IgnoredProduct.create({
+          url: url,
+          name: existingProduct.name,
+          type: 'doublon',
+          reason: 'URL déjà scannée',
+          date: baseProductDate
+        });
 
         results.skipped++;
         results.details.skipped.push({
@@ -1302,17 +1325,14 @@ async function processBatchInBackground(urls, customDate) {
 
       // Enregistrer l'erreur dans IgnoredProduct pour ne pas perdre la trace
       try {
-        const existingError = await IgnoredProduct.findOne({ url, type: 'erreur' });
-        if (!existingError) {
-          await IgnoredProduct.create({
-            url: url,
-            name: '',
-            type: 'erreur',
-            reason: error.message,
-            date: baseProductDate
-          });
-          console.log(`📝 Erreur enregistrée dans les produits ignorés`);
-        }
+        await IgnoredProduct.create({
+          url: url,
+          name: '',
+          type: 'erreur',
+          reason: error.message,
+          date: baseProductDate
+        });
+        console.log(`📝 Erreur enregistrée dans les produits ignorés`);
       } catch (saveError) {
         console.error(`❌ Impossible d'enregistrer l'erreur:`, saveError.message);
       }
@@ -1640,6 +1660,7 @@ const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID;
 const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
 const FACEBOOK_CALLBACK_URL = process.env.FACEBOOK_CALLBACK_URL || 'http://localhost:3000/api/facebook/callback';
 const FACEBOOK_PAGE_ID = process.env.FACEBOOK_PAGE_ID;
+const FACEBOOK_CATALOG_ID = process.env.FACEBOOK_CATALOG_ID; // ID du catalogue (créé via Business Manager)
 
 // 1. Vérifier le statut de connexion Facebook
 app.get('/api/facebook/status', async (req, res) => {
@@ -1677,12 +1698,14 @@ app.get('/api/facebook/login', (req, res) => {
     });
   }
 
-  // Permissions nécessaires pour Marketplace
+  // Permissions nécessaires pour Facebook Commerce/Marketplace
+  // IMPORTANT: Ces permissions nécessitent une approbation via Facebook App Review
+  // Vous devez soumettre votre application pour examen avant d'utiliser ces permissions
   const permissions = [
-    'pages_manage_posts',
-    'pages_read_engagement',
-    'catalog_management',
-    'business_management'
+    'catalog_management',      // Gérer les catalogues de produits
+    'business_management',     // Gérer le Business Manager
+    'pages_manage_posts',      // Publier du contenu sur les Pages
+    'pages_read_engagement'    // Lire les statistiques d'engagement
   ].join(',');
 
   const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?` +
@@ -1809,8 +1832,8 @@ app.post('/api/facebook/disconnect', async (req, res) => {
   }
 });
 
-// 5. Récupérer toutes les annonces Marketplace depuis Facebook
-app.get('/api/facebook/listings', async (req, res) => {
+// 5. Récupérer tous les catalogues et leurs produits
+app.get('/api/facebook/catalogs', async (req, res) => {
   try {
     if (!req.session.authenticated) {
       return res.status(403).json({
@@ -1828,34 +1851,34 @@ app.get('/api/facebook/listings', async (req, res) => {
       });
     }
 
-    // Récupérer les annonces Marketplace via l'API Graph
-    const response = await axios.get(
-      `https://graph.facebook.com/v18.0/${tokenData.pageId}/marketplace_listings`,
+    // Récupérer les catalogues de l'utilisateur via Business Manager
+    const catalogsResponse = await axios.get(
+      `https://graph.facebook.com/v18.0/${tokenData.userId}/owned_product_catalogs`,
       {
         params: {
-          access_token: tokenData.pageAccessToken,
-          fields: 'id,name,description,price,availability,url,created_time'
+          access_token: tokenData.accessToken,
+          fields: 'id,name,product_count'
         }
       }
     );
 
     res.json({
       success: true,
-      data: response.data.data || []
+      data: catalogsResponse.data.data || []
     });
 
   } catch (error) {
-    console.error('Erreur lors de la récupération des annonces:', error.response?.data || error.message);
+    console.error('Erreur lors de la récupération des catalogues:', error.response?.data || error.message);
     res.status(500).json({
       success: false,
-      error: 'Erreur lors de la récupération des annonces',
+      error: 'Erreur lors de la récupération des catalogues',
       details: error.response?.data?.error?.message || error.message
     });
   }
 });
 
-// 6. Créer une annonce Marketplace depuis un produit
-app.post('/api/facebook/listings', async (req, res) => {
+// 5b. Récupérer les produits d'un catalogue spécifique
+app.get('/api/facebook/catalogs/:catalogId/products', async (req, res) => {
   try {
     if (!req.session.authenticated) {
       return res.status(403).json({
@@ -1864,12 +1887,60 @@ app.post('/api/facebook/listings', async (req, res) => {
       });
     }
 
-    const { productId, title, price, description, category } = req.body;
+    const { catalogId } = req.params;
 
-    if (!productId || !title || !price || !description) {
+    // Récupérer le token Facebook
+    const tokenData = await FacebookToken.findOne({});
+    if (!tokenData) {
+      return res.status(401).json({
+        success: false,
+        error: 'Non connecté à Facebook. Veuillez vous connecter.'
+      });
+    }
+
+    // Récupérer les produits du catalogue
+    const productsResponse = await axios.get(
+      `https://graph.facebook.com/v18.0/${catalogId}/products`,
+      {
+        params: {
+          access_token: tokenData.accessToken,
+          fields: 'id,name,description,price,availability,url,image_url',
+          limit: 100
+        }
+      }
+    );
+
+    res.json({
+      success: true,
+      data: productsResponse.data.data || []
+    });
+
+  } catch (error) {
+    console.error('Erreur lors de la récupération des produits:', error.response?.data || error.message);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la récupération des produits',
+      details: error.response?.data?.error?.message || error.message
+    });
+  }
+});
+
+// 6. Ajouter un produit à un catalogue Facebook
+app.post('/api/facebook/products', async (req, res) => {
+  try {
+    if (!req.session.authenticated) {
+      return res.status(403).json({
+        success: false,
+        error: 'Accès non autorisé. Veuillez vous connecter.'
+      });
+    }
+
+    const { productId, catalogId, title, price, description, condition, availability } = req.body;
+
+    if (!productId || !catalogId || !title || !price) {
       return res.status(400).json({
         success: false,
-        error: 'Tous les champs sont requis'
+        error: 'Champs requis : productId, catalogId, title, price'
       });
     }
 
@@ -1891,20 +1962,31 @@ app.post('/api/facebook/listings', async (req, res) => {
       });
     }
 
-    // Créer l'annonce sur Facebook Marketplace
-    const listingData = {
+    // Extraire le prix numérique (enlever le symbole €, espaces, etc.)
+    const priceMatch = price.toString().match(/[\d,\.]+/);
+    const numericPrice = priceMatch ? parseFloat(priceMatch[0].replace(',', '.')) * 100 : 0; // Prix en centimes
+
+    // Préparer les données du produit pour l'API Catalog
+    const productData = {
+      retailer_id: product._id.toString(), // ID unique du produit
       name: title,
-      description: description,
-      price: price,
-      availability: 'in stock'
+      description: description || product.description?.join('\n') || '',
+      price: numericPrice, // Prix en centimes
+      currency: 'EUR',
+      availability: availability || 'in stock', // 'in stock', 'out of stock', 'preorder'
+      condition: condition || 'new', // 'new', 'refurbished', 'used'
+      url: product.url, // URL du produit source
+      image_url: product.images && product.images.length > 0 ? product.images[0] : null,
+      brand: product.supplier || 'Unknown'
     };
 
+    // Ajouter le produit au catalogue via l'API Batch
     const response = await axios.post(
-      `https://graph.facebook.com/v18.0/${tokenData.pageId}/marketplace_listings`,
-      listingData,
+      `https://graph.facebook.com/v18.0/${catalogId}/products`,
+      productData,
       {
         params: {
-          access_token: tokenData.pageAccessToken
+          access_token: tokenData.accessToken
         }
       }
     );
@@ -1912,21 +1994,21 @@ app.post('/api/facebook/listings', async (req, res) => {
     res.json({
       success: true,
       data: response.data,
-      message: 'Annonce créée avec succès sur Facebook Marketplace'
+      message: 'Produit ajouté avec succès au catalogue Facebook'
     });
 
   } catch (error) {
-    console.error('Erreur lors de la création de l\'annonce:', error.response?.data || error.message);
+    console.error('Erreur lors de l\'ajout du produit:', error.response?.data || error.message);
     res.status(500).json({
       success: false,
-      error: 'Erreur lors de la création de l\'annonce',
+      error: 'Erreur lors de l\'ajout du produit au catalogue',
       details: error.response?.data?.error?.message || error.message
     });
   }
 });
 
-// 7. Modifier une annonce Marketplace
-app.put('/api/facebook/listings/:listingId', async (req, res) => {
+// 7. Modifier un produit dans le catalogue
+app.put('/api/facebook/products/:productId', async (req, res) => {
   try {
     if (!req.session.authenticated) {
       return res.status(403).json({
@@ -1935,13 +2017,13 @@ app.put('/api/facebook/listings/:listingId', async (req, res) => {
       });
     }
 
-    const { listingId } = req.params;
-    const { title, price, description } = req.body;
+    const { productId } = req.params;
+    const { title, price, description, availability, condition } = req.body;
 
-    if (!title || !price || !description) {
+    if (!title || !price) {
       return res.status(400).json({
         success: false,
-        error: 'Tous les champs sont requis'
+        error: 'Les champs title et price sont requis'
       });
     }
 
@@ -1954,40 +2036,49 @@ app.put('/api/facebook/listings/:listingId', async (req, res) => {
       });
     }
 
-    // Modifier l'annonce
-    const listingData = {
+    // Extraire le prix numérique
+    const priceMatch = price.toString().match(/[\d,\.]+/);
+    const numericPrice = priceMatch ? parseFloat(priceMatch[0].replace(',', '.')) * 100 : 0;
+
+    // Préparer les données de mise à jour
+    const updateData = {
       name: title,
       description: description,
-      price: price
+      price: numericPrice,
+      currency: 'EUR'
     };
 
+    if (availability) updateData.availability = availability;
+    if (condition) updateData.condition = condition;
+
+    // Modifier le produit
     const response = await axios.post(
-      `https://graph.facebook.com/v18.0/${listingId}`,
-      listingData,
+      `https://graph.facebook.com/v18.0/${productId}`,
+      updateData,
       {
         params: {
-          access_token: tokenData.pageAccessToken
+          access_token: tokenData.accessToken
         }
       }
     );
 
     res.json({
       success: true,
-      message: 'Annonce modifiée avec succès'
+      message: 'Produit modifié avec succès'
     });
 
   } catch (error) {
-    console.error('Erreur lors de la modification de l\'annonce:', error.response?.data || error.message);
+    console.error('Erreur lors de la modification du produit:', error.response?.data || error.message);
     res.status(500).json({
       success: false,
-      error: 'Erreur lors de la modification de l\'annonce',
+      error: 'Erreur lors de la modification du produit',
       details: error.response?.data?.error?.message || error.message
     });
   }
 });
 
-// 8. Supprimer une annonce Marketplace
-app.delete('/api/facebook/listings/:listingId', async (req, res) => {
+// 8. Supprimer un produit du catalogue
+app.delete('/api/facebook/products/:productId', async (req, res) => {
   try {
     if (!req.session.authenticated) {
       return res.status(403).json({
@@ -1996,7 +2087,7 @@ app.delete('/api/facebook/listings/:listingId', async (req, res) => {
       });
     }
 
-    const { listingId } = req.params;
+    const { productId } = req.params;
 
     // Récupérer le token Facebook
     const tokenData = await FacebookToken.findOne({});
@@ -2007,26 +2098,26 @@ app.delete('/api/facebook/listings/:listingId', async (req, res) => {
       });
     }
 
-    // Supprimer l'annonce
+    // Supprimer le produit
     await axios.delete(
-      `https://graph.facebook.com/v18.0/${listingId}`,
+      `https://graph.facebook.com/v18.0/${productId}`,
       {
         params: {
-          access_token: tokenData.pageAccessToken
+          access_token: tokenData.accessToken
         }
       }
     );
 
     res.json({
       success: true,
-      message: 'Annonce supprimée avec succès'
+      message: 'Produit supprimé avec succès du catalogue'
     });
 
   } catch (error) {
-    console.error('Erreur lors de la suppression de l\'annonce:', error.response?.data || error.message);
+    console.error('Erreur lors de la suppression du produit:', error.response?.data || error.message);
     res.status(500).json({
       success: false,
-      error: 'Erreur lors de la suppression de l\'annonce',
+      error: 'Erreur lors de la suppression du produit',
       details: error.response?.data?.error?.message || error.message
     });
   }
