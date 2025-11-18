@@ -229,9 +229,6 @@
             <button id="viewIgnoredBtn" class="export-btn" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); margin-left: 10px;">
                 🚫 Produits Doublons ou Erreurs
             </button>
-            <a href="/facebook-marketplace.html" class="export-btn" style="background: linear-gradient(135deg, #1877f2 0%, #0d5ebd 100%); margin-left: 10px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">
-                📱 Facebook Marketplace
-            </a>
         </div>
 
         <div class="input-section">
@@ -283,20 +280,18 @@
             <!-- Sélecteur de date personnalisée -->
             <div style="background: #f8f9ff; padding: 1rem; border-radius: 12px; margin-bottom: 1rem; border: 2px solid #667eea;">
                 <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                    <label style="font-weight: 600; color: #333; display: flex; align-items: center; gap: 0.5rem;">
-                        <input type="checkbox" id="useCustomDate" style="width: 18px; height: 18px; cursor: pointer;">
-                        Utiliser une date personnalisée
+                    <label style="font-weight: 600; color: #333;">
+                        📅 Date d'ajout du produit :
                     </label>
                     <input
                         type="date"
                         id="customDateInput"
-                        style="padding: 0.5rem; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 1rem; display: none;"
-                        value="2025-11-01"
+                        style="padding: 0.5rem; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 1rem;"
                     >
-                    <span id="selectedDateDisplay" style="color: #667eea; font-weight: 600; display: none;"></span>
+                    <span id="selectedDateDisplay" style="color: #667eea; font-weight: 600;"></span>
                 </div>
                 <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: #666;">
-                    💡 Cochez pour ajouter les produits avec une date spécifique (ex: 1 novembre 2025)
+                    💡 Les produits seront ajoutés avec cette date (par défaut : date du jour)
                 </p>
             </div>
 

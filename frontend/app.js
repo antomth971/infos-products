@@ -31,7 +31,6 @@ class App {
         this.qrScannerStatus = document.getElementById('qrScannerStatus');
 
         // Éléments pour la date personnalisée
-        this.useCustomDateCheckbox = document.getElementById('useCustomDate');
         this.customDateInput = document.getElementById('customDateInput');
         this.selectedDateDisplay = document.getElementById('selectedDateDisplay');
 
@@ -84,46 +83,49 @@ class App {
         });
 
         // Event listeners pour la date personnalisée
-        this.useCustomDateCheckbox.addEventListener('change', () => this.toggleCustomDate());
         this.customDateInput.addEventListener('change', () => this.updateDateDisplay());
+
+        // Initialiser la date du jour par défaut
+        this.setTodayDate();
 
         // Charger les éléments existants
         await this.loadItems();
     }
 
-    // Gérer l'affichage du sélecteur de date
-    toggleCustomDate() {
-        if (this.useCustomDateCheckbox.checked) {
-            this.customDateInput.style.display = 'block';
-            this.selectedDateDisplay.style.display = 'inline';
-            this.updateDateDisplay();
-        } else {
-            this.customDateInput.style.display = 'none';
-            this.selectedDateDisplay.style.display = 'none';
-        }
+    // Initialiser la date du jour
+    setTodayDate() {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        this.customDateInput.value = `${year}-${month}-${day}`;
+        this.updateDateDisplay();
     }
 
     // Mettre à jour l'affichage de la date
     updateDateDisplay() {
         if (this.customDateInput.value) {
             const date = new Date(this.customDateInput.value + 'T00:00:00');
-            this.selectedDateDisplay.textContent = `📅 ${date.toLocaleDateString('fr-FR', {
+            this.selectedDateDisplay.textContent = `(${date.toLocaleDateString('fr-FR', {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
-            })}`;
+            })})`;
         }
     }
 
-    // Obtenir la date personnalisée si activée
+    // Obtenir la date personnalisée (toujours retournée maintenant)
     getCustomDate() {
-        if (this.useCustomDateCheckbox.checked && this.customDateInput.value) {
-            console.log('📅 Date personnalisée activée:', this.customDateInput.value);
-            return this.customDateInput.value;
+        const dateValue = this.customDateInput.value;
+        if (dateValue) {
+            console.log('📅 Date sélectionnée:', dateValue);
+            return dateValue;
         }
-        console.log('📅 Pas de date personnalisée (date actuelle sera utilisée)');
-        return null;
+        // Si pour une raison quelconque la date est vide, retourner la date du jour
+        console.log('📅 Date vide, utilisation de la date du jour');
+        this.setTodayDate();
+        return this.customDateInput.value;
     }
 
     // Vérifier si l'utilisateur est authentifié
@@ -331,10 +333,10 @@ class App {
 
         try {
             const customDate = this.getCustomDate();
-            const requestBody = { url };
-            if (customDate) {
-                requestBody.customDate = customDate;
-            }
+            const requestBody = {
+                url,
+                customDate: customDate  // Toujours envoyer la date
+            };
 
             const response = await fetch(`${API_URL}/api/scrape`, {
                 method: 'POST',
@@ -395,11 +397,11 @@ class App {
                 `✅ Réussis : ${successCount} | ⚠️ Ignorés : ${skippedCount} | ❌ Erreurs : ${errorCount}`;
 
             try {
-                const requestBody = { url };
-                if (customDate) {
-                    requestBody.customDate = customDate;
-                    requestBody.minuteOffset = minuteOffset;
-                }
+                const requestBody = {
+                    url,
+                    customDate: customDate,  // Toujours envoyer la date
+                    minuteOffset: minuteOffset
+                };
 
                 const response = await fetch(`${API_URL}/api/scrape`, {
                     method: 'POST',
@@ -457,10 +459,10 @@ class App {
         loaderText.textContent = `Envoi de ${urls.length} URL(s) au serveur...`;
 
         try {
-            const requestBody = { urls };
-            if (customDate) {
-                requestBody.customDate = customDate;
-            }
+            const requestBody = {
+                urls,
+                customDate: customDate  // Toujours envoyer la date
+            };
 
             const response = await fetch(`${API_URL}/api/scrape-batch`, {
                 method: 'POST',

@@ -1,402 +1,177 @@
 {
-  "startTime": "2025-11-04T18:45:41.742Z",
-  "totalUrls": 71,
-  "processed": 71,
-  "added": 50,
-  "skipped": 18,
-  "errors": 3,
+  "startTime": "2025-11-18T17:23:49.436Z",
+  "totalUrls": 27,
+  "processed": 27,
+  "added": 26,
+  "skipped": 0,
+  "errors": 1,
   "details": {
     "added": [
       {
-        "url": "https://www.vevor.fr/pompe-a-vide-c_11109/vevor-pompe-a-vide-85l-min-3cfm-1-3hp-frigoriste-climatiseur-1720rpm-r12-r22-p_010392184356",
-        "title": "VEVOR Pompe à Vide Frigoriste Climatisation 150 W Pompe à Un Étage 100 L/min 220-240 V Entrée SAE Mâle 0,64 cm ACME 1,27 cm pour Automobile Réparation CVC Maintenance de Réfrigération Dégazage Résine",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/rechauffeur-d-air-diesel-c_10321/vevor-chauffage-diesel-12-v-2-kw-consommation-0-12-0-26-l-h-rechauffeur-d-air-diesel-8-36-reglable-10-15-m2-controle-intelligente-lcd-et-telecommande-reservoir-10-l-pour-camion-bateau-rv-interieur-p_010679038873",
-        "title": "VEVOR Chauffage Diesel 12/24 V 2 kW Consommation 0,12-0,26 L/h Réchauffeur d'Air Diesel 8-36 ℃ Réglable 10-15 m² Contrôle Intelligente LCD et Télécommande Réservoir 10 L pour Camion Bateau Intérieur",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/filtres-a-eau-c_12475/vevor-carafe-filtrant-pichet-en-verre-capacite-de-filtre-800-l-sans-bpa-maison-p_010334947304",
-        "title": "VEVOR Carafe Filtrant en Verre 6 Tasses, Pichet Filtrant Capacité de Filtre 800 L, Distributeur d'Eau Sûr sans BPA, Réduisant le Chlore, la Rouille, les Odeurs, PFOA/PFOS, pour Maison Bureau",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/machine-de-remplissage-c_10468/vevor-machine-de-remplissage-de-liquide-automatique-remplissage-de-bouteilles-a-commande-numerique-30-a-15-000-g-p_010924296938",
-        "title": "VEVOR Machine de Remplissage de Liquide Automatique Capacité de Pesée 30-15000 g Remplisseuse de Bouteilles Commande Numérique pour Lait, Eau, huile, Vin, Boissons, Détergents, Shampoing, Buse Unique",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/polisseuse-de-table-bijoux-c_11569/200w-polissage-de-bijoux-220v-avec-collecteur-de-poussiere-polisseur-de-bijoux-p_010921010363",
-        "title": "VEVOR Machine de Polissage de Tampon de Bijoux 220V Machine à Polir Meuleuse de Table Machine de Polissage Electrique de Rectifieuse",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/echasses-de-plaquiste-c_12035/vevor-echasses-pour-cloison-seche-reglables-91-4-126-7-cm-echasses-plaquiste-alliage-aluminium-charge-103-kg-pieds-27-29-cm-genouilleres-de-protection-pour-travaux-peinture-deco-maison-plafond-argent-p_010603763449",
-        "title": "VEVOR Échasses pour Cloison Sèche Réglables 91,4-126,7 cm Échasses Plaquiste Alliage Aluminium Charge 103 kg Pieds 27-29 cm Genouillères de Protection pour Travaux Peinture Déco Maison Plafond Argent",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/sieges-de-securite-pour-la-baignoire-la-douche-c_12538/vevor-siege-de-douche-antiderapant-rotatif-a-360-tabouret-de-douche-136-1-kg-hauteur-reglable-360-485-mm-chaise-de-douche-en-alu-aide-a-la-douche-pour-personnes-agees-femmes-enceintes-salle-de-bain-p_010226082714",
-        "title": "VEVOR Siège de Douche Antidérapant Rotatif à 360° Tabouret de Douche 136,1 kg Hauteur Réglable 360-485 mm Chaise de Douche en Alu Aide à la Douche pour Personnes Âgées Femmes Enceintes Salle de Bain",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/accessoires-de-presse-a-chaud-pour-tasses-c_12641/vevor-gobelets-thermos-a-sublimation-de-89-cl-8pcs-fins-et-droits-bouteille-sublimable-en-acier-inoxydable-vierges-a-double-paroi-cadeaux-personnalises-avec-couvercle-et-paille-boite-cadeau-p_010589357224",
-        "title": "VEVOR Gobelets Thermos à Sublimation de 89 cL, 8PCs, Fins et Droits, Bouteille Sublimable en Acier Inoxydable, Vierges, à Double Paroi, Cadeaux Personnalisés avec Couvercle et Paille, Boîte Cadeau",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/trancheuse-c_10662/vevor-couteau-shawarma-electrique-turc-doner-kebab-coupe-viande-gyroscopique-avec-2-lames-p_010265245798",
-        "title": "VEVOR Couteau à Kebab Électrique 80 W, Trancheuse à Viande Turc Shawarma Döner Kebab Commerciale en Inox, Coupe-gyro avec 2 Lames Diamètre 100 mm, Épaisseur Réglable 0-8 mm, pour Restaurant, Snack-bar",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/station-meteo-c_12074/vevor-station-meteo-wi-fi-7-en-1-ecran-tft-7-pouces-capteur-exterieur-sans-fil-p_010423729613",
-        "title": "VEVOR Station météo Wi-Fi 7 en 1 écran TFT 186mm (7 in) capteur extérieur sans fil",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/enseignes-lumineuses-c_10919/vevor-enseigne-lumineuse-led-programmable-flexible-panneau-d-affichage-defilant-couleur-polychrome-p5-panneau-publicitaire-controle-application-bluetooth-pour-magasin-bar-publicite-83-5x20-cm-p_010626768276",
-        "title": "VEVOR Enseigne Lumineuse LED Programmable Flexible, Panneau d’Affichage Défilant Couleur Polychrome P5, Panneau Publicitaire, Contrôle Application Bluetooth, pour Magasin, Bar, Publicité, 83,5x20 cm",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/extracteur-de-fluide-c_10350/vevor-extracteur-de-fluide-6-5-l-pompe-a-vide-d-aspiration-vidange-d-huile-moteur-manuel-avec-jauge-et-tuyau-d-aspiration-pour-changement-d-huile-facile-evacuation-des-fluides-automobiles-sous-vide-p_010597189331",
-        "title": "VEVOR Extracteur de Fluide 6,5 L Pompe à Vide d'Aspiration Vidange d'Huile Moteur Manuel avec Jauge et Tuyau d'Aspiration pour Changement d'Huile Facile Évacuation des Fluides Automobiles sous Vide",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/mecanisme-de-levage-de-lit-pneumatique-stockage-c_10532/vevor-kit-de-materiel-de-lit-escamotable-pour-lit-double-vertical-pliant-de-luxe-p_010872730980",
-        "title": "VEVOR Kit de matériel de lit escamotable, lit double, kit de quincaillerie pour lit mural vertical de luxe à monter soi-même, conception peu encombrante pour lit mural à armoire pliante pour chambre",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/pompes-a-eau-electriques-c_12380/vevor-pompe-de-circulation-d-eau-chaude-a-3-vitesses-lps25-4s-180-50-l-min-72-w-p_010215469753",
-        "title": "VEVOR Pompe De Circulation D'eau Chaude Pompe De Recirculation En Fonte 220 V 72 W, Débit Maximal De 50 L/min, Hauteur De Refoulement Maximale De 4 m, Raccord Fileté De 3,8 cm, Plage De Température De 2 °C À 110 °C, Trois Débits Réglables, Faible Bruit",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/treuil-manuel-c_11873/vevor-treuil-manuel-capacite-de-traction-362-8-kg-treuil-de-remorque-de-bateau-manivelle-robuste-avec-cable-en-acier-10-m-cliquet-bidirectionnel-treuil-manuel-a-manivelle-pour-remorque-bateau-vtt-p_010179972258",
-        "title": "VEVOR Treuil Manuel Capacité de Traction 362,8 kg Treuil de Remorque de Bateau Manivelle Robuste avec Câble en Acier 10 m Cliquet Bidirectionnel Treuil Manuel à Manivelle pour Remorque, Bateau, VTT",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/rechauffeur-d-air-diesel-c_10321/vevor-kit-de-reparation-de-bougies-de-prechauffage-8-v-kit-d-entretien-pour-chauffage-diesel-de-stationnement-avec-grille-d-atomisation-compatible-avec-rechauffeur-d-air-diesel-2-kw-5-kw-et-8-kw-p_010682020921",
-        "title": "VEVOR Kit de Réparation de Bougies de Préchauffage 8 V, Kit d'Entretien pour Chauffage Diesel de Stationnement avec Grille d'Atomisation, Compatible avec Réchauffeur d’Air Diesel 2 kW, 5 kW et 8 kW",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/echasses-de-plaquiste-c_12035/vevor-echasses-pour-cloison-seche-reglables-45-7-76-2-cm-echasses-plaquiste-alliage-d-aluminium-charge-103-kg-pieds-27-29-cm-genouilleres-de-protection-pour-travaux-peinture-deco-maison-plafond-argent-p_010439888294",
-        "title": "VEVOR Échasses pour Cloison Sèche Réglables 45,7-76,2 cm Échasses Plaquiste Alliage d'Aluminium Charge 103 kg Pieds 27-29 cm Genouillères de Protection pour Travaux Peinture Déco Maison Plafond Argent",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/ouvre-porte-automatique-c_10530/vevor-ouvre-porte-coulissant-1800-kg-ouvre-portail-automatique-4-m-avec-4-telecommandes-et-controle-app-moteur-de-portail-electrique-pour-allee-roulante-kit-systeme-securite-operateur-de-portail-p_010601952844",
-        "title": "VEVOR Ouvre-Porte Coulissant, 1800 kg, Ouvre Portail Automatique 4 m avec 4 Télécommandes et Contrôle APP, Moteur de Portail Électrique pour Allée Roulante, Kit Système Sécurité Opérateur de Portail",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.amazon.co.jp/-/en/Foldable-Kickboard-Children-Tricycle-Direction/dp/B0DR8FVS9L",
-        "title": "YOLEO Kick Scooter, Foldable, Kickboard, Children, Tricycle, Flashing LED Tire, Rear Wheel Brake, 3 Wheel Type, Change Direction, Kick Scooter, Birthday Gift, Compact/Gift Setting",
+        "url": "https://www.amazon.co.uk/Opal-Stainless-Chocolate-Fountain-OCF17/dp/B0CWYZ3D35",
+        "title": "Opal Large Size Stainless Steel Chocolate Fountain 500ml Fondue Set Electric 3-Tier Machine with Hot Melting Pot Base OCF17 (OCF17)",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.cdiscount.com/electromenager/soin-de-la-personne-beaute/dreame-hair-glory-mix/f-110570504-aaauz59916.html",
-        "title": "DREAME Hair Glory Mix Sèche-cheveux à grande vitesse, or, 3 embouts magnétiques, parfum, séchage personnalisé",
+        "url": "https://www.amazon.fr/Outvita-Toilette-Amovible-Porte-Papier-Hygi%C3%A9nique/dp/B0BQJ67115",
+        "title": "Outvita Pot de Chambre Adulte, 5 L Toilette Camping Amovible avec Porte-Papier Hygiénique pour Camping Voyage - Blanc, Blanc-5L, 52.5 x 42.5 x 66",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/Outsunny-Balancelle-imperm%C3%A9abilis%C3%A9-Inclinaison-Ergonomique/dp/B07CGPG1JP",
+        "title": "Outsunny Balancelle de Jardin 3 Places Grand Confort Toit Inclinaison réglable Assise et Dossier Ergonomique Acier textilène Gris",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/Willonin-Colonne-Panneau-Syst%C3%A8me-multifonctionnel/dp/B0B5GLKN7C",
+        "title": "Colonne de Douche Panneau de Douche pour Salle de Bain Système de Douche panneau de douche multifonctionnel - 5 modes de bec- Acier Inoxydable (A)",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/Suspension-Pendentif-Industriel-Suspendu-R%C3%A9glable/dp/B083BSKCX9",
+        "title": "Suspension E27 Lustre Lumière Pendentif Vintage Rétro Lampe Pendentif Industriel Bambou Rotin Naturel Suspendu Tissé Lampes Suspension Réglable Hauteur Manger Bureau Salon Café Salle Lampe,60cm",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/tron%C3%A7onneuse-%C3%A9lectrique-batterie-chargeur-jardinage/dp/B0D6G7VMVK",
+        "title": "2025 Mini tronçonneuse 8 pouces et 6 pouces sans balai, 2 en 1 tronçonneuse électrique avec 2pcs 2000mAH batterie et chargeur, tronçonneuse légère sans fil pour le jardinage, la coupe d'arbres et l'él",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.cdiscount.com/pret-a-porter/bebe-puericulture/jeobest-poussette-canne/f-1131735-aaama90232.html",
+        "title": "JEOBEST - Poussette Canne Bébé 0-4 ans, Poussette Compacte, Pliable, Pour intérieur/extérieur",
         "supplier": "Cdiscount",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.vevor.fr/moteurs-iec-a-usage-general-c_13251/vevor-moteur-2-2kw-2800tr-min-ca-220-240v-13-8a-monophase-arbre-a-clavette-24mm-p_010957469697",
-        "title": "VEVOR Moteur électrique 2,2 kW moteur de compresseur d'air à 1 phase, 2800 tr/min, CA 220-240 V, 13,8 A, cadre 90L, B3, arbre à clavette 24 mm, rotation CW/CCW pour machines agricoles et équipements",
+        "url": "https://www.vevor.fr/echelle-telescopique-c_12026/vevor-echelle-telescopique-aluminium-extensible-retraction-a-1-bouton-2-6m-170kg-p_010687496570?srsltid=AfmBOorAxcm1yUJN_zbVv7CVdZ7Pv7FwrPfgNRhNokB1OkmaFO8ndfuU",
+        "title": "VEVOR Échelle Télescopique Aluminium, 2,6 m, Escabeau Extensible Capacité 170 kg, avec Pieds Antidérapants, Échelle Compacte Portable Pliable Rétraction à Un Bouton, pour Réparation Maison Camping-car",
         "supplier": "Vevor",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.vevor.fr/cabine-de-peinture-gonflable-c_10313/vevor-cabine-de-peinture-gonflable-10x6x4-m-tente-peinture-gonflable-automobile-en-tissu-oxford-210d-avec-systeme-de-filtration-2-souffleurs-station-de-travail-pour-pose-de-peinture-atelier-garage-p_010115772273",
-        "title": "VEVOR Cabine de Peinture Gonflable 10x6x4 m Tente Peinture Gonflable Automobile en Tissu Oxford 210D avec Système de Filtration 2 Souffleurs Station de Travail pour Pose de Peinture Atelier Garage",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/chariot-elevateur-de-securite-cage-c_10414/vevor-cage-de-securite-chariots-elevateurs-charge-544-kg-nacelle-plate-forme-de-travail-pliable-92x92-cm-1-2-personnes-roues-pivotantes-verrouillables-trou-drainage-chaine-securite-pour-travaux-aerien-p_010311455825",
-        "title": "VEVOR Cage de Sécurité Chariots Élévateurs Charge 544 kg Nacelle Plate-forme de Travail Pliable 92x92 cm 1-2 Personnes Roues Pivotantes Verrouillables Trou Drainage Chaîne Sécurité pour Travaux Aérien",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/rideau-de-soudure-c_10055/vevor-rideau-de-soudage-avec-cadre-3-panneaux-ecran-rideau-de-protection-pour-soudure-1-8x1-8-m-en-vinyle-ignifuge-sur-12-roues-pivotantes-6-verrouillables-mobile-pro-pour-atelier-industrie-jaune-p_010953575356",
-        "title": "VEVOR Rideau de Soudage avec Cadre 3 Panneaux Écran Rideau de Protection pour Soudure 1,8x1,8 m en Vinyle Ignifuge sur 12 Roues Pivotantes (6 Verrouillables) Mobile Pro pour Atelier, Industrie, Jaune",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/mandrins-de-tour-c_10120/mandrin-de-tour-a-4-machoires-k72-125-125mm-drehbankfutter-4-backen-3000tr-min-p_010411144252",
-        "title": "VEVOR Mandrin de Tour à Mâchoire K72-125, Mandrin de Tour Accessoires pour Perceuses, Avec 1 x clé en T, Mandrin de Tour à 4 mâchoires pour le serrage des arbres suspendus/des triangles équilatéraux",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/rechauffeur-d-air-diesel-c_10321/vevor-chauffage-diesel-tout-en-un-portable-12-v-8-kw-rechauffeur-d-air-diesel-0-16-0-62-l-h-8-36-reglable-20-25-m2-controle-lcd-bluetooth-telecommande-reservoir-5-l-pour-rv-auto-sans-installation-p_010704650127",
-        "title": "VEVOR Chauffage Diesel Tout-en-Un Portable 12 V 8 KW Réchauffeur d'Air Diesel 0,16-0,62 L/h 8-36 ℃ Réglable 20-25 m² Contrôle LCD Bluetooth Télécommande Réservoir 5 L pour RV Auto Sans Installation Pour Camping-Car, Camion, Caravane",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/porte-vetements-c_11520/vevor-portant-a-vetements-mobile-porte-manteau-avec-roulettes-2-tringles-etageres-superieur-et-inferieur-penderie-a-vetements-en-acier-charge-136-kg-vestiaire-mobile-pour-rangement-chambre-a-coucher-p_010760316706",
-        "title": "VEVOR Portant à Vêtements Mobile Porte-Manteau avec Roulettes 2 Tringles Étagères Supérieur et Inférieur Penderie à Vêtements en Acier Charge 136 kg Vestiaire Mobile pour Rangement Chambre à Coucher",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/machine-barbe-a-papa-c_10570/coupole-de-protection-machine-barbe-a-papa-bulle-capot-verre-acrylique-52-cm-pro-p_010421256850",
-        "title": "VEVOR Couvercle pour Machine à Barbe à Papa de 53,5 x 53,5 x 32 cm Dôme Transparent en Acrylique Épais Section de Service Bouclier de Sécurité pour Machine à Barbe Papa Commerciale (Couvercle Seul)",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/broyeur-a-glace-pilee-c_10724/vevor-mixeur-professionnel-melangeur-pour-smoothies-de-comptoir-capacite-2-l-p_010921271620",
-        "title": "VEVOR Mixeur Professionnel avec Capacité de 2 L, Blender Électrique de Comptoir, Mélangeur Multifonctionnel avec Bouclier, 9 Vitesses et 5 Fonctions, pour Boissons Glacées, Milk-shakes, Smoothies",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/roulettes-pivotantes-c_10473/vevor-roulettes-pivotantes-lot-de-4-roulettes-pour-meubles-industrielles-152-4-mm-roues-silencieuses-en-pvc-avec-frein-a-verrouillage-a-b-capacite-de-charge-318-kg-par-roulette-pour-chariots-etablis-p_010924160719",
-        "title": "VEVOR Roulettes Pivotantes Lot de 4 Roulettes pour Meubles Industrielles 152,4 mm Roues Silencieuses en PVC avec Frein à Verrouillage A/B Capacité de Charge 318 kg par Roulette pour Chariots Établis",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/chaise-de-chasse-c_14085/vevor-chaise-de-chasse-pivotante-a-360-silencieuse-et-pliable-pieds-reglables-p_010906012620",
-        "title": "VEVOR Chaise de Chasse Silencieuse Pivotante à 360°, Siège de Chasse Pliable et Portable, Cadre en Acier Robuste, avec Pieds Anti-enfoncement, Hauteur Réglable, Capacité de 158 kg, Pêche Camping",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/sac-thermique-grand-c_10715/vevor-chauffe-plat-buffet-bain-marie-electrique-de-comptoir-4-bacs-en-inox-15-l-p_010940958029",
-        "title": "Chauffe-plats professionnel VEVOR, table à vapeur électrique 4 plaques, 1 200 W, professionnel, en acier inoxydable, avec bain-marie et contrôle de température de 30 à 85 °C, pour la restauration, les buffets, les fêtes et les restaurants.",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/grille-de-foyer-c_10228/vevor-grille-a-buches-de-cheminee-de-27-pouces-support-de-combustion-du-bois-en-acier-enduit-de-poudre-p_010961456333",
-        "title": "VEVOR Grille à bûches de cheminée, 686 mm avec 6 pieds de support, barres en acier massif revêtement en poudre 19 mm, support de combustion de bois de chauffage pour cheminée intérieure et extérieure",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/trancheuse-c_10662/vevor-coupe-fromage-a-fil-coupe-beurre-epaisseur-5-mm-trancheuse-a-fromage-p_010668493063",
-        "title": "VEVOR Coupe-Fromage à Fil, Coupe-Beurre avec Lame de Coupe Ultra-Mince, Trancheuse à Fromage Commerciale en Alliage d'Aluminium, Épaisseur 5 mm, Fil Amovible en Acier Inoxydable 316, pour Cuisine",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/cascade-de-piscine-c_10256/lame-d-eau-chute-d-eau-inox-pour-piscine-30cm-durable-interieur-30-11-5-8cm-p_010308521819",
-        "title": "VEVOR Fontaine de la Piscine, Étang Argent en Acier Inoxydable 304 Cascade Bassin Extérieur 30 x 11.5 x 8 cm avec un Conduit d'eau pour Durer et Ajoutant une Touche à Votre Étang ou Votre Piscine",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/marteau-piqueur-electrique-c_11014/vevor-marteau-piqueur-perforateur-burineur-demolition-1400-w-2-burins-2900-bpm-p_010799521667",
-        "title": "VEVOR Marteau de Démolition 1400 W Marteau-Piqueur 19 J 2900 BPM Marteau Perforateur avec 2 Burins Remplaçables Poignée Rotative 360° Anti-Vibration Brise-Béton pour Burinage Construction Plomberie",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/pressoir-a-vin-de-fruits-c_11815/vevor-pressoir-a-fruits-manuel-pour-la-fabrication-du-vin-12-l-panier-en-bois-p_010691469730",
-        "title": "VEVOR Pressoir à Fruits Manuel 12 L, Presse à Vin avec Panier en Bois Massif avec 8 Blocs, Presse-agrumes avec Poignée, Presse à Jus, Raisin, Cidre de Pomme, Miel pour la Cuisine et la Maison",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/accessoires-et-pieces-pour-roues-c_12907/vevor-jeu-de-4-enjoliveurs-de-jantes-de-40-6-cm-robuste-protection-des-roues-p_010524117809",
-        "title": "VEVOR Enjoliveurs de Jante de Roue 40,6 cm de Diamètre, Couvre-jante en ABS et PC, Résistant aux Rayures, avec Trou de Buse à Pression et Valve, Moins de Résistance au Vent, Protection des Roues, 4PCs",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/compresseurs-d-air-c_10039/pompe-a-tete-de-compresseur-d-air-375l-3kw-type-de-piston-a-double-cylindre-p_010403369304",
-        "title": "VEVOR Pompe à Tête de Compresseur d'air 375L 3KW Type de Piston Tête de Pompe à Double Cylindre 1300tr / min 1 Etage 11 Bar Construction de Tête de Pompe à Cylindre en Aluminium",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.amazon.fr/VEVOR-Remorquage-R%C3%A9cup%C3%A9ration-R%C3%A9sistance-Protection/dp/B0FG7QL486",
-        "title": "VEVOR Sangle de Remorquage Récupération Cinétique, 76,2 mm x 6,1 m, Résistance à la Rupture 16329 kg, avec Manchons de Protection, Sac de Rangement, Manilles à Anneau D 19 mm, pour Camions, SUV, VTT",
+        "url": "https://www.amazon.co.uk/CLEADONG-kinderfahrrad-Training-Adjustable-Bicycle/dp/B0DHH154ZN",
+        "title": "14 Inch bike, kinderfahrrad with Training Wheels Adjustable Seat and Handle, Bike Bicycle for 3/4/5/6 Years Old Boys & Girls",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.vevor.fr/pompe-pour-eaux-usees-c_11101/vevor-pompe-maceratrice-eaux-usees-sanitaire-evier-700-w-avec-3-entrees-d-eau-p_010534768965",
-        "title": "VEVOR Pompe de macération, 700 W, pompe de puisard d'égouts de macération avec 3 entrées d'eau, 9600 L/h, levage 10 m pour élimination eaux usées, toilettes, cave, cuisine, évier, douche, baignoire",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/appareil-a-pancake-commercial-c_13314/vevor-appareil-a-pancake-poffertjes-dorayaki-25pcs-diam-43-mm-crepiere-1700-w-p_010687636004",
-        "title": "VEVOR Appareil à Pancake 25PCs 43 mm, Crêpière Commerciale 1700 W, Appareil à Poffertjes Dorayaki en Acier Inoxydable Antiadhésif, Température et Temps Réglable, pour Cuisine à Domicile, Restaurant",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.amazon.fr/LOMIKEN-%C3%A9clairage-anti-bu%C3%A9e-variateur-dintensit%C3%A9/dp/B0DJ2RJQS1",
-        "title": "LOMIKEN Miroir mural, 100 x 60 x 3,5 cm, miroir avec éclairage anti-buée, éclairage miroir, 3 couleurs, variateur, affichage de l'heure, prise grossissement 5x, interrupteur tactile",
+        "url": "https://www.amazon.fr/DCSYOG-Roue-jockey-automatique-60/dp/B0CY549QM8",
+        "title": "Roue jockey automatique 60 mm - Charge d'appui 544 kg - Bride plate sur tube - Remorque",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.vevor.fr/attelage-de-remorque-c_10337/vevor-crochet-attelage-boule-5-87cm-pour-anneau-remorquage-6-35-7-62-cm-13605-kg-p_010362172795",
-        "title": "VEVOR Crochet Attelage, Capacité de Remorquage 13605 kg, Boule d'Attelage 5,87 cm, Convient aux Anneaux de Remorquage 6,35-7,62 cm avec Kit de Montage, Résistant à l'Usure, Revêtement en Poudre Noire",
+        "url": "https://www.vevor.ca/mug-heat-press-accessories-c_12641/vevor-8-pack-straight-sublimation-tumblers-30-oz-blank-tumbler-bulk-stainless-steel-double-wall-tumbler-cups-with-straw-lid-brush-base-shrink-wrap-gift-box-for-heat-press-and-heat-transfer-p_010589357224?lang=fr&srsltid=AfmBOoq6PI3ye-WjkIjT9zityVe2S_vXri_sQ_Zj7A1c88ILTUh1ReED",
+        "title": "VEVOR Lot de 8 gobelets droits à sublimation, 30 oz, en acier inoxydable, à double paroi, avec paille, couvercle, brosse, base, film rétractable, boîte cadeau, pour presse à chaud et transfert thermique",
         "supplier": "Vevor",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.amazon.fr/LEADZM-Climatiseur-Humidificateur-Evaporation-Refroidisseur/dp/B0CZ5XG956",
-        "title": "LEADZM Climatiseur d'Air Mobile 3 en 1 Humidificateur d'air par Evaporation Refroidisseur Portable,Réservoir d'eau de 25L,80W,Débit d'air 4000m³/h",
+        "url": "https://www.amazon.fr/LALAHO-Renforc%C3%A9s-roulettes-Pivotantes-T%C3%A9lescopique/dp/B0F6JS8VP7",
+        "title": "LALAHO Valise Cabine Rigide en ABS Léger, 4 roulettes Spinner, Coins Renforcés, Serrure à Combinaison, Poignée Télescopique - Bagage Cabine/Soute (Azur, M/55cm)",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.amazon.fr/Barri%C3%A8re-S%C3%A9curit%C3%A9-Extensible-Protection-Compagnie/dp/B0CMZTYJ91",
-        "title": "Kids Barrière de Sécurité Extensible Cheminée Grille de Protection,clôture pour Animaux de Compagnie réglable et Mobile,Clôture de sécurité Noire en 4 pièces 240 * 2.5 * 75cm",
+        "url": "https://www.amazon.fr/LALAHO-Renforc%C3%A9s-roulettes-Pivotantes-T%C3%A9lescopique/dp/B0F191JP15?th=1&psc=1",
+        "title": "LALAHO Valise Cabine Rigide en ABS Léger, 4 roulettes Spinner, Coins Renforcés, Serrure à Combinaison, Poignée Télescopique - Bagage Cabine/Soute (Or Rose, M/55cm)",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.vevor.fr/table-elevatrice-hydraulique-a-ciseaux-c_10488/vevor-chariot-a-table-elevatrice-hydraulique-charge-230-kg-chariot-elevateur-manuel-a-ciseaux-simples-hauteur-levage-720-mm-4-roues-coussin-antiderapant-pour-manutention-transport-materiaux-orange-p_010900500583",
-        "title": "VEVOR Chariot à Table Élévatrice Hydraulique Charge 230 kg Chariot Élévateur Manuel à Ciseaux Simples Hauteur Levage 720 mm 4 Roues Coussin Antidérapant pour Manutention Transport Matériaux, Orange",
+        "url": "https://www.vevor.fr/pompe-de-transfert-carburant-diesel-c_11111/vevor-pompe-transfert-diesel-37-8-l-min-pompe-gasoil-12-v-cc-pompe-transfert-carburant-electrique-buse-arret-auto-pompe-a-fioul-fuel-tuyau-d-entree-sortie-pour-diesel-kerosene-huile-de-transformateur-p_010714185157?srsltid=AfmBOorDSkEzz7LS7fX5QjOqRGCtXYxPcOlVYGCXFt-IDyz4K_sDW9eg",
+        "title": "VEVOR Pompe Transfert Diesel 37,8 L/min Pompe Gasoil 12 V CC Pompe Transfert Carburant Électrique Buse Arrêt Auto Pompe à Fioul Fuel Tuyau d'Entrée Sortie pour Diesel Kérosène Huile de Transformateur",
         "supplier": "Vevor",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.vevor.fr/remorques-de-fret-c_12631/vevor-remorque-de-velo-capacite-de-charge-de-72-5-kg-chariot-de-velo-rangement-compact-pliable-et-degagement-rapide-avec-attelage-roues-de-406-mm-pour-les-roues-de-velo-de-558-8-mm-a-711-2-mm-p_010399862028",
-        "title": "VEVOR Remorque de vélo, capacité de charge de 72,5 kg, chariot de vélo, rangement compact pliable et dégagement rapide avec attelage, roues de 406 mm, pour les roues de vélo de 558,8 mm à 711,2 mm",
+        "url": "https://www.amazon.fr/Pompe-diesel-auto-amor%C3%A7ante-min-distribution/dp/B0CXT97F73",
+        "title": "Pompe diesel auto-amorçante 50 l/min - Pompe diesel - Station de service - Pompe à mazout - Pistolet de distribution",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.vevor.com/stair-handrail-c_11209/vevor-70-9-in-180cm-handrails-for-outdoor-steps-staircase-seniors-porch-deck-p_010734656983",
+        "title": "VEVOR Handrails for Outdoor Steps, 70.9 in/ 180cm Length Stair Hand Rail Kit, Transitional Stainless Steel Railings with Installation Kit, Double-column Staircase Handrails for Seniors,Porch & Deck",
         "supplier": "Vevor",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.vevor.fr/chariot-porte-panneaux-c_10487/vevor-chariot-porte-plaques-de-platre-680-kg-chariot-porte-panneaux-pour-cloisons-seches-915x610-mm-avec-roues-pivotantes-360-manutention-bois-pour-planches-de-construction-garage-maison-entrepot-p_010648654383",
-        "title": "VEVOR Chariot Porte-plaques de Plâtre 680 kg Chariot Porte-Panneaux pour Cloisons Sèches 915x610 mm avec Roues Pivotantes 360° Manutention Bois pour Planches de Construction, Garage, Maison, Entrepôt",
+        "url": "https://www.cdiscount.com/maison/meubles-mobilier/bibliothque-en-forme/f-117600704-aabpw23553.html",
+        "title": "Bibliothèque en Forme d'arbre-Lvhcmfohm-9 Niveaux & 2 Tiroirs-Empilable-Pour chambre à coucher,salon,bureau-60x20x100 cm-Blanc",
+        "supplier": "Cdiscount",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.vevor.fr/racks-et-supports-a-velos-c_13634/vevor-support-de-rangement-pour-4-velos-2-crochets-a-casques-porte-velos-mural-p_010442861651?srsltid=AfmBOor7ac0S0TGa135ITkEGcC-vTKYvqSeZ5B9g4oTmhjZot0ywPXpT",
+        "title": "VEVOR Support de rangement pour 4 vélos 2 crochets à casques porte-vélos mural",
         "supplier": "Vevor",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.vevor.fr/barrieres-de-securite-pour-lits-c_12422/vevor-potence-de-lit-barre-trapeze-mobilite-de-lit-autoportante-hauteur-reglable-p_010914785316",
-        "title": "VEVOR Potence de Lit, Barre Trapèze de Lit Autoportante Hauteur Réglable avec 2 Roues, Capacité 136 kg, Aide à se Lever pour Personnes Âgées, Handicapées, Hôpital, Maison de Retraite, Soins à Domicile",
+        "url": "https://www.amazon.fr/G-Homa-t%C3%A9l%C3%A9command%C3%A9es-t%C3%A9l%C3%A9commande-appareils-programmable/dp/B0CZDJH93P/ref=mp_s_a_1_4?crid=2QYLM7TG377KL&dib=eyJ2IjoiMSJ9.5bHDHudbM_73HuKLSEYmKmHtk4cMHTHHFWVMdQ686BM_vGPFRJ2vISC12DIzOX377uAioQC971xZdJZzqO1DY56hS-BS2CPNsFsxFQgU2GTNy0Djh0oz11K6BBGIPdqj08etGG5ZI6k-S6jgNBVzAnxdnaBIzQzMAIqG9O9_cj-qkXMtEjbHHJN4Srt0cWXt22BMnBbXFiuIvBU7RpHF0A.tF1rKulxgY9P8h_ewdAGEGV1W1htp80SpFl5ZuWiiBw&dib_tag=se&keywords=lot+de+4+prises+avec+t%C3%A9l%C3%A9commande&qid=1763475277&sprefix=lot+de+4+prises+avec+t%C3%A9l%C3%A9commande%2Chi%2C72&sr=8-4",
+        "title": "G-Homa Lot 4 prises télécommandées, télécommande, éclairage Noël, 30 m, programmable, 2300 W/10 A, CE, blanc",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.vevor.nl/sleepketting-c_10423/chain-sling-6-15-x-6-5-vier-poot-met-stalen-haak-grade-80-p_010424226030?lang=en&srsltid=AfmBOoqy0YMglLccZTZd8ZRPmqyW0zN6TL4ScuvFzyImp6ZFyx_cTTi2",
+        "title": "VEVOR Chain Sling, 5/16 inch x 6.5 ft Lifting Chains with Hooks, G80 Engine Chain Hoist Lifts, 11000 lbs/5 Ton Capacity Lifting Sling Chains for Engine Hoist, Engine Lift Chain with 4 Leg Grab Hooks",
         "supplier": "Vevor",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.vevor.fr/cage-de-chiens-c_12312/vevor-cage-pour-chien-robuste-95x65x81-cm-cage-de-transport-en-metal-pour-chiens-en-anxiete-de-taille-moyenne-a-grande-avec-roulettes-verrouillables-3-portes-plateau-amovible-pour-interieur-exterieur-p_010729320289?srsltid=AfmBOork_BmtG1avFouaxEi_lTamE_h55ctZL4xt3iJq_DsT8fWxu2Ka",
+        "title": "VEVOR Cage pour Chien Robuste 95x65x81 cm Cage de Transport en Métal pour Chiens en Anxiété de Taille Moyenne à Grande avec Roulettes Verrouillables 3 Portes Plateau Amovible pour Intérieur Extérieur",
+        "supplier": "Vevor",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.vevor.fr/grue-avec-treuil-electrique-c_10442/vevor-grue-pour-camionnette-grue-de-levage-avec-treuil-manuel-de-499-kg-360--p_010447647898?srsltid=AfmBOoqQYZhOfMdMKo9Nte__EGzwo13trVXE-pEnXhXUleOxJFtmsAAF",
+        "title": "VEVOR Grue pour camionnette avec treuil manuel de 499 kg, grue de levage pour camion pliable, grue à flèche en acier pour camionnette, pivotante à 360°, pour levage de marchandise dans la construction",
+        "supplier": "Vevor",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/LEADZM-rectangulaire-Portable-utilis%C3%A9e-Barbecue/dp/B0BT9LG6J4",
+        "title": "LEADZM Table Pliante rectangulaire Blanche Table de Camping Portable Peut être utilisée pour Le Camping en Plein air Barbecue dîner de Jardin (70 * 50 * 60cm)",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/FRETONBA-Inoxydable-Couvercle-Anti-fuites-Nettoyage/dp/B0DGKN9HNT",
+        "title": "Bac Litiere pour Chat XXL en Acier Inoxydable, Maison de Toilette Chat 26L Grande Capacité, Caisse Litiere Fermée avec Couvercle Amovible, Pelle, Pédale, Anti-fuites, Nettoyage Facile, Gris",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/Pendentif-Naturelle-Nostalgique-Suspendues-Restaurants/dp/B081L1ZBMR",
+        "title": "Lampe Vintage Pendentif Main Naturelle Lampe Suspendue En Bambou Nostalgique E27 Lampes Suspendues Réglable Chambre Restaurants Lustre Séjour Salle À Manger Café Bar Lampes Suspendues,60cm",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.com/VEVOR-Ramps-Heavy-Duty-Attaching-Motorcycle/dp/B0CKR5JJM5",
+        "title": "VEVOR Aluminum Ramps, 6000 lbs, Heavy-Duty Ramps with Top Hook Attaching End, Universal Loading Ramp for Motorcycle, Tractor, ATV/UTV, Trucks, Lawn Mower, 60\" L x 12\" W, 2Pcs",
+        "supplier": "Amazon",
         "usedPuppeteer": true
       }
     ],
-    "skipped": [
-      {
-        "url": "https://www.vevor.fr/appareil-a-pancake-commercial-c_13314/vevor-appareil-a-pancake-poffertjes-dorayaki-50pcs-43-mm-crepiere-antiadhesive-p_010971616079",
-        "reason": "Déjà scannée"
-      },
-      {
-        "url": "https://www.vevor.fr/pompe-a-vide-c_11109/vevor-pompe-a-vide-frigoriste-climatisation-150-w-pompe-a-un-etage-100-l-min-220-240-v-entree-sae-male-0-64-cm-0-95-cm-pour-automobile-reparation-cvc-maintenance-de-refrigeration-degazage-de-resine-p_010409733445",
-        "reason": "Déjà scannée"
-      },
-      {
-        "url": "https://www.vevor.fr/trancheuse-c_10662/vevor-trancheuse-electrique-commerciale-180-w-trancheuse-a-jambon-lame-190-mm-80-120-tr-min-trancheuse-charcuterie-en-acier-inoxydable-et-alu-pour-couper-en-tranches-viande-fromage-legumes-fruits-p_010442753691",
-        "reason": "Déjà scannée"
-      },
-      {
-        "url": "https://www.vevor.fr/balayeuse-pour-plancher-c_12516/vevor-balai-mecanique-trajectoire-de-balayage-200-mm-balayeuse-manuelle-pour-planchers-et-tapis-avec-brosses-rotatives-facile-a-vide-silencieux-nettoyeur-de-sols-durs-et-stratifies-sans-electricite-p_010797703522",
-        "reason": "Déjà scannée"
-      },
-      {
-        "url": "https://www.vevor.fr/nettoyeur-a-ultrasons-c_11064/vevor-nettoyeur-a-ultrasons-2l-en-acier-inoxydable-bac-ultrasons-numerique-avec-chauffage-temps-et-temperature-reglables-appareil-de-nettoyage-ultrasonique-pour-bijoux-lunettes-montres-labo-clinique-p_010330299810",
-        "reason": "Déjà scannée"
-      },
-      {
-        "url": "https://www.vevor.fr/abris-d-auto-c_12018/vevor-toile-d-auvent-de-rechange-pour-abri-de-voiture-6-1x3-m-bache-de-tente-de-garage-impermeable-protegee-contre-uv-elastiques-a-billes-gris-couverture-superieure-uniquement-cadre-non-inclus--p_010859334722",
-        "reason": "Déjà scannée"
-      },
-      {
-        "url": "https://www.vevor.fr/rechauffeur-d-air-diesel-c_10321/vevor-kit-de-bougie-de-prechauffage-pour-chauffage-diesel-2-5-8-kw-kit-de-reparation-de-bougie-de-prechauffage-en-ceramique-accessoires-de-rechauffeur-de-stationnement-avec-outil-de-retrait-atelier-p_010780896938",
-        "reason": "Déjà scannée"
-      },
-      {
-        "url": "https://www.vevor.fr/rechauffeur-d-air-diesel-c_10321/vevor-chauffage-diesel-12-v-8-kw-consommation-0-16-0-62-l-h-rechauffeur-d-air-diesel-8-36-reglable-20-25-m2-controle-intelligente-lcd-et-telecommande-reservoir-10-l-pour-camion-bateau-rv-interieur-p_010276329389",
-        "reason": "Déjà scannée"
-      },
-      {
-        "url": "https://www.vevor.fr/nettoyeur-a-ultrasons-c_11064/vevor-nettoyeur-a-ultrasons-numerique-15-l-avec-minuterie-chauffage-et-panier-p_010321824071",
-        "reason": "Déjà scannée"
-      },
-      {
-        "url": "https://www.vevor.fr/machine-de-decoupe-gaufrage-c_12023/vevor-machine-de-decoupe-et-gaufrage-manuelle-embossage-226-mm-kit-scrapbooking-p_010986009443",
-        "reason": "Déjà scannée"
-      },
-      {
-        "url": "https://www.vevor.fr/rechauffeur-d-air-diesel-c_10321/vevor-chauffage-diesel-rechauffeur-de-stationnement-8kw-dc-12-24v-pour-voitures-p_010534909520",
-        "reason": "Déjà scannée"
-      },
-      {
-        "url": "https://www.vevor.fr/pulverisateur-de-peinture-c_11987/vevor-pulverisateur-sans-air-haute-pression-pistolet-de-peinture-mural-1800-w-p_010664126997",
-        "reason": "Déjà scannée"
-      },
-      {
-        "url": "https://www.vevor.fr/nettoyeur-a-ultrasons-c_11064/vevor-nettoyeur-a-ultrasons-2l-en-acier-inoxydable-bac-ultrasons-numerique-avec-chauffage-temps-et-temperature-reglables-appareil-de-nettoyage-ultrasonique-pour-bijoux-lunettes-montres-labo-clinique-p_010330299810",
-        "reason": "Déjà scannée"
-      },
-      {
-        "url": "https://www.vevor.fr/sieges-de-securite-pour-la-baignoire-la-douche-c_12538/vevor-banc-de-transfert-baignoire-siege-de-douche-dossier-reversible-180-kg-p_010842198847",
-        "reason": "Déjà scannée"
-      },
-      {
-        "url": "https://www.vevor.fr/pompe-pour-eaux-usees-c_11101/vevor-pompe-de-maceration-evier-cuisine-500-w-110-l-min-hauteur-refoulement-8-m-p_010838133161",
-        "reason": "Déjà scannée"
-      },
-      {
-        "url": "https://www.vevor.fr/verins-c_12243/vevor-cric-hydraulique-long-8-tonnes-base-a-chape-moteur-de-levage-cylindre-pompe-simple-p_010734442673",
-        "reason": "Déjà scannée"
-      },
-      {
-        "url": "https://www.vevor.fr/pulverisateur-de-peinture-c_11987/vevor-pulverisateur-sans-air-haute-pression-pistolet-de-peinture-mural-1800-w-p_010664126997",
-        "reason": "Déjà scannée"
-      },
-      {
-        "url": "https://www.vevor.fr/roulettes-pivotantes-c_10473/vevor-roulettes-pivotantes-lot-de-4-roulettes-pour-meubles-industrielles-152-4-mm-roues-silencieuses-en-pvc-avec-frein-a-verrouillage-a-b-capacite-de-charge-318-kg-par-roulette-pour-chariots-etablis-p_010924160719",
-        "reason": "Déjà scannée"
-      }
-    ],
+    "skipped": [],
     "errors": [
       {
-        "url": "amazon.fr/dp/B0D6ZB7CMY?ref=cm_sw_r_cso_wa_mwn_dp_XWY74VYCDFZXMF5E1ZHH&ref_=cm_sw_r_cso_wa_mwn_dp_XWY74VYCDFZXMF5E1ZHH&social_share=cm_sw_r_cso_wa_mwn_dp_XWY74VYCDFZXMF5E1ZHH",
-        "error": "Site non pris en charge"
-      },
-      {
-        "url": "https://www.vevor.ca/hydraulic-scissor-cart-c_10488/vevor-hydraulic-lift-table-cart-330lbs-capacity-28-5-lifting-height-manual-single-scissor-lift-table-with-4-wheels-and-non-slip-pad-hydraulic-scissor-cart-for-material-handling-black-p_010946897919?lang=fr",
+        "url": "https://www.vevor.fr/accessoires-c_13357/vevor-crochets-pour-echelle-de-toit-stabilisateurs-en-acier-avec-roue-fixe-2pcs-p_010737520822?srsltid=AfmBOoq1V76BWxS0-OlqzW7hmy2G7SgAWrpVFwv1aYoKPm8IeTZeHJ8d",
         "error": "Navigation timeout of 45000 ms exceeded"
-      },
-      {
-        "url": "https://www.vevor.fr/refrigerateur-portable-pour-vehicules-c_10723/vevor-refrigerateur-portable-pour-voiture-mini-frigo-35-l-zone-unique-camping-p_010930206079",
-        "error": "Attempted to use detached Frame '945EA9D221D0A12B33EC072BE7887891'."
       }
     ]
   },
-  "endTime": "2025-11-04T18:58:51.868Z",
-  "duration": "790s"
+  "endTime": "2025-11-18T18:11:28.576Z",
+  "duration": "2859s"
 }

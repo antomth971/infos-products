@@ -14,7 +14,6 @@ const puppeteer = require('puppeteer');
 const session = require('express-session');
 const Product = require('./models/Product');
 const IgnoredProduct = require('./models/IgnoredProduct');
-const FacebookToken = require('./models/FacebookToken');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -107,7 +106,7 @@ const SUPPLIERS_CONFIG = {
       description: {
         selector: 'div.c-productHighlights__list',
         type: 'textContent',
-        fallback: '#MarketingLongDescription'
+        fallback: ['#MarketingLongDescription', '.read-more']
       },
       images: {
         selector: '.c-productViewer__controls img',
@@ -301,13 +300,22 @@ function extractDescription($, descConfig) {
     let text = $(descConfig.selector).first().text().trim();
     console.log('🔍 Description principale trouvée:', text ? 'Oui' : 'Non', '(longueur:', text.length, ')');
 
-    // Si vide et qu'il y a un fallback, essayer le fallback
+    // Si vide et qu'il y a un ou plusieurs fallbacks, les essayer
     if (!text && descConfig.fallback) {
-      console.log('⚠️ Description vide, utilisation du fallback:', descConfig.fallback);
-      const fallbackElement = $(descConfig.fallback).first();
-      console.log('🔍 Élément fallback trouvé:', fallbackElement.length > 0);
-      text = fallbackElement.text().trim();
-      console.log('🔍 Texte fallback (longueur:', text.length, ')');
+      const fallbacks = Array.isArray(descConfig.fallback) ? descConfig.fallback : [descConfig.fallback];
+
+      for (const fallbackSelector of fallbacks) {
+        console.log('⚠️ Description vide, essai du fallback:', fallbackSelector);
+        const fallbackElement = $(fallbackSelector).first();
+        console.log('🔍 Élément fallback trouvé:', fallbackElement.length > 0);
+        text = fallbackElement.text().trim();
+        console.log('🔍 Texte fallback (longueur:', text.length, ')');
+
+        if (text) {
+          console.log('✅ Description trouvée avec le fallback:', fallbackSelector);
+          break; // On arrête dès qu'on trouve une description
+        }
+      }
     }
 
     if (text) {
@@ -704,28 +712,32 @@ async function fetchWithPuppeteer(url) {
 // Endpoint pour scraper une page
 app.post('/api/scrape', async (req, res) => {
   try {
-    const { url, customDate, minuteOffset } = req.body;
+    let { url, customDate, minuteOffset } = req.body;
 
     if (!url) {
       return res.status(400).json({ error: 'URL est requis' });
     }
 
-    // Utiliser la date personnalisée si fournie, sinon la date actuelle
-    let productDate;
-    if (customDate) {
-      // Parser la date en format YYYY-MM-DD et forcer l'heure à minuit (00:00:00) en temps local
-      const [year, month, day] = customDate.split('-').map(Number);
-      productDate = new Date(year, month - 1, day, 0, 0, 0, 0);
+    // Si aucune date n'est fournie, utiliser la date du jour
+    if (!customDate) {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+      customDate = `${year}-${month}-${day}`;
+      console.log(`📅 Aucune date fournie, utilisation de la date du jour: ${customDate}`);
+    }
 
-      // Si un offset de minutes est fourni, l'appliquer
-      if (typeof minuteOffset === 'number' && minuteOffset >= 0) {
-        productDate.setMinutes(minuteOffset);
-        console.log(`📅 Utilisation de la date personnalisée avec offset: ${productDate.toLocaleString('fr-FR')}`);
-      } else {
-        console.log(`📅 Utilisation de la date personnalisée: ${productDate.toLocaleDateString('fr-FR')}`);
-      }
+    // Parser la date en format YYYY-MM-DD et forcer l'heure à minuit (00:00:00) en temps local
+    const [year, month, day] = customDate.split('-').map(Number);
+    const productDate = new Date(year, month - 1, day, 0, 0, 0, 0);
+
+    // Si un offset de minutes est fourni, l'appliquer
+    if (typeof minuteOffset === 'number' && minuteOffset >= 0) {
+      productDate.setMinutes(minuteOffset);
+      console.log(`📅 Date avec offset: ${productDate.toLocaleString('fr-FR')}`);
     } else {
-      productDate = new Date();
+      console.log(`📅 Date du produit: ${productDate.toLocaleDateString('fr-FR')}`);
     }
 
     // Détecter le fournisseur
@@ -1158,16 +1170,20 @@ app.post('/api/scrape-batch', async (req, res) => {
 
 // Fonction pour traiter les URLs en arrière-plan
 async function processBatchInBackground(urls, customDate) {
-  // Utiliser la date personnalisée si fournie, sinon la date actuelle
-  let baseProductDate;
-  if (customDate) {
-    // Parser la date en format YYYY-MM-DD et forcer l'heure à minuit (00:00:00) en temps local
-    const [year, month, day] = customDate.split('-').map(Number);
-    baseProductDate = new Date(year, month - 1, day, 0, 0, 0, 0);
-    console.log(`📅 Utilisation de la date personnalisée: ${baseProductDate.toLocaleDateString('fr-FR')}`);
-  } else {
-    baseProductDate = new Date();
+  // Si aucune date n'est fournie, utiliser la date du jour
+  if (!customDate) {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    customDate = `${year}-${month}-${day}`;
+    console.log(`📅 Aucune date fournie, utilisation de la date du jour: ${customDate}`);
   }
+
+  // Parser la date en format YYYY-MM-DD et forcer l'heure à minuit (00:00:00) en temps local
+  const [year, month, day] = customDate.split('-').map(Number);
+  const baseProductDate = new Date(year, month - 1, day, 0, 0, 0, 0);
+  console.log(`📅 Date de base pour le batch: ${baseProductDate.toLocaleDateString('fr-FR')}`);
 
   const results = {
     startTime: new Date().toISOString(),
@@ -1652,478 +1668,6 @@ app.get('/api/ignored/stats', async (req, res) => {
 });
 
 // ===== Fin des routes pour les produits ignorés =====
-
-// ===== Routes pour Facebook Marketplace =====
-
-// Variables Facebook
-const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID;
-const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET;
-const FACEBOOK_CALLBACK_URL = process.env.FACEBOOK_CALLBACK_URL || 'http://localhost:3000/api/facebook/callback';
-const FACEBOOK_PAGE_ID = process.env.FACEBOOK_PAGE_ID;
-const FACEBOOK_CATALOG_ID = process.env.FACEBOOK_CATALOG_ID; // ID du catalogue (créé via Business Manager)
-
-// 1. Vérifier le statut de connexion Facebook
-app.get('/api/facebook/status', async (req, res) => {
-  try {
-    if (!req.session.authenticated) {
-      return res.status(403).json({
-        success: false,
-        error: 'Accès non autorisé. Veuillez vous connecter.'
-      });
-    }
-
-    // Vérifier si on a un token Facebook stocké
-    const token = await FacebookToken.findOne({});
-
-    res.json({
-      success: true,
-      connected: !!token,
-      pageId: token ? token.pageId : null
-    });
-  } catch (error) {
-    console.error('Erreur lors de la vérification du statut Facebook:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Erreur lors de la vérification du statut'
-    });
-  }
-});
-
-// 2. Démarrer le processus OAuth Facebook
-app.get('/api/facebook/login', (req, res) => {
-  if (!req.session.authenticated) {
-    return res.status(403).json({
-      success: false,
-      error: 'Accès non autorisé. Veuillez vous connecter.'
-    });
-  }
-
-  // Permissions nécessaires pour Facebook Commerce/Marketplace
-  // IMPORTANT: Ces permissions nécessitent une approbation via Facebook App Review
-  // Vous devez soumettre votre application pour examen avant d'utiliser ces permissions
-  const permissions = [
-    'catalog_management',      // Gérer les catalogues de produits
-    'business_management',     // Gérer le Business Manager
-    'pages_manage_posts',      // Publier du contenu sur les Pages
-    'pages_read_engagement'    // Lire les statistiques d'engagement
-  ].join(',');
-
-  const authUrl = `https://www.facebook.com/v18.0/dialog/oauth?` +
-    `client_id=${FACEBOOK_APP_ID}` +
-    `&redirect_uri=${encodeURIComponent(FACEBOOK_CALLBACK_URL)}` +
-    `&scope=${permissions}` +
-    `&response_type=code`;
-
-  res.json({
-    success: true,
-    authUrl: authUrl
-  });
-});
-
-// 3. Callback OAuth Facebook
-app.get('/api/facebook/callback', async (req, res) => {
-  try {
-    const { code } = req.query;
-
-    if (!code) {
-      return res.redirect('/facebook-marketplace.html?error=no_code');
-    }
-
-    // Échanger le code contre un access token
-    const tokenResponse = await axios.get(`https://graph.facebook.com/v18.0/oauth/access_token`, {
-      params: {
-        client_id: FACEBOOK_APP_ID,
-        client_secret: FACEBOOK_APP_SECRET,
-        redirect_uri: FACEBOOK_CALLBACK_URL,
-        code: code
-      }
-    });
-
-    const userAccessToken = tokenResponse.data.access_token;
-
-    // Obtenir un token de longue durée (60 jours)
-    const longTokenResponse = await axios.get(`https://graph.facebook.com/v18.0/oauth/access_token`, {
-      params: {
-        grant_type: 'fb_exchange_token',
-        client_id: FACEBOOK_APP_ID,
-        client_secret: FACEBOOK_APP_SECRET,
-        fb_exchange_token: userAccessToken
-      }
-    });
-
-    const longLivedToken = longTokenResponse.data.access_token;
-
-    // Obtenir l'ID utilisateur
-    const meResponse = await axios.get(`https://graph.facebook.com/v18.0/me`, {
-      params: {
-        access_token: longLivedToken
-      }
-    });
-
-    const userId = meResponse.data.id;
-
-    // Obtenir le Page Access Token (ne expire jamais si la page est active)
-    const pagesResponse = await axios.get(`https://graph.facebook.com/v18.0/${userId}/accounts`, {
-      params: {
-        access_token: longLivedToken
-      }
-    });
-
-    // Trouver la page configurée ou prendre la première
-    let pageData = pagesResponse.data.data.find(page => page.id === FACEBOOK_PAGE_ID);
-    if (!pageData && pagesResponse.data.data.length > 0) {
-      pageData = pagesResponse.data.data[0]; // Prendre la première page par défaut
-    }
-
-    if (!pageData) {
-      return res.redirect('/facebook-marketplace.html?error=no_page');
-    }
-
-    // Sauvegarder le token dans MongoDB
-    await FacebookToken.findOneAndUpdate(
-      { userId: userId },
-      {
-        userId: userId,
-        accessToken: longLivedToken,
-        pageAccessToken: pageData.access_token,
-        pageId: pageData.id,
-        expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000), // 60 jours
-        updatedAt: Date.now()
-      },
-      { upsert: true, new: true }
-    );
-
-    console.log('✅ Token Facebook sauvegardé avec succès');
-    console.log('📄 Page ID:', pageData.id);
-    console.log('📄 Page Name:', pageData.name);
-
-    // Rediriger vers la page Facebook Marketplace avec succès
-    res.redirect('/facebook-marketplace.html?connected=true');
-
-  } catch (error) {
-    console.error('❌ Erreur lors de l\'authentification Facebook:', error.response?.data || error.message);
-    res.redirect('/facebook-marketplace.html?error=auth_failed');
-  }
-});
-
-// 4. Déconnecter Facebook
-app.post('/api/facebook/disconnect', async (req, res) => {
-  try {
-    if (!req.session.authenticated) {
-      return res.status(403).json({
-        success: false,
-        error: 'Accès non autorisé. Veuillez vous connecter.'
-      });
-    }
-
-    // Supprimer le token de la base de données
-    await FacebookToken.deleteMany({});
-
-    res.json({
-      success: true,
-      message: 'Déconnecté de Facebook avec succès'
-    });
-  } catch (error) {
-    console.error('Erreur lors de la déconnexion Facebook:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Erreur lors de la déconnexion'
-    });
-  }
-});
-
-// 5. Récupérer tous les catalogues et leurs produits
-app.get('/api/facebook/catalogs', async (req, res) => {
-  try {
-    if (!req.session.authenticated) {
-      return res.status(403).json({
-        success: false,
-        error: 'Accès non autorisé. Veuillez vous connecter.'
-      });
-    }
-
-    // Récupérer le token Facebook
-    const tokenData = await FacebookToken.findOne({});
-    if (!tokenData) {
-      return res.status(401).json({
-        success: false,
-        error: 'Non connecté à Facebook. Veuillez vous connecter.'
-      });
-    }
-
-    // Récupérer les catalogues de l'utilisateur via Business Manager
-    const catalogsResponse = await axios.get(
-      `https://graph.facebook.com/v18.0/${tokenData.userId}/owned_product_catalogs`,
-      {
-        params: {
-          access_token: tokenData.accessToken,
-          fields: 'id,name,product_count'
-        }
-      }
-    );
-
-    res.json({
-      success: true,
-      data: catalogsResponse.data.data || []
-    });
-
-  } catch (error) {
-    console.error('Erreur lors de la récupération des catalogues:', error.response?.data || error.message);
-    res.status(500).json({
-      success: false,
-      error: 'Erreur lors de la récupération des catalogues',
-      details: error.response?.data?.error?.message || error.message
-    });
-  }
-});
-
-// 5b. Récupérer les produits d'un catalogue spécifique
-app.get('/api/facebook/catalogs/:catalogId/products', async (req, res) => {
-  try {
-    if (!req.session.authenticated) {
-      return res.status(403).json({
-        success: false,
-        error: 'Accès non autorisé. Veuillez vous connecter.'
-      });
-    }
-
-    const { catalogId } = req.params;
-
-    // Récupérer le token Facebook
-    const tokenData = await FacebookToken.findOne({});
-    if (!tokenData) {
-      return res.status(401).json({
-        success: false,
-        error: 'Non connecté à Facebook. Veuillez vous connecter.'
-      });
-    }
-
-    // Récupérer les produits du catalogue
-    const productsResponse = await axios.get(
-      `https://graph.facebook.com/v18.0/${catalogId}/products`,
-      {
-        params: {
-          access_token: tokenData.accessToken,
-          fields: 'id,name,description,price,availability,url,image_url',
-          limit: 100
-        }
-      }
-    );
-
-    res.json({
-      success: true,
-      data: productsResponse.data.data || []
-    });
-
-  } catch (error) {
-    console.error('Erreur lors de la récupération des produits:', error.response?.data || error.message);
-    res.status(500).json({
-      success: false,
-      error: 'Erreur lors de la récupération des produits',
-      details: error.response?.data?.error?.message || error.message
-    });
-  }
-});
-
-// 6. Ajouter un produit à un catalogue Facebook
-app.post('/api/facebook/products', async (req, res) => {
-  try {
-    if (!req.session.authenticated) {
-      return res.status(403).json({
-        success: false,
-        error: 'Accès non autorisé. Veuillez vous connecter.'
-      });
-    }
-
-    const { productId, catalogId, title, price, description, condition, availability } = req.body;
-
-    if (!productId || !catalogId || !title || !price) {
-      return res.status(400).json({
-        success: false,
-        error: 'Champs requis : productId, catalogId, title, price'
-      });
-    }
-
-    // Récupérer le token Facebook
-    const tokenData = await FacebookToken.findOne({});
-    if (!tokenData) {
-      return res.status(401).json({
-        success: false,
-        error: 'Non connecté à Facebook. Veuillez vous connecter.'
-      });
-    }
-
-    // Récupérer le produit pour obtenir les images
-    const product = await Product.findById(productId);
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        error: 'Produit non trouvé'
-      });
-    }
-
-    // Extraire le prix numérique (enlever le symbole €, espaces, etc.)
-    const priceMatch = price.toString().match(/[\d,\.]+/);
-    const numericPrice = priceMatch ? parseFloat(priceMatch[0].replace(',', '.')) * 100 : 0; // Prix en centimes
-
-    // Préparer les données du produit pour l'API Catalog
-    const productData = {
-      retailer_id: product._id.toString(), // ID unique du produit
-      name: title,
-      description: description || product.description?.join('\n') || '',
-      price: numericPrice, // Prix en centimes
-      currency: 'EUR',
-      availability: availability || 'in stock', // 'in stock', 'out of stock', 'preorder'
-      condition: condition || 'new', // 'new', 'refurbished', 'used'
-      url: product.url, // URL du produit source
-      image_url: product.images && product.images.length > 0 ? product.images[0] : null,
-      brand: product.supplier || 'Unknown'
-    };
-
-    // Ajouter le produit au catalogue via l'API Batch
-    const response = await axios.post(
-      `https://graph.facebook.com/v18.0/${catalogId}/products`,
-      productData,
-      {
-        params: {
-          access_token: tokenData.accessToken
-        }
-      }
-    );
-
-    res.json({
-      success: true,
-      data: response.data,
-      message: 'Produit ajouté avec succès au catalogue Facebook'
-    });
-
-  } catch (error) {
-    console.error('Erreur lors de l\'ajout du produit:', error.response?.data || error.message);
-    res.status(500).json({
-      success: false,
-      error: 'Erreur lors de l\'ajout du produit au catalogue',
-      details: error.response?.data?.error?.message || error.message
-    });
-  }
-});
-
-// 7. Modifier un produit dans le catalogue
-app.put('/api/facebook/products/:productId', async (req, res) => {
-  try {
-    if (!req.session.authenticated) {
-      return res.status(403).json({
-        success: false,
-        error: 'Accès non autorisé. Veuillez vous connecter.'
-      });
-    }
-
-    const { productId } = req.params;
-    const { title, price, description, availability, condition } = req.body;
-
-    if (!title || !price) {
-      return res.status(400).json({
-        success: false,
-        error: 'Les champs title et price sont requis'
-      });
-    }
-
-    // Récupérer le token Facebook
-    const tokenData = await FacebookToken.findOne({});
-    if (!tokenData) {
-      return res.status(401).json({
-        success: false,
-        error: 'Non connecté à Facebook. Veuillez vous connecter.'
-      });
-    }
-
-    // Extraire le prix numérique
-    const priceMatch = price.toString().match(/[\d,\.]+/);
-    const numericPrice = priceMatch ? parseFloat(priceMatch[0].replace(',', '.')) * 100 : 0;
-
-    // Préparer les données de mise à jour
-    const updateData = {
-      name: title,
-      description: description,
-      price: numericPrice,
-      currency: 'EUR'
-    };
-
-    if (availability) updateData.availability = availability;
-    if (condition) updateData.condition = condition;
-
-    // Modifier le produit
-    const response = await axios.post(
-      `https://graph.facebook.com/v18.0/${productId}`,
-      updateData,
-      {
-        params: {
-          access_token: tokenData.accessToken
-        }
-      }
-    );
-
-    res.json({
-      success: true,
-      message: 'Produit modifié avec succès'
-    });
-
-  } catch (error) {
-    console.error('Erreur lors de la modification du produit:', error.response?.data || error.message);
-    res.status(500).json({
-      success: false,
-      error: 'Erreur lors de la modification du produit',
-      details: error.response?.data?.error?.message || error.message
-    });
-  }
-});
-
-// 8. Supprimer un produit du catalogue
-app.delete('/api/facebook/products/:productId', async (req, res) => {
-  try {
-    if (!req.session.authenticated) {
-      return res.status(403).json({
-        success: false,
-        error: 'Accès non autorisé. Veuillez vous connecter.'
-      });
-    }
-
-    const { productId } = req.params;
-
-    // Récupérer le token Facebook
-    const tokenData = await FacebookToken.findOne({});
-    if (!tokenData) {
-      return res.status(401).json({
-        success: false,
-        error: 'Non connecté à Facebook. Veuillez vous connecter.'
-      });
-    }
-
-    // Supprimer le produit
-    await axios.delete(
-      `https://graph.facebook.com/v18.0/${productId}`,
-      {
-        params: {
-          access_token: tokenData.accessToken
-        }
-      }
-    );
-
-    res.json({
-      success: true,
-      message: 'Produit supprimé avec succès du catalogue'
-    });
-
-  } catch (error) {
-    console.error('Erreur lors de la suppression du produit:', error.response?.data || error.message);
-    res.status(500).json({
-      success: false,
-      error: 'Erreur lors de la suppression du produit',
-      details: error.response?.data?.error?.message || error.message
-    });
-  }
-});
-
-// ===== Fin des routes pour Facebook Marketplace =====
 
 // Route de test
 app.get('/api/health', (_req, res) => {
