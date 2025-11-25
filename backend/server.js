@@ -96,7 +96,7 @@ const SUPPLIERS_CONFIG = {
   },
   'www.cdiscount.com': {
     name: 'Cdiscount',
-    requiresPuppeteer: false,
+    requiresPuppeteer: true, // Pour cliquer sur "Lire plus"
     selectors: {
       title: 'h1',
       price: {
@@ -106,7 +106,7 @@ const SUPPLIERS_CONFIG = {
       description: {
         selector: 'div.c-productHighlights__list',
         type: 'textContent',
-        fallback: ['#MarketingLongDescription', '.read-more']
+        fallback: ['#MarketingLongDescription', '.read-more', '#ourOpinion']
       },
       images: {
         selector: '.c-productViewer__controls img',
@@ -125,11 +125,13 @@ const SUPPLIERS_CONFIG = {
       },
       description: {
         selector: 'div.FGeuYs',
-        type: 'textContent'
+        type: 'textContent',
+        fallback: '[data-testid="description-content"]'
       },
       images: {
         selector: '.Ye1WCg img',
-        type: 'img'
+        type: 'img',
+        fallback: '.items-stretch img'
       }
     }
   },
@@ -411,6 +413,31 @@ function extractImages($, imgConfig, baseUrl) {
     });
 
     console.log('✓ Images - Nombre d\'images extraites:', images.length);
+
+    // Si aucune image trouvée et qu'il y a un fallback, l'essayer
+    if (images.length === 0 && imgConfig.fallback) {
+      console.log('⚠️ Aucune image trouvée, essai du fallback:', imgConfig.fallback);
+      const fallbackSelector = imgConfig.fallback;
+      const fallbackElements = $(fallbackSelector);
+      console.log('🔍 Images fallback - Nombre d\'éléments img trouvés:', fallbackElements.length);
+
+      $(fallbackSelector).each((i, elem) => {
+        let src = $(elem).attr('data-large-image') ||
+                  $(elem).attr('data-original') ||
+                  $(elem).attr('data-zoom-image') ||
+                  $(elem).attr('data-lazy-src') ||
+                  $(elem).attr('data-src') ||
+                  $(elem).attr('src');
+
+        if (src) {
+          src = cleanImageUrl(src);
+          const absoluteUrl = src.startsWith('http') ? src : new URL(src, baseUrl).href;
+          images.push(absoluteUrl);
+        }
+      });
+
+      console.log('✓ Images fallback - Nombre d\'images extraites:', images.length);
+    }
   }
 
   return images;
@@ -440,6 +467,7 @@ function cleanImageUrl(url) {
   // Cdiscount : Obtenir la plus grande version
   if (url.includes('cdiscount')) {
     url = url.replace(/\/[a-z]\//, '/f/'); // Remplace /m/ (medium) par /f/ (full)
+    url = url.replace(/\/\d+x\d+\//, '/1000x1000/'); // Remplace les dimensions (ex: 115x115) par 1000x1000
   }
 
   // Manomano : Supprimer les paramètres de taille
@@ -530,6 +558,7 @@ async function fetchWithPuppeteer(url) {
     const isLeroyMerlin = url.includes('leroymerlin');
     const isAmazon = url.includes('amazon');
     const isVevor = url.includes('vevor');
+    const isCdiscount = url.includes('cdiscount');
 
     // Configuration pour l'environnement de production
     const puppeteerConfig = {
@@ -655,8 +684,32 @@ async function fetchWithPuppeteer(url) {
       }
     }
 
+    // Logique spéciale pour Cdiscount : cliquer sur le bouton "Lire plus"
+    if (isCdiscount) {
+      try {
+        console.log('🖱️ Cdiscount - Recherche du bouton "Lire plus"...');
+
+        // Attendre un peu pour que le bouton soit chargé
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Vérifier si le bouton existe
+        const readMoreButton = await page.$('.js-read-more__btn');
+        if (readMoreButton) {
+          console.log('✓ Cdiscount - Bouton "Lire plus" trouvé, clic...');
+          await readMoreButton.click();
+          // Attendre que le contenu se déploie
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          console.log('✓ Cdiscount - Description complète chargée');
+        } else {
+          console.log('ℹ️ Cdiscount - Pas de bouton "Lire plus" (description déjà complète)');
+        }
+      } catch (error) {
+        console.log('⚠️ Cdiscount - Erreur lors du clic sur "Lire plus":', error.message);
+      }
+    }
+
     // Attendre encore un peu après le chargement des éléments
-    const finalWait = isLeroyMerlin ? 5000 : (isAmazon ? 2000 : (isVevor ? 3000 : 2000));
+    const finalWait = isLeroyMerlin ? 5000 : (isAmazon ? 2000 : (isVevor ? 3000 : (isCdiscount ? 1000 : 2000)));
     await new Promise(resolve => setTimeout(resolve, finalWait));
 
     // Récupérer le HTML avec gestion des erreurs de frame détaché
@@ -687,6 +740,165 @@ async function fetchWithPuppeteer(url) {
         } else {
           throw error; // Propager les autres erreurs immédiatement
         }
+      }
+    }
+
+    // Pour Amazon : vérifier si une seule image est présente et essayer la méthode alternative
+    if (isAmazon) {
+      try {
+        const $temp = cheerio.load(html);
+        const initialImageCount = $temp('.a-dynamic-image').length;
+        console.log(`📊 Amazon - Nombre d'images initiales trouvées: ${initialImageCount}`);
+
+        if (initialImageCount <= 3) {
+          console.log('⚠️ Amazon - Moins de 3 images trouvées, tentative avec .ivThumbImage...');
+
+          // Stocker les URLs d'images déjà collectées pour éviter les doublons
+          const collectedImageUrls = new Set();
+
+          // Récupérer la première image si elle existe
+          const firstImage = $temp('.a-dynamic-image').first();
+          if (firstImage.length > 0) {
+            const firstDynamicImage = firstImage.attr('data-a-dynamic-image');
+            if (firstDynamicImage) {
+              try {
+                const imageData = JSON.parse(firstDynamicImage);
+                const sortedImages = Object.entries(imageData).sort((a, b) => {
+                  const sizeA = a[1][0] * a[1][1];
+                  const sizeB = b[1][0] * b[1][1];
+                  return sizeB - sizeA;
+                });
+                if (sortedImages.length > 0) {
+                  collectedImageUrls.add(sortedImages[0][0]);
+                }
+              } catch (e) {}
+            }
+          }
+
+          // Ouvrir la modal d'images en cliquant sur l'image principale
+          try {
+            console.log('🖱️ Amazon - Ouverture de la modal d\'images...');
+            const imgTagWrapper = await page.$('#imgTagWrapperId');
+            if (imgTagWrapper) {
+              await imgTagWrapper.click();
+              // Attendre que la modal s'ouvre et se charge complètement
+              await new Promise(resolve => setTimeout(resolve, 2000));
+              console.log('✓ Amazon - Modal d\'images ouverte');
+            } else {
+              console.log('⚠️ Amazon - #imgTagWrapperId non trouvé');
+            }
+          } catch (modalError) {
+            console.log('⚠️ Amazon - Erreur lors de l\'ouverture de la modal:', modalError.message);
+          }
+
+          // IMPORTANT: Récupérer les miniatures APRÈS l'ouverture de la modal
+          // car la modal charge de nouveaux éléments DOM
+          const ivThumbnails = await page.$$('[id^="ivImage_"]');
+          console.log(`✓ Amazon - ${ivThumbnails.length} miniatures [id^="ivImage_"] trouvées`);
+
+          // Cliquer sur chaque miniature et récupérer l'image générée
+          for (let i = 0; i < ivThumbnails.length && i < 10; i++) {
+            try {
+              console.log(`  🖱️ Clic sur la miniature ${i + 1}...`);
+
+              // Utiliser evaluate pour un clic JavaScript plus fiable
+              await page.evaluate((index) => {
+                const thumbs = document.querySelectorAll('[id^="ivImage_"]');
+                if (thumbs[index]) {
+                  thumbs[index].click();
+                }
+              }, i);
+
+              // Attendre que l'image se charge (augmenté à 2 secondes)
+              await new Promise(resolve => setTimeout(resolve, 500));
+
+              // Extraire l'image à l'intérieur de #ivLargeImage directement depuis le DOM
+              const imageInfo = await page.evaluate(() => {
+                const container = document.querySelector('#ivLargeImage');
+                if (!container) {
+                  return { found: false, reason: 'Container #ivLargeImage non trouvé' };
+                }
+
+                const img = container.querySelector('img');
+                if (!img) {
+                  return { found: false, reason: 'Aucun <img> dans #ivLargeImage' };
+                }
+
+                const dynamicImage = img.getAttribute('data-a-dynamic-image');
+                const src = img.getAttribute('src');
+
+                return {
+                  found: true,
+                  dynamicImage: dynamicImage,
+                  src: src
+                };
+              });
+
+              console.log(`  🔍 Miniature ${i + 1} - Image trouvée: ${imageInfo.found ? 'Oui' : 'Non (' + imageInfo.reason + ')'}`);
+
+              if (imageInfo.found) {
+                console.log(`  📋 Miniature ${i + 1} - Attributs:`);
+                console.log(`     - data-a-dynamic-image: ${imageInfo.dynamicImage ? imageInfo.dynamicImage.substring(0, 100) + '...' : 'Absent'}`);
+                console.log(`     - src: ${imageInfo.src ? imageInfo.src.substring(0, 80) + '...' : 'Absent'}`);
+
+                if (imageInfo.dynamicImage) {
+                  try {
+                    const imageData = JSON.parse(imageInfo.dynamicImage);
+                    const sortedImages = Object.entries(imageData).sort((a, b) => {
+                      const sizeA = a[1][0] * a[1][1];
+                      const sizeB = b[1][0] * b[1][1];
+                      return sizeB - sizeA;
+                    });
+                    if (sortedImages.length > 0) {
+                      const imageUrl = sortedImages[0][0];
+                      const wasNew = !collectedImageUrls.has(imageUrl);
+                      collectedImageUrls.add(imageUrl);
+                      console.log(`  ${wasNew ? '✅' : '⚠️ (Doublon)'} Image ${i + 1}: ${imageUrl.substring(0, 70)}...`);
+                    } else {
+                      console.log(`  ⚠️ Miniature ${i + 1} - Aucune image dans data-a-dynamic-image`);
+                    }
+                  } catch (e) {
+                    console.log(`  ⚠️ Erreur parsing image ${i + 1}:`, e.message);
+                  }
+                } else if (imageInfo.src) {
+                  // Si pas de data-a-dynamic-image, utiliser src directement
+                  const wasNew = !collectedImageUrls.has(imageInfo.src);
+                  collectedImageUrls.add(imageInfo.src);
+                  console.log(`  ${wasNew ? '✅' : '⚠️ (Doublon)'} Image ${i + 1} (via src): ${imageInfo.src.substring(0, 70)}...`);
+                } else {
+                  console.log(`  ⚠️ Miniature ${i + 1} - Ni data-a-dynamic-image ni src`);
+                }
+              }
+            } catch (clickError) {
+              console.log(`⚠️ Erreur clic .ivThumbImage ${i + 1}:`, clickError.message);
+            }
+          }
+
+          console.log(`✅ Amazon - Total de ${collectedImageUrls.size} images uniques collectées`);
+
+          // Injecter les images collectées dans le HTML pour l'extraction finale
+          if (collectedImageUrls.size > 0) {
+            // Afficher les URLs collectées pour débogage
+            console.log('📋 Amazon - URLs collectées:');
+            Array.from(collectedImageUrls).forEach((url, idx) => {
+              console.log(`   ${idx + 1}. ${url.substring(0, 80)}...`);
+            });
+
+            // Construire un HTML avec toutes les images collectées
+            const imageElements = Array.from(collectedImageUrls).map(url => {
+              const imageData = JSON.stringify({ [url]: [2000, 2000] });
+              return `<img class="a-dynamic-image" data-a-dynamic-image='${imageData}' />`;
+            }).join('');
+
+            // Injecter dans le HTML
+            html = html.replace('</body>', `<div id="injected-images">${imageElements}</div></body>`);
+            console.log(`✅ Amazon - ${collectedImageUrls.size} images injectées dans le HTML`);
+          } else {
+            console.log('⚠️ Amazon - Aucune image collectée pour injection');
+          }
+        }
+      } catch (error) {
+        console.log('⚠️ Amazon - Erreur lors de la collecte alternative des images:', error.message);
       }
     }
 
@@ -1104,6 +1316,7 @@ app.get('/api/export/excel', async (req, res) => {
 
 // Proxy pour télécharger les images (contourner CORS)
 app.post('/api/download-image', async (req, res) => {
+  let browser;
   try {
     const { url } = req.body;
 
@@ -1111,29 +1324,109 @@ app.post('/api/download-image', async (req, res) => {
       return res.status(400).json({ error: 'URL est requis' });
     }
 
-    // Télécharger l'image via le backend
-    const response = await axios.get(url, {
-      responseType: 'arraybuffer',
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Referer': new URL(url).origin
-      },
-      timeout: 15000
-    });
+    console.log(`📥 Téléchargement de l'image: ${url.substring(0, 100)}...`);
 
-    // Détecter le type MIME
-    const contentType = response.headers['content-type'] || 'image/jpeg';
+    // Essayer d'abord avec axios (plus rapide)
+    try {
+      const response = await axios.get(url, {
+        responseType: 'arraybuffer',
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Referer': new URL(url).origin,
+          'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+          'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7'
+        },
+        timeout: 15000,
+        maxRedirects: 5
+      });
 
-    // Renvoyer l'image
-    res.set('Content-Type', contentType);
-    res.send(Buffer.from(response.data));
+      // Détecter le type MIME
+      const contentType = response.headers['content-type'] || 'image/jpeg';
+
+      console.log('✓ Image téléchargée avec axios');
+      res.set('Content-Type', contentType);
+      res.send(Buffer.from(response.data));
+      return;
+
+    } catch (axiosError) {
+      // Si axios échoue (403, CORS, etc.), utiliser Puppeteer
+      console.log('⚠️ Axios échoué, utilisation de Puppeteer...');
+
+      // Configuration Puppeteer
+      const puppeteerConfig = {
+        headless: 'new',
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-accelerated-2d-canvas',
+          '--disable-gpu'
+        ]
+      };
+
+      if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+        puppeteerConfig.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+      }
+
+      browser = await puppeteer.launch(puppeteerConfig);
+      const page = await browser.newPage();
+
+      // Définir un user agent réaliste
+      await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+
+      // Intercepter la requête de l'image
+      let imageBuffer = null;
+
+      await page.setRequestInterception(true);
+      page.on('request', (request) => {
+        request.continue();
+      });
+
+      page.on('response', async (response) => {
+        if (response.url() === url && response.status() === 200) {
+          try {
+            imageBuffer = await response.buffer();
+          } catch (e) {
+            console.log('⚠️ Erreur lors de la capture du buffer:', e.message);
+          }
+        }
+      });
+
+      // Naviguer vers l'image
+      await page.goto(url, {
+        waitUntil: 'networkidle0',
+        timeout: 30000
+      });
+
+      await browser.close();
+      browser = null;
+
+      if (imageBuffer) {
+        console.log('✓ Image téléchargée avec Puppeteer');
+        // Détecter le type MIME depuis l'URL
+        const contentType = url.includes('.png') ? 'image/png' :
+                           url.includes('.webp') ? 'image/webp' :
+                           url.includes('.gif') ? 'image/gif' :
+                           'image/jpeg';
+
+        res.set('Content-Type', contentType);
+        res.send(imageBuffer);
+      } else {
+        throw new Error('Impossible de récupérer l\'image avec Puppeteer');
+      }
+    }
 
   } catch (error) {
-    console.error('Erreur lors du téléchargement de l\'image:', error.message);
+    console.error('❌ Erreur lors du téléchargement de l\'image:', error.message);
     res.status(500).json({
       success: false,
-      error: 'Erreur lors du téléchargement de l\'image'
+      error: 'Erreur lors du téléchargement de l\'image',
+      details: error.message
     });
+  } finally {
+    if (browser) {
+      await browser.close();
+    }
   }
 });
 
