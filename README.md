@@ -1,34 +1,34 @@
 # Web Scraper
 
-Application de scraping web sécurisée avec interface utilisateur moderne et support multi-fournisseurs.
+Secure web scraping application with modern user interface and multi-provider support.
 
-## Structure du projet
+## Project Structure
 
 ```
 infos_product/
-├── backend/           # Serveur Node.js
-│   ├── server.js      # API Express
-│   ├── models/        # Modèles MongoDB
+├── backend/           # Node.js server
+│   ├── server.js      # Express API
+│   ├── models/        # MongoDB models
 │   │   └── Product.js
-│   └── package.json   # Dépendances backend
-├── frontend/          # Interface utilisateur
-│   ├── index.html     # Page principale
-│   ├── login.html     # Page de connexion
+│   └── package.json   # Backend dependencies
+├── frontend/          # User interface
+│   ├── index.html     # Main page
+│   ├── login.html     # Login page
 │   ├── style.css      # Styles
-│   └── app.js         # Logique JavaScript
+│   └── app.js         # JavaScript logic
 └── README.md
 ```
 
-## Fonctionnalités
+## Features
 
-### 🔐 Sécurité
-- **Authentification par code d'accès** personnalisable
-- **Session sécurisée de 4 heures** sur l'appareil
-- **Protection des suppressions** avec code de confirmation différent
-- Redirection automatique vers la page de login si non connecté
+### 🔐 Security
+- **Customizable access code authentication**
+- **Secure 4-hour session** on device
+- **Deletion protection** with different confirmation code
+- Automatic redirection to login page if not connected
 
-### 🌐 Scraping multi-fournisseurs
-Support de plusieurs sites e-commerce :
+### 🌐 Multi-provider Scraping
+Support for multiple e-commerce websites:
 - **Vevor** (.vevor.)
 - **Amazon** (www.amazon.)
 - **Cdiscount** (www.cdiscount.com)
@@ -38,126 +38,126 @@ Support de plusieurs sites e-commerce :
 - **AliExpress** (.aliexpress.)
 - **Bol.com** (www.bol.com)
 
-### 📦 Extraction de données
-- Titre des produits
-- Prix (formatés selon le fournisseur)
-- Descriptions détaillées
-- Images en haute résolution
-- URL source
-- Date d'ajout
+### 📦 Data Extraction
+- Product titles
+- Prices (formatted according to supplier)
+- Detailed descriptions
+- High-resolution images
+- Source URL
+- Date added
 
-### 🛠️ Fonctionnalités avancées
-- **Puppeteer** : Contournement des protections anti-bot
-- **Traitement en lot** : Scanner plusieurs URLs simultanément
-- **Export Excel** : Téléchargement de tous les produits en XLSX
-- **Téléchargement ZIP** : Images groupées par produit
-- **Recherche en temps réel** par nom de produit
-- **Tri chronologique** : Affichage du plus ancien au plus récent
-- **Base MongoDB** : Stockage persistant et performant
-- Vérification des URL déjà scannées
-- Interface responsive et moderne
+### 🛠️ Advanced Features
+- **Puppeteer**: Anti-bot protection bypass
+- **Batch processing**: Scan multiple URLs simultaneously
+- **Excel export**: Download all products in XLSX format
+- **ZIP download**: Images grouped by product
+- **Real-time search** by product name
+- **Chronological sorting**: Display from oldest to newest
+- **MongoDB database**: Persistent and high-performance storage
+- Already scanned URL verification
+- Responsive and modern interface
 
 ## Installation
 
-### Prérequis
+### Prerequisites
 
-- **Node.js** (v18 ou supérieur)
-- **MongoDB** (local ou MongoDB Atlas)
+- **Node.js** (v18 or higher)
+- **MongoDB** (local or MongoDB Atlas)
 
-### 1. Installation du Backend
+### 1. Backend Installation
 
 ```bash
 cd backend
 npm install
 ```
 
-### 2. Configuration MongoDB
+### 2. MongoDB Configuration
 
-Créez un fichier `.env` dans le dossier `backend/` :
+Create a `.env` file in the `backend/` folder:
 
 ```env
-# Base de données
+# Database
 MONGODB_URI=mongodb://localhost:27017/web-scraper
-# ou pour MongoDB Atlas :
+# or for MongoDB Atlas:
 # MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/web-scraper
 
-# Codes d'accès (personnalisables)
-ACCESS_CODE=ABC12345        # Code pour accéder au site
-DELETE_CODE=DEL98765        # Code pour supprimer un produit
+# Access codes (customizable)
+ACCESS_CODE=ABC12345        # Code to access the site
+DELETE_CODE=DEL98765        # Code to delete a product
 
 # Session
-SESSION_SECRET=votre-secret-super-secret-a-changer
+SESSION_SECRET=your-super-secret-to-change
 
-# Port (optionnel)
+# Port (optional)
 PORT=3000
 ```
 
-**Note** : Si vous utilisez MongoDB Atlas, consultez `MONGODB_SETUP.md` pour plus de détails.
+**Note**: If using MongoDB Atlas, refer to `MONGODB_SETUP.md` for more details.
 
 ### 3. Frontend
 
-Aucune installation nécessaire pour le frontend (HTML/CSS/JS vanilla).
+No installation required for the frontend (vanilla HTML/CSS/JS).
 
-## Utilisation
+## Usage
 
-### 1. Démarrer le serveur backend
+### 1. Start the Backend Server
 
 ```bash
 cd backend
 npm start
 ```
 
-Le serveur démarre sur http://localhost:3000 et affiche :
+The server starts on http://localhost:3000 and displays:
 ```
-✓ Serveur démarré sur http://localhost:3000
+✓ Server started on http://localhost:3000
 
-🔐 Codes d'accès :
-   - Code d'accès au site : ABC12345
-   - Code de suppression : DEL98765
+🔐 Access codes:
+   - Site access code: ABC12345
+   - Deletion code: DEL98765
 
-⏱️  Durée de session : 4 heures
+⏱️  Session duration: 4 hours
 ```
 
-### 2. Se connecter
+### 2. Login
 
-1. Ouvrez http://localhost:3000 dans votre navigateur
-2. Vous serez automatiquement redirigé vers la page de login
-3. Entrez le **code d'accès** (par défaut : `ABC12345`)
-4. Cliquez sur "Accéder"
+1. Open http://localhost:3000 in your browser
+2. You will be automatically redirected to the login page
+3. Enter the **access code** (default: `ABC12345`)
+4. Click "Access"
 
-Une fois connecté, vous avez accès au site pendant **4 heures**.
+Once logged in, you have access to the site for **4 hours**.
 
-### 3. Utiliser l'application
+### 3. Using the Application
 
-#### Scanner un produit
-1. Entrez une URL de produit dans le champ de saisie
-2. Cliquez sur "Scraper"
-3. Attendez que l'extraction se termine (loader visible)
-4. Le produit apparaît dans la liste de gauche
-5. Cliquez sur un produit pour voir ses détails complets
+#### Scan a Product
+1. Enter a product URL in the input field
+2. Click "Scraper"
+3. Wait for the extraction to complete (loader visible)
+4. The product appears in the left list
+5. Click on a product to see its full details
 
-#### Scanner plusieurs produits
-1. Entrez plusieurs URLs (une par ligne) dans le champ de saisie
-2. Cliquez sur "Scraper"
-3. Un récapitulatif s'affiche une fois le traitement terminé
+#### Scan Multiple Products
+1. Enter multiple URLs (one per line) in the input field
+2. Click "Scraper"
+3. A summary is displayed once processing is complete
 
-#### Supprimer un produit
-1. Cliquez sur le bouton 🗑️ à côté du produit
-2. Entrez le **code de suppression** (par défaut : `DEL98765`)
-3. Confirmez la suppression
+#### Delete a Product
+1. Click the 🗑️ button next to the product
+2. Enter the **deletion code** (default: `DEL98765`)
+3. Confirm deletion
 
-#### Export Excel
-Cliquez sur "📊 Exporter en Excel" pour télécharger tous les produits dans un fichier Excel.
+#### Excel Export
+Click "📊 Export to Excel" to download all products in an Excel file.
 
-#### Télécharger les images
-Dans les détails d'un produit, cliquez sur "📥 Télécharger toutes les images" pour obtenir un fichier ZIP avec toutes les images du produit.
+#### Download Images
+In product details, click "📥 Download all images" to get a ZIP file with all product images.
 
-## API Backend
+## Backend API
 
-### Authentification
+### Authentication
 
 #### GET /api/auth/check
-Vérifie si l'utilisateur est connecté.
+Check if user is logged in.
 
 **Response:**
 ```json
@@ -167,7 +167,7 @@ Vérifie si l'utilisateur est connecté.
 ```
 
 #### POST /api/auth/login
-Connexion avec le code d'accès.
+Login with access code.
 
 **Body:**
 ```json
@@ -176,37 +176,37 @@ Connexion avec le code d'accès.
 }
 ```
 
-**Response (succès):**
+**Response (success):**
 ```json
 {
   "success": true,
-  "message": "Accès autorisé"
+  "message": "Access granted"
 }
 ```
 
-**Response (erreur):**
+**Response (error):**
 ```json
 {
   "success": false,
-  "error": "Code invalide"
+  "error": "Invalid code"
 }
 ```
 
 #### POST /api/auth/logout
-Déconnexion.
+Logout.
 
 **Response:**
 ```json
 {
   "success": true,
-  "message": "Déconnexion réussie"
+  "message": "Logout successful"
 }
 ```
 
-### Produits
+### Products
 
 #### POST /api/scrape
-Extrait les données d'une page web et les enregistre dans MongoDB.
+Extract data from a web page and save it to MongoDB.
 
 **Body:**
 ```json
@@ -215,13 +215,13 @@ Extrait les données d'une page web et les enregistre dans MongoDB.
 }
 ```
 
-**Response (succès):**
+**Response (success):**
 ```json
 {
   "success": true,
   "data": {
     "id": "507f1f77bcf86cd799439011",
-    "name": "Titre du produit",
+    "name": "Product title",
     "price": "29,99 €",
     "description": ["Item 1", "Item 2"],
     "images": ["url1.jpg", "url2.jpg"],
@@ -233,17 +233,17 @@ Extrait les données d'une page web et les enregistre dans MongoDB.
 }
 ```
 
-**Response (URL déjà scannée):**
+**Response (URL already scanned):**
 ```json
 {
   "success": false,
-  "error": "URL déjà scannée",
+  "error": "URL already scanned",
   "alreadyScanned": true
 }
 ```
 
 #### GET /api/items
-Récupère tous les produits (triés du plus ancien au plus récent).
+Retrieve all products (sorted from oldest to newest).
 
 **Response:**
 ```json
@@ -252,7 +252,7 @@ Récupère tous les produits (triés du plus ancien au plus récent).
   "data": [
     {
       "id": "507f1f77bcf86cd799439011",
-      "name": "Produit 1",
+      "name": "Product 1",
       "price": "29,99 €",
       "description": ["..."],
       "images": ["..."],
@@ -265,7 +265,7 @@ Récupère tous les produits (triés du plus ancien au plus récent).
 ```
 
 #### DELETE /api/items/:id
-Supprime un produit (nécessite authentification + code de suppression).
+Delete a product (requires authentication + deletion code).
 
 **Body:**
 ```json
@@ -274,7 +274,7 @@ Supprime un produit (nécessite authentification + code de suppression).
 }
 ```
 
-**Response (succès):**
+**Response (success):**
 ```json
 {
   "success": true,
@@ -282,31 +282,31 @@ Supprime un produit (nécessite authentification + code de suppression).
 }
 ```
 
-**Response (non authentifié):**
+**Response (not authenticated):**
 ```json
 {
   "success": false,
-  "error": "Accès non autorisé. Veuillez vous connecter."
+  "error": "Unauthorized access. Please log in."
 }
 ```
 
-**Response (code invalide):**
+**Response (invalid code):**
 ```json
 {
   "success": false,
-  "error": "Code de suppression invalide"
+  "error": "Invalid deletion code"
 }
 ```
 
 ### Export
 
 #### GET /api/export/excel
-Exporte tous les produits en fichier Excel (.xlsx).
+Export all products to Excel file (.xlsx).
 
-**Response:** Fichier Excel téléchargeable
+**Response:** Downloadable Excel file
 
 #### POST /api/download-image
-Proxy pour télécharger des images (contournement CORS).
+Proxy to download images (CORS bypass).
 
 **Body:**
 ```json
@@ -315,12 +315,12 @@ Proxy pour télécharger des images (contournement CORS).
 }
 ```
 
-**Response:** Blob de l'image
+**Response:** Image blob
 
-### Santé
+### Health
 
 #### GET /api/health
-Vérifie l'état du serveur.
+Check server status.
 
 **Response:**
 ```json
@@ -330,65 +330,65 @@ Vérifie l'état du serveur.
 }
 ```
 
-## Technologies utilisées
+## Technologies Used
 
 ### Backend
 - **Node.js** (v20+)
-- **Express** - Framework web
-- **MongoDB** + **Mongoose** - Base de données NoSQL
-- **express-session** - Gestion des sessions
-- **Puppeteer** - Automatisation du navigateur et contournement anti-bot
-- **Axios** - Requêtes HTTP
-- **Cheerio** - Parsing HTML
-- **XLSX** - Export Excel
+- **Express** - Web framework
+- **MongoDB** + **Mongoose** - NoSQL database
+- **express-session** - Session management
+- **Puppeteer** - Browser automation and anti-bot bypass
+- **Axios** - HTTP requests
+- **Cheerio** - HTML parsing
+- **XLSX** - Excel export
 - **CORS** - Cross-Origin Resource Sharing
-- **dotenv** - Variables d'environnement
+- **dotenv** - Environment variables
 
 ### Frontend
 - **HTML5**
 - **CSS3** (Grid, Flexbox, Animations)
 - **JavaScript** (ES6+)
-- **JSZip** - Création de fichiers ZIP
-- Fetch API avec credentials
+- **JSZip** - ZIP file creation
+- Fetch API with credentials
 
-## Développement
+## Development
 
-Pour le développement avec rechargement automatique :
+For development with automatic reload:
 
 ```bash
 cd backend
 npm run dev
 ```
 
-Le serveur redémarrera automatiquement à chaque modification avec **nodemon**.
+The server will automatically restart with each modification using **nodemon**.
 
-## Sécurité
+## Security
 
-### Codes d'accès
-Les codes par défaut sont :
-- **Accès au site** : `ABC12345`
-- **Suppression** : `DEL98765`
+### Access Codes
+Default codes are:
+- **Site access**: `ABC12345`
+- **Deletion**: `DEL98765`
 
-⚠️ **Important** : Changez ces codes dans le fichier `.env` en production !
+⚠️ **Important**: Change these codes in the `.env` file in production!
 
 ### Sessions
-- Durée : **4 heures**
-- Cookie httpOnly pour plus de sécurité
-- Session invalidée après expiration
+- Duration: **4 hours**
+- HttpOnly cookie for enhanced security
+- Session invalidated after expiration
 
-### Bonnes pratiques
-1. Ne partagez jamais le fichier `.env`
-2. Utilisez des codes complexes en production
-3. Activez HTTPS en production (`secure: true` dans les cookies)
-4. Configurez une `SESSION_SECRET` forte
+### Best Practices
+1. Never share the `.env` file
+2. Use complex codes in production
+3. Enable HTTPS in production (`secure: true` in cookies)
+4. Configure a strong `SESSION_SECRET`
 
 ## Notes
 
-- **Base de données** : MongoDB (plus de fichier JSON)
-- **Tri** : Les produits sont affichés du plus ancien au plus récent
-- **Images** : Téléchargées en haute résolution quand disponible
-- **Anti-bot** : Puppeteer simule un vrai navigateur
-- **Batch** : Possibilité de scanner plusieurs URLs à la fois
-- **Export** : Format Excel avec toutes les données
-- **ZIP** : Images groupées par produit
-- Les produits supprimés sont définitivement retirés de MongoDB
+- **Database**: MongoDB (no more JSON file)
+- **Sorting**: Products are displayed from oldest to newest
+- **Images**: Downloaded in high resolution when available
+- **Anti-bot**: Puppeteer simulates a real browser
+- **Batch**: Ability to scan multiple URLs at once
+- **Export**: Excel format with all data
+- **ZIP**: Images grouped by product
+- Deleted products are permanently removed from MongoDB
