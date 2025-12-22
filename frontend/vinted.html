@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vinted Management - Web Scraper</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Loader d'authentification */
+        #authLoader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        #authLoader .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        #authLoader p {
+            color: white;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        #mainContent {
+            display: none;
+        }
+
+        body.authenticated #authLoader {
+            display: none;
+        }
+
+        body.authenticated #mainContent {
+            display: block;
+        }
+
+        .container {
+            max-width: 1600px;
+            padding: 2rem;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .back-btn, .add-btn {
+            padding: 0.8rem 1.5rem;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(17, 153, 142, 0.4);
+        }
+
+        .search-section {
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-section input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #00c9a7 0%, #00a881 100%);
+            color: white;
+        }
+
+        .table-header h2 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .delete-selected-btn {
+            padding: 0.6rem 1.2rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .delete-selected-btn:hover:not(:disabled) {
+            background: white;
+            color: #00a881;
+        }
+
+        .delete-selected-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .table-content {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8f9ff;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        th.checkbox-col {
+            width: 50px;
+            text-align: center;
+        }
+
+        th.actions-col {
+            width: 100px;
+            text-align: center;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f8f9ff;
+        }
+
+        td {
+            padding: 1rem;
+        }
+
+        td.checkbox-col {
+            text-align: center;
+        }
+
+        td.actions-col {
+            text-align: center;
+        }
+
+        .checkbox-input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .delete-btn {
+            padding: 0.4rem 0.8rem;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .delete-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .empty-message {
+            padding: 3rem;
+            text-align: center;
+            color: #999;
+            font-size: 1.1rem;
+        }
+
+        .loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+        }
+
+        .loader.hidden {
+            display: none;
+        }
+
+        .error-message {
+            background: #fee;
+            border: 2px solid #fcc;
+            color: #c33;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .error-message.hidden {
+            display: none;
+        }
+
+        /* Modal pour détails */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: #00a881;
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: #00a881;
+        }
+
+        .detail-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-value {
+            color: #333;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .product-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+
+        /* Styles pour les boutons de choix */
+        .choice-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .choice-btn {
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .choice-btn:hover {
+            border-color: #00a881;
+            background: #f0fff8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 168, 129, 0.15);
+        }
+
+        .choice-btn-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .choice-btn-desc {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loader d'authentification -->
+    <div id="authLoader">
+        <div class="spinner"></div>
+        <p>Vérification de l'authentification...</p>
+    </div>
+
+    <!-- Contenu principal -->
+    <div id="mainContent">
+        <div class="container">
+            <div class="header-section">
+                <div class="header-left">
+                    <h1>Vinted Management</h1>
+                    <p>Gérez vos produits sur Vinted Pro</p>
+                </div>
+                <div class="header-buttons">
+                    <a href="/" class="back-btn">← Retour</a>
+                    <button id="addProductsBtn" class="add-btn">+ Ajouter des produits</button>
+                </div>
+            </div>
+
+            <!-- Message d'erreur -->
+            <div id="errorMessage" class="error-message hidden"></div>
+
+            <!-- Barre de recherche -->
+            <div class="search-section">
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Rechercher par titre, ID, prix..."
+                >
+            </div>
+
+            <!-- Loader -->
+            <div id="loader" class="loader hidden">
+                <div class="spinner"></div>
+                <p>Chargement des produits Vinted...</p>
+            </div>
+
+            <!-- Tableau des produits -->
+            <div class="table-container" id="tableContainer">
+                <div class="table-header">
+                    <h2>
+                        Produits <span id="itemCount">(0)</span>
+                    </h2>
+                    <button id="deleteSelectedBtn" class="delete-selected-btn" disabled>
+                        🗑️ Supprimer la sélection
+                    </button>
+                </div>
+                <div class="table-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="checkbox-col">
+                                    <input type="checkbox" id="selectAllCheckbox" class="checkbox-input">
+                                </th>
+                                <th>ID</th>
+                                <th>Titre</th>
+                                <th>Prix</th>
+                                <th>Statut</th>
+                                <th class="actions-col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <tr>
+                                <td colspan="6" class="empty-message">
+                                    Aucun produit pour le moment
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour les détails du produit -->
+    <div id="productModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Détails du produit</h3>
+                <button id="closeModalBtn" class="close-btn">✕</button>
+            </div>
+            <div id="productDetails">
+                <!-- Les détails seront injectés ici par JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de choix du mode d'ajout -->
+    <div id="addChoiceModal" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Ajouter un produit sur Vinted</h3>
+                <button id="closeChoiceModalBtn" class="close-btn">✕</button>
+            </div>
+            <div style="padding: 1rem 0;">
+                <p style="color: #666; margin-bottom: 1.5rem;">Comment souhaitez-vous ajouter un produit ?</p>
+
+                <div class="choice-buttons">
+                    <button id="chooseLocalBtn" class="choice-btn">
+                        <div class="choice-btn-title">
+                            📦 Depuis mes produits
+                        </div>
+                        <div class="choice-btn-desc">
+                            Sélectionner un produit déjà scrapé dans votre base de données
+                        </div>
+                    </button>
+
+                    <button id="chooseNewBtn" class="choice-btn">
+                        <div class="choice-btn-title">
+                            ✨ Créer de zéro
+                        </div>
+                        <div class="choice-btn-desc">
+                            Créer un nouveau produit manuellement avec un formulaire
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pour ajouter un produit -->
+    <div id="addProductModal" class="modal hidden">
+        <div class="modal-content" style="max-width: 1000px;">
+            <div class="modal-header">
+                <h3 id="addProductModalTitle">Ajouter un produit sur Vinted</h3>
+                <button id="closeAddModalBtn" class="close-btn">✕</button>
+            </div>
+            <div id="addProductContent">
+                <!-- Mode: Produits locaux -->
+                <div id="localProductsMode" class="hidden">
+                    <!-- Recherche de produits locaux -->
+                    <div style="margin-bottom: 1.5rem;">
+                        <input
+                            type="text"
+                            id="localProductSearch"
+                            placeholder="Rechercher dans vos produits locaux..."
+                            style="width: 100%; padding: 0.8rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem;"
+                        >
+                    </div>
+
+                    <!-- Loader -->
+                    <div id="addProductLoader" class="loader hidden">
+                        <div class="spinner"></div>
+                        <p>Chargement...</p>
+                    </div>
+
+                    <!-- Liste des produits locaux -->
+                    <div id="localProductsList" style="max-height: 400px; overflow-y: auto;">
+                        <!-- Les produits seront injectés ici -->
+                    </div>
+                </div>
+
+                <!-- Mode: Nouveau produit -->
+                <div id="newProductMode" class="hidden">
+                    <form id="newProductForm">
+                        <div style="display: grid; gap: 1.5rem;">
+                            <div>
+                                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #333;">
+                                    Titre du produit *
+                                </label>
+                                <input
+                                    type="text"
+                                    id="newProductTitle"
+                                    required
+                                    placeholder="Ex: Nike Air Max 90"
+                                    style="width: 100%; padding: 0.8rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem;"
+                                >
+                            </div>
+
+                            <div>
+                                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #333;">
+                                    Description
+                                </label>
+                                <textarea
+                                    id="newProductDescription"
+                                    rows="4"
+                                    placeholder="Décrivez votre produit..."
+                                    style="width: 100%; padding: 0.8rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; resize: vertical;"
+                                ></textarea>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div>
+                                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #333;">
+                                        Prix (€) *
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="newProductPrice"
+                                        required
+                                        min="0"
+                                        step="0.01"
+                                        placeholder="0.00"
+                                        style="width: 100%; padding: 0.8rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem;"
+                                    >
+                                </div>
+
+                                <div>
+                                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #333;">
+                                        Devise
+                                    </label>
+                                    <select
+                                        id="newProductCurrency"
+                                        style="width: 100%; padding: 0.8rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem;"
+                                    >
+                                        <option value="EUR">EUR (€)</option>
+                                        <option value="USD">USD ($)</option>
+                                        <option value="GBP">GBP (£)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div style="background: #f8f9ff; padding: 1rem; border-radius: 8px; color: #666; font-size: 0.9rem;">
+                                💡 <strong>Note :</strong> L'API Vinted peut nécessiter d'autres champs (catégorie, taille, condition, etc.) selon le type de produit.
+                                Ces champs pourront être ajoutés ultérieurement.
+                            </div>
+
+                            <div style="display: flex; gap: 1rem; justify-content: space-between;">
+                                <button
+                                    type="button"
+                                    id="backToLocalBtn"
+                                    class="hidden"
+                                    style="padding: 0.8rem 1.5rem; background: #667eea; color: white; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s;"
+                                    onmouseover="this.style.background='#5568d3'"
+                                    onmouseout="this.style.background='#667eea'"
+                                >
+                                    ← Retour aux produits
+                                </button>
+                                <div style="display: flex; gap: 1rem; margin-left: auto;">
+                                    <button
+                                        type="button"
+                                        onclick="vintedApp.closeAddModal()"
+                                        style="padding: 0.8rem 1.5rem; background: #e0e0e0; color: #333; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer;"
+                                    >
+                                        Annuler
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        class="add-btn"
+                                        style="padding: 0.8rem 1.5rem; margin: 0;"
+                                    >
+                                        Ajouter sur Vinted
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="vinted.js"></script>
+</body>
+</html>

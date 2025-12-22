@@ -496,6 +496,39 @@ function cleanImageUrl(url) {
   return url;
 }
 
+// Fonction pour récupérer le dernier minuteOffset d'un jour donné
+async function getLastMinuteOffsetForDate(dateString) {
+  try {
+    // Parser la date en format YYYY-MM-DD
+    const [year, month, day] = dateString.split('-').map(Number);
+    const startDate = new Date(year, month - 1, day, 0, 0, 0, 0);
+    const endDate = new Date(year, month - 1, day, 23, 59, 59, 999);
+
+    // Trouver le dernier produit ajouté ce jour-là (sans erreur)
+    const lastProduct = await Product.findOne({
+      createdAt: {
+        $gte: startDate,
+        $lte: endDate
+      }
+    }).sort({ createdAt: -1 });
+
+    if (lastProduct) {
+      // Extraire les minutes de la date
+      const minutes = lastProduct.createdAt.getMinutes();
+      console.log(`📅 Dernier produit du ${dateString} à ${lastProduct.createdAt.getHours()}h${String(minutes).padStart(2, '0')}`);
+      // Retourner minutes + 1 pour le prochain produit
+      return minutes + 1;
+    }
+
+    // Aucun produit trouvé pour ce jour, commencer à 0
+    console.log(`📅 Aucun produit trouvé pour le ${dateString}, démarrage à 00h00`);
+    return 0;
+  } catch (error) {
+    console.error('Erreur lors de la récupération du dernier offset:', error);
+    return 0; // En cas d'erreur, commencer à 0
+  }
+}
+
 // ===== Routes d'authentification =====
 
 // Vérifier si l'utilisateur est connecté
@@ -642,7 +675,8 @@ async function fetchWithPuppeteer(url) {
     await page.mouse.move(200, 200);
 
     // Attendre plus longtemps pour Leroy Merlin (challenge anti-bot) et Vevor (navigations multiples)
-    const waitTime = isLeroyMerlin ? 15000 : (isVevor ? 10000 : 8000);
+    // Amazon nécessite aussi plus de temps lors de l'enchaînement de requêtes
+    const waitTime = isLeroyMerlin ? 15000 : (isAmazon ? 12000 : (isVevor ? 10000 : 8000));
     console.log(`⏳ Attente de ${waitTime/1000} secondes...`);
     await new Promise(resolve => setTimeout(resolve, waitTime));
 
@@ -650,8 +684,24 @@ async function fetchWithPuppeteer(url) {
     try {
       // Attendre qu'au moins un des sélecteurs communs soit présent
       const selectorTimeout = isLeroyMerlin ? 30000 : 15000;
-      await page.waitForSelector('h1, .product-name, img, body', { timeout: selectorTimeout });
-      console.log('✓ Éléments chargés');
+
+      if (isAmazon) {
+        // Pour Amazon, attendre spécifiquement les éléments critiques
+        console.log('🔍 Amazon - Vérification du chargement des éléments critiques...');
+        await page.waitForSelector('span#productTitle, h1#title', { timeout: selectorTimeout });
+        console.log('✓ Amazon - Titre chargé');
+
+        // Vérifier que le prix est aussi chargé
+        try {
+          await page.waitForSelector('.a-offscreen, #priceblock_ourprice, .a-price', { timeout: 5000 });
+          console.log('✓ Amazon - Prix chargé');
+        } catch (priceError) {
+          console.log('⚠️ Amazon - Prix non trouvé immédiatement, on continue...');
+        }
+      } else {
+        await page.waitForSelector('h1, .product-name, img, body', { timeout: selectorTimeout });
+        console.log('✓ Éléments chargés');
+      }
     } catch (waitError) {
       console.log('⚠️ Timeout en attendant les éléments, continuons quand même...');
     }
@@ -945,12 +995,18 @@ app.post('/api/scrape', async (req, res) => {
     const productDate = new Date(year, month - 1, day, 0, 0, 0, 0);
 
     // Si un offset de minutes est fourni, l'appliquer
+    // Sinon, récupérer le dernier offset du jour et l'utiliser
+    let finalMinuteOffset;
     if (typeof minuteOffset === 'number' && minuteOffset >= 0) {
-      productDate.setMinutes(minuteOffset);
-      console.log(`📅 Date avec offset: ${productDate.toLocaleString('fr-FR')}`);
+      finalMinuteOffset = minuteOffset;
     } else {
-      console.log(`📅 Date du produit: ${productDate.toLocaleDateString('fr-FR')}`);
+      // Récupérer le dernier minuteOffset du jour
+      finalMinuteOffset = await getLastMinuteOffsetForDate(customDate);
     }
+
+    productDate.setMinutes(finalMinuteOffset);
+    console.log(`📅 Date avec offset (${finalMinuteOffset} min): ${productDate.toLocaleString('fr-FR')}`);
+
 
     // Détecter le fournisseur
     const supplier = detectSupplier(url);
@@ -1048,12 +1104,12 @@ app.post('/api/scrape', async (req, res) => {
     const description = extractDescription($, selectors.description);
     const images = extractImages($, selectors.images, url);
 
-    console.log('Données extraites:');
+    console.log('\n📊 Données extraites:');
     console.log('- Fournisseur:', supplier.config.name);
-    console.log('- Titre:', title);
-    console.log('- Prix:', price);
-    console.log('- Description:', description.length, 'éléments');
-    console.log('- Images:', images.length, 'trouvées');
+    console.log('- Titre:', title ? `✓ "${title.substring(0, 60)}${title.length > 60 ? '...' : ''}"` : '❌ VIDE');
+    console.log('- Prix:', price ? `✓ "${price}"` : '❌ VIDE');
+    console.log('- Description:', description.length > 0 ? `✓ ${description.length} éléments` : '❌ VIDE');
+    console.log('- Images:', images.length > 0 ? `✓ ${images.length} trouvées` : '❌ AUCUNE');
 
     // Ajouter à la base de données
     const newProduct = new Product({
@@ -1181,10 +1237,19 @@ app.delete('/api/items/:id', async (req, res) => {
   }
 });
 
-// Export Excel
-app.get('/api/export/excel', async (req, res) => {
+// Export Excel (avec filtres)
+app.post('/api/export/excel', async (req, res) => {
   try {
-    const items = await Product.find().sort({ createdAt: 1 });
+    const { itemIds } = req.body;
+
+    // Si des IDs sont fournis, filtrer les produits par ces IDs
+    let items;
+    if (itemIds && Array.isArray(itemIds) && itemIds.length > 0) {
+      items = await Product.find({ _id: { $in: itemIds } }).sort({ createdAt: 1 });
+    } else {
+      // Sinon, exporter tous les produits
+      items = await Product.find().sort({ createdAt: 1 });
+    }
 
     if (items.length === 0) {
       return res.status(404).json({
@@ -1497,8 +1562,9 @@ async function processBatchInBackground(urls, customDate) {
     console.log(`📅 Date personnalisée: ${baseProductDate.toLocaleDateString('fr-FR')}`);
   }
 
-  // Compteur pour incrémenter les minutes lors de l'ajout avec date personnalisée
-  let minuteOffset = 0;
+  // Récupérer le dernier minuteOffset du jour pour continuer à partir de là
+  let minuteOffset = await getLastMinuteOffsetForDate(customDate);
+  console.log(`📅 Démarrage à partir de l'offset: ${minuteOffset} minute(s)`);
 
   for (let i = 0; i < urls.length; i++) {
     const url = urls[i].trim();
@@ -1592,7 +1658,11 @@ async function processBatchInBackground(urls, customDate) {
       const description = extractDescription($, selectors.description);
       const images = extractImages($, selectors.images, url);
 
-      console.log('✓ Données extraites:', title);
+      console.log('\n📊 Résumé extraction:');
+      console.log('  - Titre:', title ? `✓ "${title.substring(0, 50)}..."` : '❌ VIDE');
+      console.log('  - Prix:', price ? `✓ "${price}"` : '❌ VIDE');
+      console.log('  - Description:', description.length > 0 ? `✓ ${description.length} éléments` : '❌ VIDE');
+      console.log('  - Images:', images.length > 0 ? `✓ ${images.length} images` : '❌ AUCUNE');
 
       // Calculer la date pour ce produit
       // Si date personnalisée : incrémenter les minutes pour chaque produit ajouté
@@ -1655,8 +1725,15 @@ async function processBatchInBackground(urls, customDate) {
 
     results.processed++;
 
-    // Petit délai pour ne pas surcharger
-    await new Promise(resolve => setTimeout(resolve, 500));
+    // Délai entre requêtes pour éviter la détection anti-bot
+    // Plus long et aléatoire pour Amazon pour éviter le blocage
+    const isAmazonUrl = url.includes('amazon');
+    const minDelay = isAmazonUrl ? 2000 : 500;  // Min 2s pour Amazon, 0.5s pour les autres
+    const maxDelay = isAmazonUrl ? 5000 : 1500; // Max 5s pour Amazon, 1.5s pour les autres
+    const randomDelay = Math.floor(Math.random() * (maxDelay - minDelay + 1)) + minDelay;
+
+    console.log(`⏳ Pause de ${randomDelay/1000}s avant la prochaine requête...`);
+    await new Promise(resolve => setTimeout(resolve, randomDelay));
   }
 
   results.endTime = new Date().toISOString();
@@ -1961,6 +2038,232 @@ app.get('/api/ignored/stats', async (req, res) => {
 });
 
 // ===== Fin des routes pour les produits ignorés =====
+
+// ===== Routes pour Vinted Management =====
+// Configuration Vinted API
+const VINTED_API_URL = 'https://pro.vinted.com';
+const VINTED_ACCESS_TOKEN = process.env.VINTED_ACCESS_TOKEN || ''; // Format: "access_key,signing_key"
+
+// Fonction pour générer la signature HMAC-SHA256 pour l'API Vinted
+const crypto = require('crypto');
+function generateVintedSignature(method, path, accessKey, signingKey, body = '') {
+  const timestamp = Math.floor(Date.now() / 1000);
+  const payload = [timestamp, method.toUpperCase(), path, accessKey, body].join('');
+  const hash = crypto.createHmac('sha256', signingKey).update(payload).digest('hex');
+  return { timestamp, signature: `t=${timestamp},v1=${hash}` };
+}
+
+// Middleware pour vérifier l'authentification Vinted
+function checkVintedConfig(req, res, next) {
+  if (!req.session.authenticated) {
+    return res.status(403).json({ success: false, error: 'Accès non autorisé' });
+  }
+  if (!VINTED_ACCESS_TOKEN || !VINTED_ACCESS_TOKEN.includes(',')) {
+    return res.status(500).json({
+      success: false,
+      error: 'Configuration Vinted non trouvée. Veuillez configurer VINTED_ACCESS_TOKEN dans .env'
+    });
+  }
+  next();
+}
+
+// GET /api/vinted/items - Liste tous les produits Vinted
+app.get('/api/vinted/items', checkVintedConfig, async (req, res) => {
+  try {
+    const [accessKey, signingKey] = VINTED_ACCESS_TOKEN.split(',');
+    const path = '/api/v1/items';
+    const { timestamp, signature } = generateVintedSignature('GET', path, accessKey, signingKey);
+
+    const response = await axios.get(`${VINTED_API_URL}${path}`, {
+      headers: {
+        'X-Vpi-Access-Key': accessKey,
+        'X-Vpi-Hmac-Sha256': signature
+      }
+    });
+
+    res.json({
+      success: true,
+      data: response.data
+    });
+  } catch (error) {
+    console.error('Erreur lors de la récupération des produits Vinted:', error.response?.data || error.message);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la récupération des produits Vinted',
+      details: error.response?.data || error.message
+    });
+  }
+});
+
+// GET /api/vinted/items/:id/status - Statut d'un produit Vinted
+app.get('/api/vinted/items/:id/status', checkVintedConfig, async (req, res) => {
+  try {
+    const [accessKey, signingKey] = VINTED_ACCESS_TOKEN.split(',');
+    const path = `/api/v1/items/${req.params.id}/status`;
+    const { timestamp, signature } = generateVintedSignature('GET', path, accessKey, signingKey);
+
+    const response = await axios.get(`${VINTED_API_URL}${path}`, {
+      headers: {
+        'X-Vpi-Access-Key': accessKey,
+        'X-Vpi-Hmac-Sha256': signature
+      }
+    });
+
+    res.json({
+      success: true,
+      data: response.data
+    });
+  } catch (error) {
+    console.error('Erreur lors de la récupération du statut du produit Vinted:', error.response?.data || error.message);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la récupération du statut',
+      details: error.response?.data || error.message
+    });
+  }
+});
+
+// POST /api/vinted/items - Créer un nouveau produit Vinted
+app.post('/api/vinted/items', checkVintedConfig, async (req, res) => {
+  try {
+    const [accessKey, signingKey] = VINTED_ACCESS_TOKEN.split(',');
+    const path = '/api/v1/items';
+
+    // Le body contient les informations du produit
+    const productData = req.body;
+
+    // Validation basique
+    if (!productData.title) {
+      return res.status(400).json({
+        success: false,
+        error: 'Le titre du produit est requis'
+      });
+    }
+
+    const body = JSON.stringify(productData);
+    const { timestamp, signature } = generateVintedSignature('POST', path, accessKey, signingKey, body);
+
+    const response = await axios.post(`${VINTED_API_URL}${path}`, productData, {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Vpi-Access-Key': accessKey,
+        'X-Vpi-Hmac-Sha256': signature
+      }
+    });
+
+    res.json({
+      success: true,
+      data: response.data,
+      message: 'Produit créé avec succès sur Vinted'
+    });
+  } catch (error) {
+    console.error('Erreur lors de la création du produit Vinted:', error.response?.data || error.message);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la création du produit Vinted',
+      details: error.response?.data || error.message
+    });
+  }
+});
+
+// DELETE /api/vinted/items/:id - Supprimer un produit Vinted
+app.delete('/api/vinted/items/:id', checkVintedConfig, async (req, res) => {
+  try {
+    // Vérifier le code de suppression
+    const { deleteCode } = req.body;
+    if (deleteCode !== DELETE_CODE) {
+      return res.status(401).json({
+        success: false,
+        error: 'Code de suppression invalide'
+      });
+    }
+
+    const [accessKey, signingKey] = VINTED_ACCESS_TOKEN.split(',');
+    const path = '/api/v1/items';
+    const body = JSON.stringify({ ids: [req.params.id] });
+    const { timestamp, signature } = generateVintedSignature('DELETE', path, accessKey, signingKey, body);
+
+    const response = await axios.delete(`${VINTED_API_URL}${path}`, {
+      headers: {
+        'X-Vpi-Access-Key': accessKey,
+        'X-Vpi-Hmac-Sha256': signature,
+        'Content-Type': 'application/json'
+      },
+      data: body
+    });
+
+    res.json({
+      success: true,
+      message: 'Produit supprimé avec succès',
+      data: response.data
+    });
+  } catch (error) {
+    console.error('Erreur lors de la suppression du produit Vinted:', error.response?.data || error.message);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la suppression du produit',
+      details: error.response?.data || error.message
+    });
+  }
+});
+
+// DELETE /api/vinted/items/batch - Supprimer plusieurs produits Vinted
+app.delete('/api/vinted/items/batch', checkVintedConfig, async (req, res) => {
+  try {
+    // Vérifier le code de suppression
+    const { deleteCode, ids } = req.body;
+    if (deleteCode !== DELETE_CODE) {
+      return res.status(401).json({
+        success: false,
+        error: 'Code de suppression invalide'
+      });
+    }
+
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'IDs manquants ou invalides'
+      });
+    }
+
+    // Limiter à 100 items par requête (limite API Vinted)
+    if (ids.length > 100) {
+      return res.status(400).json({
+        success: false,
+        error: 'Maximum 100 produits par requête'
+      });
+    }
+
+    const [accessKey, signingKey] = VINTED_ACCESS_TOKEN.split(',');
+    const path = '/api/v1/items';
+    const body = JSON.stringify({ ids });
+    const { timestamp, signature } = generateVintedSignature('DELETE', path, accessKey, signingKey, body);
+
+    const response = await axios.delete(`${VINTED_API_URL}${path}`, {
+      headers: {
+        'X-Vpi-Access-Key': accessKey,
+        'X-Vpi-Hmac-Sha256': signature,
+        'Content-Type': 'application/json'
+      },
+      data: body
+    });
+
+    res.json({
+      success: true,
+      message: `${ids.length} produit(s) supprimé(s) avec succès`,
+      data: response.data
+    });
+  } catch (error) {
+    console.error('Erreur lors de la suppression groupée:', error.response?.data || error.message);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la suppression groupée',
+      details: error.response?.data || error.message
+    });
+  }
+});
+
+// ===== Fin des routes pour Vinted Management =====
 
 // Route de test
 app.get('/api/health', (_req, res) => {

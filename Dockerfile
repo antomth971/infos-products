@@ -29,8 +29,8 @@ COPY . .
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
-# Exposer le port (Render définira automatiquement PORT)
+# Exposer le port
 EXPOSE 3000
 
-# Démarrer l'application (utilise le script normal car Render a des DNS fonctionnels)
+# Démarrer l'application
 CMD ["npm", "run", "start:prod"]

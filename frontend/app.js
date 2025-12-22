@@ -20,6 +20,7 @@ class App {
         this.supplierFilter = document.getElementById('supplierFilter');
         this.exportExcelBtn = document.getElementById('exportExcelBtn');
         this.viewIgnoredBtn = document.getElementById('viewIgnoredBtn');
+        this.vintedManagementBtn = document.getElementById('vintedManagementBtn');
         this.loader = document.getElementById('loader');
         this.errorMessage = document.getElementById('errorMessage');
         this.itemsList = document.getElementById('itemsList');
@@ -67,6 +68,7 @@ class App {
         this.supplierFilter.addEventListener('change', (e) => this.handleSupplierFilter(e));
         this.exportExcelBtn.addEventListener('click', () => this.exportToExcel());
         this.viewIgnoredBtn.addEventListener('click', () => this.viewIgnoredProducts());
+        this.vintedManagementBtn.addEventListener('click', () => this.viewVintedManagement());
         this.scanForUrlButton.addEventListener('click', () => this.scanForUrls());
         this.closeScannerBtn.addEventListener('click', () => this.closeScanner());
 
@@ -382,7 +384,6 @@ class App {
         let successCount = 0;
         let errorCount = 0;
         let skippedCount = 0;
-        let minuteOffset = 0; // Compteur pour l'incrémentation des minutes
 
         this.showLoader();
 
@@ -399,8 +400,7 @@ class App {
             try {
                 const requestBody = {
                     url,
-                    customDate: customDate,  // Toujours envoyer la date
-                    minuteOffset: minuteOffset
+                    customDate: customDate  // Le backend gérera le minuteOffset automatiquement
                 };
 
                 const response = await fetch(`${API_URL}/api/scrape`, {
@@ -416,7 +416,6 @@ class App {
 
                 if (result.success) {
                     successCount++;
-                    minuteOffset++; // Incrémenter l'offset pour le prochain produit ajouté
                     console.log(`✅ [${i + 1}/${urls.length}] Succès: ${url}`);
                     // Recharger la liste pour montrer le nouveau produit
                     await this.loadItems();
@@ -660,7 +659,7 @@ class App {
                 <div class="list-item-number">(${index + 1})</div>
                 <div class="list-item-content">
                     <div class="list-item-name">${this.escapeHtml(item.name || 'Sans titre')}</div>
-                    <div class="list-item-id">ID: ${item.id}${item.price ? ' • ' + this.escapeHtml(item.price) : ''}</div>
+                    <div class="list-item-id">Prix: ${item.price ? ' • ' + this.escapeHtml(item.price) : ''}</div>
                 </div>
                 <button class="delete-btn" data-id="${item.id}">🗑️</button>
             </div>
@@ -953,9 +952,17 @@ class App {
             this.exportExcelBtn.disabled = true;
             this.exportExcelBtn.textContent = '⏳ Export en cours...';
 
-            // Appeler l'API pour générer le fichier Excel
+            // Récupérer les IDs des produits filtrés
+            const itemIds = this.filteredItems.map(item => item.id);
+
+            // Appeler l'API pour générer le fichier Excel avec les IDs filtrés
             const response = await fetch(`${API_URL}/api/export/excel`, {
-                credentials: 'include'
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ itemIds })
             });
 
             if (!response.ok) {
@@ -992,6 +999,10 @@ class App {
     // Rediriger vers la page des produits ignorés
     viewIgnoredProducts() {
         window.location.href = '/ignored.html';
+    }
+
+    viewVintedManagement() {
+        window.location.href = '/vinted.html';
     }
 
     // Formater la date au format français

@@ -1,177 +1,152 @@
 {
-  "startTime": "2025-11-18T17:23:49.436Z",
-  "totalUrls": 27,
-  "processed": 27,
-  "added": 26,
-  "skipped": 0,
-  "errors": 1,
+  "startTime": "2025-12-19T23:53:58.107Z",
+  "totalUrls": 24,
+  "processed": 24,
+  "added": 19,
+  "skipped": 2,
+  "errors": 3,
   "details": {
     "added": [
       {
-        "url": "https://www.amazon.co.uk/Opal-Stainless-Chocolate-Fountain-OCF17/dp/B0CWYZ3D35",
-        "title": "Opal Large Size Stainless Steel Chocolate Fountain 500ml Fondue Set Electric 3-Tier Machine with Hot Melting Pot Base OCF17 (OCF17)",
+        "url": "https://www.amazon.fr/dp/B0F9KJWNK1?ref=cm_sw_r_cso_wa_mwn_dp_7H37529VBQ0133XZX3H8&ref_=cm_sw_r_cso_wa_mwn_dp_7H37529VBQ0133XZX3H8&social_share=cm_sw_r_cso_wa_mwn_dp_7H37529VBQ0133XZX3H8",
+        "title": "Trottinette 5 en 1, pour enfants à partir de 2 ans, jusqu'à 50 kg, avec siège pliable et roues LED, hauteur réglable, pliable, pour tout-petits, garçons et filles",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.amazon.fr/Outvita-Toilette-Amovible-Porte-Papier-Hygi%C3%A9nique/dp/B0BQJ67115",
-        "title": "Outvita Pot de Chambre Adulte, 5 L Toilette Camping Amovible avec Porte-Papier Hygiénique pour Camping Voyage - Blanc, Blanc-5L, 52.5 x 42.5 x 66",
+        "url": "https://www.amazon.fr/dp/B0F192ZKQG?ref=cm_sw_r_cso_wa_mwn_dp_8X6T8YDV8KEY7HHQA1YY&ref_=cm_sw_r_cso_wa_mwn_dp_8X6T8YDV8KEY7HHQA1YY&social_share=cm_sw_r_cso_wa_mwn_dp_8X6T8YDV8KEY7HHQA1YY",
+        "title": "Table à Langer Pliable Multifonction, Hauteur Réglable, Table à langer pour bébé avec roues，Avec Rangement et Cintre, 80 * 66 * 98cm (Gris)",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.amazon.fr/Outsunny-Balancelle-imperm%C3%A9abilis%C3%A9-Inclinaison-Ergonomique/dp/B07CGPG1JP",
-        "title": "Outsunny Balancelle de Jardin 3 Places Grand Confort Toit Inclinaison réglable Assise et Dossier Ergonomique Acier textilène Gris",
+        "url": "https://www.amazon.fr/dp/B09YRM77JV?ref=cm_sw_r_cso_wa_mwn_dp_5VB75X4TXE16WP4B37H8&ref_=cm_sw_r_cso_wa_mwn_dp_5VB75X4TXE16WP4B37H8&social_share=cm_sw_r_cso_wa_mwn_dp_5VB75X4TXE16WP4B37H8",
+        "title": "KESHUO Musique Clavier 61Keys Digital Music Electronic Clavier Multifonctionnel Piano Piano Piano Fonction Microphone Instrument De Musique",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.amazon.fr/Willonin-Colonne-Panneau-Syst%C3%A8me-multifonctionnel/dp/B0B5GLKN7C",
-        "title": "Colonne de Douche Panneau de Douche pour Salle de Bain Système de Douche panneau de douche multifonctionnel - 5 modes de bec- Acier Inoxydable (A)",
+        "url": "https://www.amazon.fr/dp/B0C2HGLZSZ?ref=cm_sw_r_cso_wa_mwn_dp_B8BGEXXSCEM96YMVC9AB&ref_=cm_sw_r_cso_wa_mwn_dp_B8BGEXXSCEM96YMVC9AB&social_share=cm_sw_r_cso_wa_mwn_dp_B8BGEXXSCEM96YMVC9AB",
+        "title": "Scie électrique portable 21 V 6 pouces Petite scie à tronçonner à bois Moteur à brosse à main Outil de travail du bois pour jardin fruitier",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.amazon.fr/Suspension-Pendentif-Industriel-Suspendu-R%C3%A9glable/dp/B083BSKCX9",
-        "title": "Suspension E27 Lustre Lumière Pendentif Vintage Rétro Lampe Pendentif Industriel Bambou Rotin Naturel Suspendu Tissé Lampes Suspension Réglable Hauteur Manger Bureau Salon Café Salle Lampe,60cm",
+        "url": "https://www.amazon.fr/dp/B087FXSR76?ref=cm_sw_r_cso_wa_mwn_dp_CSP1JGDM33EMYH647QYF&ref_=cm_sw_r_cso_wa_mwn_dp_CSP1JGDM33EMYH647QYF&social_share=cm_sw_r_cso_wa_mwn_dp_CSP1JGDM33EMYH647QYF",
+        "title": "Imprimante de Tatouage, 2 Type Professionnel A5 A4 Tatouage Transfert Copieur Thermique Pochoir Imprimante Papier Machine Fournitures de Tatouage pour Transfert de Tatouage",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.amazon.fr/tron%C3%A7onneuse-%C3%A9lectrique-batterie-chargeur-jardinage/dp/B0D6G7VMVK",
-        "title": "2025 Mini tronçonneuse 8 pouces et 6 pouces sans balai, 2 en 1 tronçonneuse électrique avec 2pcs 2000mAH batterie et chargeur, tronçonneuse légère sans fil pour le jardinage, la coupe d'arbres et l'él",
+        "url": "https://www.amazon.nl/dp/B0B4R6VV1X?ref=cm_sw_r_cso_wa_mwn_dp_MEKQT1Y81ATB6PZBN3P5&ref_=cm_sw_r_cso_wa_mwn_dp_MEKQT1Y81ATB6PZBN3P5&social_share=cm_sw_r_cso_wa_mwn_dp_MEKQT1Y81ATB6PZBN3P5",
+        "title": "USB3.0 SATA motherboard LGA 1155 for desktop computer Motherboard DDR3 VGA + HDMI motherboard for Intel B75",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.cdiscount.com/pret-a-porter/bebe-puericulture/jeobest-poussette-canne/f-1131735-aaama90232.html",
-        "title": "JEOBEST - Poussette Canne Bébé 0-4 ans, Poussette Compacte, Pliable, Pour intérieur/extérieur",
+        "url": "https://www.amazon.fr/dp/B09L63L5YG?ref=cm_sw_r_cso_wa_mwn_dp_D5APDWB9T70NJ31ZPBR6&ref_=cm_sw_r_cso_wa_mwn_dp_D5APDWB9T70NJ31ZPBR6&social_share=cm_sw_r_cso_wa_mwn_dp_D5APDWB9T70NJ31ZPBR6",
+        "title": "Graphique Punch Punch Die Cutter Rond Punch Cutter Cutter Coffret Manche MANUEL Graphique Punch Presse Bouton Badge Make Maker Coupe Graphique Die Cutter Avec La Lame En Acier For La Fabrication D'un",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/dp/B083NZ2YN7?ref=cm_sw_r_cso_wa_mwn_dp_16VNJEM57DTGYNFHK26F&ref_=cm_sw_r_cso_wa_mwn_dp_16VNJEM57DTGYNFHK26F&social_share=cm_sw_r_cso_wa_mwn_dp_16VNJEM57DTGYNFHK26F&th=1",
+        "title": "BelleMax Store Enrouleur Jour Nuit,Tissu Double,Rideau sans Perçage,Translucide Occultant Protection Vie privée,pour Fenêtre et Porte,(Largeur du Tissu 40 cm),Gris,40l x 140L cm",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/dp/B08YWR1CBZ?ref=cm_sw_r_cso_wa_mwn_dp_C5VMZRKK7DXE8R2X8QCB&ref_=cm_sw_r_cso_wa_mwn_dp_C5VMZRKK7DXE8R2X8QCB&social_share=cm_sw_r_cso_wa_mwn_dp_C5VMZRKK7DXE8R2X8QCB",
+        "title": "Clavier électronique 61 Touches Piano numérique, Clavier numérique Portable Débutants Clavier de Piano électronique avec Microphone, 16 Timbres 8 Sons d'instruments de Percussion 10 rythmes",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.cdiscount.com/bricolage/outillage/echelle-joiscope-chelle/f-1660106-aaagn59926.html",
+        "title": "Échelle pliante - JOISCOPE - Escabeau 5 étages - Capacité de charge 270 kg - Acier au carbone - Noir",
         "supplier": "Cdiscount",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.vevor.fr/echelle-telescopique-c_12026/vevor-echelle-telescopique-aluminium-extensible-retraction-a-1-bouton-2-6m-170kg-p_010687496570?srsltid=AfmBOorAxcm1yUJN_zbVv7CVdZ7Pv7FwrPfgNRhNokB1OkmaFO8ndfuU",
-        "title": "VEVOR Échelle Télescopique Aluminium, 2,6 m, Escabeau Extensible Capacité 170 kg, avec Pieds Antidérapants, Échelle Compacte Portable Pliable Rétraction à Un Bouton, pour Réparation Maison Camping-car",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.amazon.co.uk/CLEADONG-kinderfahrrad-Training-Adjustable-Bicycle/dp/B0DHH154ZN",
-        "title": "14 Inch bike, kinderfahrrad with Training Wheels Adjustable Seat and Handle, Bike Bicycle for 3/4/5/6 Years Old Boys & Girls",
+        "url": "https://www.amazon.fr/dp/B0FR4MVCZ2?ref=cm_sw_r_cso_wa_mwn_dp_KQQJQA2M19YNHSSRBDFD&ref_=cm_sw_r_cso_wa_mwn_dp_KQQJQA2M19YNHSSRBDFD&social_share=cm_sw_r_cso_wa_mwn_dp_KQQJQA2M19YNHSSRBDFD",
+        "title": "LEADZM Robot Tondeuse sans Fil Automatique 1200m² - Recharge Auto, Contrôle App Bluetooth/Wi-FI, Hauteur de Coupe 25-65 mm, Largeur de Coupe de 220 mm, Pente 47%, Étanche IPX5, Moins de 66",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.amazon.fr/DCSYOG-Roue-jockey-automatique-60/dp/B0CY549QM8",
-        "title": "Roue jockey automatique 60 mm - Charge d'appui 544 kg - Bride plate sur tube - Remorque",
+        "url": "https://www.amazon.fr/dp/B0CJN5Q9SK?ref=cm_sw_r_cso_wa_mwn_dp_A4V0VPFEW1VEGJB2XMYR&ref_=cm_sw_r_cso_wa_mwn_dp_A4V0VPFEW1VEGJB2XMYR&social_share=cm_sw_r_cso_wa_mwn_dp_A4V0VPFEW1VEGJB2XMYR&th=1",
+        "title": "Colonne de Douche en Acier Inoxydable avec Jet de Massage, Buses de Massages et Douche Manuelle, Colonne Douche 5 Modes Panneau de Douche en Acier Inoxydable (130x47x15cm, Acier inoxydable)",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.vevor.ca/mug-heat-press-accessories-c_12641/vevor-8-pack-straight-sublimation-tumblers-30-oz-blank-tumbler-bulk-stainless-steel-double-wall-tumbler-cups-with-straw-lid-brush-base-shrink-wrap-gift-box-for-heat-press-and-heat-transfer-p_010589357224?lang=fr&srsltid=AfmBOoq6PI3ye-WjkIjT9zityVe2S_vXri_sQ_Zj7A1c88ILTUh1ReED",
-        "title": "VEVOR Lot de 8 gobelets droits à sublimation, 30 oz, en acier inoxydable, à double paroi, avec paille, couvercle, brosse, base, film rétractable, boîte cadeau, pour presse à chaud et transfert thermique",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.amazon.fr/LALAHO-Renforc%C3%A9s-roulettes-Pivotantes-T%C3%A9lescopique/dp/B0F6JS8VP7",
-        "title": "LALAHO Valise Cabine Rigide en ABS Léger, 4 roulettes Spinner, Coins Renforcés, Serrure à Combinaison, Poignée Télescopique - Bagage Cabine/Soute (Azur, M/55cm)",
+        "url": "https://www.amazon.fr/dp/B0FX7XH8YV?ref=cm_sw_r_cso_wa_mwn_dp_ZP7P9PWPQXMCKYFKSC2T&ref_=cm_sw_r_cso_wa_mwn_dp_ZP7P9PWPQXMCKYFKSC2T&social_share=cm_sw_r_cso_wa_mwn_dp_ZP7P9PWPQXMCKYFKSC2T&th=1",
+        "title": "Escabeau 5 Marches Pliable en Acier, Charge 150 kg, Marche Pied Antidérapant, Plateforme de Travail, Escabeau avec Main Courante pour Cuisine Atelier Entrepôt-152 x 87 x 39 cm - 5 marches (Blanc)",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.amazon.fr/LALAHO-Renforc%C3%A9s-roulettes-Pivotantes-T%C3%A9lescopique/dp/B0F191JP15?th=1&psc=1",
-        "title": "LALAHO Valise Cabine Rigide en ABS Léger, 4 roulettes Spinner, Coins Renforcés, Serrure à Combinaison, Poignée Télescopique - Bagage Cabine/Soute (Or Rose, M/55cm)",
-        "supplier": "Amazon",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/pompe-de-transfert-carburant-diesel-c_11111/vevor-pompe-transfert-diesel-37-8-l-min-pompe-gasoil-12-v-cc-pompe-transfert-carburant-electrique-buse-arret-auto-pompe-a-fioul-fuel-tuyau-d-entree-sortie-pour-diesel-kerosene-huile-de-transformateur-p_010714185157?srsltid=AfmBOorDSkEzz7LS7fX5QjOqRGCtXYxPcOlVYGCXFt-IDyz4K_sDW9eg",
-        "title": "VEVOR Pompe Transfert Diesel 37,8 L/min Pompe Gasoil 12 V CC Pompe Transfert Carburant Électrique Buse Arrêt Auto Pompe à Fioul Fuel Tuyau d'Entrée Sortie pour Diesel Kérosène Huile de Transformateur",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.amazon.fr/Pompe-diesel-auto-amor%C3%A7ante-min-distribution/dp/B0CXT97F73",
-        "title": "Pompe diesel auto-amorçante 50 l/min - Pompe diesel - Station de service - Pompe à mazout - Pistolet de distribution",
-        "supplier": "Amazon",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.com/stair-handrail-c_11209/vevor-70-9-in-180cm-handrails-for-outdoor-steps-staircase-seniors-porch-deck-p_010734656983",
-        "title": "VEVOR Handrails for Outdoor Steps, 70.9 in/ 180cm Length Stair Hand Rail Kit, Transitional Stainless Steel Railings with Installation Kit, Double-column Staircase Handrails for Seniors,Porch & Deck",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.cdiscount.com/maison/meubles-mobilier/bibliothque-en-forme/f-117600704-aabpw23553.html",
-        "title": "Bibliothèque en Forme d'arbre-Lvhcmfohm-9 Niveaux & 2 Tiroirs-Empilable-Pour chambre à coucher,salon,bureau-60x20x100 cm-Blanc",
+        "url": "https://www.cdiscount.com/juniors/plein-air/lalaho-auto-tamponneuse/f-1200442-aabdm18936.html",
+        "title": "Voiture Electrique - Auto Tamponneuse 12V/4.5Ah - LALAHO - avec télécommande, 2 Moteurs Effet Sonore et Lumineux, rose",
         "supplier": "Cdiscount",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.vevor.fr/racks-et-supports-a-velos-c_13634/vevor-support-de-rangement-pour-4-velos-2-crochets-a-casques-porte-velos-mural-p_010442861651?srsltid=AfmBOor7ac0S0TGa135ITkEGcC-vTKYvqSeZ5B9g4oTmhjZot0ywPXpT",
-        "title": "VEVOR Support de rangement pour 4 vélos 2 crochets à casques porte-vélos mural",
+        "url": "https://www.cdiscount.com/juniors/plein-air/lalaho-voiture-electrique-enfant-land-rover-avec/f-1200442-aaahr40614.html",
+        "title": "Voiture Electrique Enfànt LAND ROVER - LALAHO - avec télécommande à 2.4 GHz, pour Enfants 3-5 Ans, rose",
+        "supplier": "Cdiscount",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.vevor.fr/traineau-de-resistance-autres-c_12573/vevor-traineau-de-puissance-avec-poignee-luge-de-force-pour-plaque-de-poids-2-5-5-cm-equipement-d-entrainement-en-acier-pour-exercices-athletiques-et-amelioration-de-la-vitesse-musculation-gym-p_010313772917",
+        "title": "VEVOR Traineau de Puissance avec Poignée, Luge de Force pour Plaque de Poids 2,5-5 cm, Équipement d'Entraînement en Acier, pour Exercices Athlétiques et Amélioration de la Vitesse, Musculation Gym",
         "supplier": "Vevor",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.amazon.fr/G-Homa-t%C3%A9l%C3%A9command%C3%A9es-t%C3%A9l%C3%A9commande-appareils-programmable/dp/B0CZDJH93P/ref=mp_s_a_1_4?crid=2QYLM7TG377KL&dib=eyJ2IjoiMSJ9.5bHDHudbM_73HuKLSEYmKmHtk4cMHTHHFWVMdQ686BM_vGPFRJ2vISC12DIzOX377uAioQC971xZdJZzqO1DY56hS-BS2CPNsFsxFQgU2GTNy0Djh0oz11K6BBGIPdqj08etGG5ZI6k-S6jgNBVzAnxdnaBIzQzMAIqG9O9_cj-qkXMtEjbHHJN4Srt0cWXt22BMnBbXFiuIvBU7RpHF0A.tF1rKulxgY9P8h_ewdAGEGV1W1htp80SpFl5ZuWiiBw&dib_tag=se&keywords=lot+de+4+prises+avec+t%C3%A9l%C3%A9commande&qid=1763475277&sprefix=lot+de+4+prises+avec+t%C3%A9l%C3%A9commande%2Chi%2C72&sr=8-4",
-        "title": "G-Homa Lot 4 prises télécommandées, télécommande, éclairage Noël, 30 m, programmable, 2300 W/10 A, CE, blanc",
+        "url": "https://www.amazon.fr/dp/B0DTTV5LB9?ref=cm_sw_r_cso_wa_mwn_dp_QT31QYV31TWPS10X2WJH&ref_=cm_sw_r_cso_wa_mwn_dp_QT31QYV31TWPS10X2WJH&social_share=cm_sw_r_cso_wa_mwn_dp_QT31QYV31TWPS10X2WJH&th=1",
+        "title": "Vapeur pour le visage 750 W 220 V - Appareil à vapeur professionnel pour le visage - Vaporisateur facial rotatif à 360° - Vapeur chaude pour le visage - 58-68 cm - Hauteur réglable (noir)",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.vevor.nl/sleepketting-c_10423/chain-sling-6-15-x-6-5-vier-poot-met-stalen-haak-grade-80-p_010424226030?lang=en&srsltid=AfmBOoqy0YMglLccZTZd8ZRPmqyW0zN6TL4ScuvFzyImp6ZFyx_cTTi2",
-        "title": "VEVOR Chain Sling, 5/16 inch x 6.5 ft Lifting Chains with Hooks, G80 Engine Chain Hoist Lifts, 11000 lbs/5 Ton Capacity Lifting Sling Chains for Engine Hoist, Engine Lift Chain with 4 Leg Grab Hooks",
+        "url": "https://www.vevor.ca/stainless-steel-work-table-c_10625/rolling-stainless-steel-top-kitchen-work-table-cart-casters-shelving-30-x24--p_010331291156?lang=fr",
+        "title": "Table de travail en acier inoxydable VEVOR 76 x 61 x 84 cm, capacité de charge de 318 kg, 4 roulettes, 3 niveaux de hauteur réglables, table de travail robuste pour cuisines commerciales et restaurants, argent",
         "supplier": "Vevor",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.vevor.fr/cage-de-chiens-c_12312/vevor-cage-pour-chien-robuste-95x65x81-cm-cage-de-transport-en-metal-pour-chiens-en-anxiete-de-taille-moyenne-a-grande-avec-roulettes-verrouillables-3-portes-plateau-amovible-pour-interieur-exterieur-p_010729320289?srsltid=AfmBOork_BmtG1avFouaxEi_lTamE_h55ctZL4xt3iJq_DsT8fWxu2Ka",
-        "title": "VEVOR Cage pour Chien Robuste 95x65x81 cm Cage de Transport en Métal pour Chiens en Anxiété de Taille Moyenne à Grande avec Roulettes Verrouillables 3 Portes Plateau Amovible pour Intérieur Extérieur",
+        "url": "https://www.vevor.fr/coupe-papier-massicot-c_10879/vevor-massicot-a-papier-coupe-papier-robuste-431-8-mm-pour-a3-400-feuilles-blanc-p_010236365577",
+        "title": "VEVOR Massicot à papier robuste, 431,8 mm, coupe-papier industriel et commercial pour papier A3, capacité de 400 feuilles, construction en acier massif, rogneur pour bureau, école, magasin, blanc",
         "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/grue-avec-treuil-electrique-c_10442/vevor-grue-pour-camionnette-grue-de-levage-avec-treuil-manuel-de-499-kg-360--p_010447647898?srsltid=AfmBOoqQYZhOfMdMKo9Nte__EGzwo13trVXE-pEnXhXUleOxJFtmsAAF",
-        "title": "VEVOR Grue pour camionnette avec treuil manuel de 499 kg, grue de levage pour camion pliable, grue à flèche en acier pour camionnette, pivotante à 360°, pour levage de marchandise dans la construction",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.amazon.fr/LEADZM-rectangulaire-Portable-utilis%C3%A9e-Barbecue/dp/B0BT9LG6J4",
-        "title": "LEADZM Table Pliante rectangulaire Blanche Table de Camping Portable Peut être utilisée pour Le Camping en Plein air Barbecue dîner de Jardin (70 * 50 * 60cm)",
-        "supplier": "Amazon",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.amazon.fr/FRETONBA-Inoxydable-Couvercle-Anti-fuites-Nettoyage/dp/B0DGKN9HNT",
-        "title": "Bac Litiere pour Chat XXL en Acier Inoxydable, Maison de Toilette Chat 26L Grande Capacité, Caisse Litiere Fermée avec Couvercle Amovible, Pelle, Pédale, Anti-fuites, Nettoyage Facile, Gris",
-        "supplier": "Amazon",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.amazon.fr/Pendentif-Naturelle-Nostalgique-Suspendues-Restaurants/dp/B081L1ZBMR",
-        "title": "Lampe Vintage Pendentif Main Naturelle Lampe Suspendue En Bambou Nostalgique E27 Lampes Suspendues Réglable Chambre Restaurants Lustre Séjour Salle À Manger Café Bar Lampes Suspendues,60cm",
-        "supplier": "Amazon",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.amazon.com/VEVOR-Ramps-Heavy-Duty-Attaching-Motorcycle/dp/B0CKR5JJM5",
-        "title": "VEVOR Aluminum Ramps, 6000 lbs, Heavy-Duty Ramps with Top Hook Attaching End, Universal Loading Ramp for Motorcycle, Tractor, ATV/UTV, Trucks, Lawn Mower, 60\" L x 12\" W, 2Pcs",
-        "supplier": "Amazon",
         "usedPuppeteer": true
       }
     ],
-    "skipped": [],
+    "skipped": [
+      {
+        "url": "https://www.amazon.fr/Si%C3%A8ge-Baignoire-Suspendu-r%C3%A9glable-Tabouret/dp/B0BN5K5C5X",
+        "reason": "Déjà scannée"
+      },
+      {
+        "url": "https://www.vevor.fr/pompe-pour-eaux-usees-c_11101/vevor-pompe-de-relevage-pour-eaux-chargees-pompe-d-evacuation-eaux-usees-1300-w-p_010199130676",
+        "reason": "Déjà scannée"
+      }
+    ],
     "errors": [
       {
-        "url": "https://www.vevor.fr/accessoires-c_13357/vevor-crochets-pour-echelle-de-toit-stabilisateurs-en-acier-avec-roue-fixe-2pcs-p_010737520822?srsltid=AfmBOoq1V76BWxS0-OlqzW7hmy2G7SgAWrpVFwv1aYoKPm8IeTZeHJ8d",
-        "error": "Navigation timeout of 45000 ms exceeded"
+        "url": "https://www.kaufland.fr/product/429261371/",
+        "error": "Site non pris en charge"
+      },
+      {
+        "url": "https://www.walmart.ca/fr/ip/Jeu-de-P-che-pour-Tout-Petits-lectrique-Tournant-les-Enfants-Cadeau-d-Anniversaire-No-l-24-Poissons/2X3KKKKGJ5EB",
+        "error": "Site non pris en charge"
+      },
+      {
+        "url": "https://www.kaufland.fr/product/533781944/",
+        "error": "Site non pris en charge"
       }
     ]
   },
-  "endTime": "2025-11-18T18:11:28.576Z",
-  "duration": "2859s"
+  "endTime": "2025-12-20T00:05:12.741Z",
+  "duration": "674s"
 }
