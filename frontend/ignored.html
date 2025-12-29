@@ -516,9 +516,8 @@
         // Formater une date
         function formatDate(dateStr) {
             const date = new Date(dateStr);
-            // Ajouter un jour pour compenser le décalage de timezone
-            date.setDate(date.getDate() + 1);
-            return date.toLocaleDateString('fr-FR', {
+            // Utiliser UTC pour éviter les décalages de timezone
+            return new Date(date.getTime() + date.getTimezoneOffset() * 60000).toLocaleDateString('fr-FR', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
