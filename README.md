@@ -362,6 +362,29 @@ npm run dev
 
 The server will automatically restart with each modification using **nodemon**.
 
+## Production Deployment
+
+### Deploying to Contabo VPS
+
+For detailed deployment instructions on Contabo VPS (5.99€/month), see **[CONTABO_DEPLOYMENT.md](CONTABO_DEPLOYMENT.md)**.
+
+Quick overview:
+1. Create a Contabo VPS account (Cloud VPS M - 4 vCPU, 8GB RAM)
+2. Configure MongoDB Atlas (free tier)
+3. Connect via SSH and run `setup-server.sh`
+4. Create `.env` file with production credentials
+5. Run `./deploy.sh` to build and start with Docker
+
+The guide includes:
+- Step-by-step Contabo setup
+- MongoDB Atlas configuration
+- Docker deployment
+- HTTPS/SSL configuration with Nginx
+- Maintenance commands
+- Troubleshooting tips
+
+**Estimated cost**: ~5.99€/month (VPS only, MongoDB is free)
+
 ## Security
 
 ### Access Codes

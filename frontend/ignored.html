@@ -6,6 +6,50 @@
     <title>Produits Ignorés - Web Scraper</title>
     <link rel="stylesheet" href="style.css">
     <style>
+        /* Loader d'authentification - affiché par défaut */
+        #authLoader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        #authLoader .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        #authLoader p {
+            color: white;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+
+        /* Cacher le contenu principal par défaut */
+        #mainContent {
+            display: none;
+        }
+
+        /* Afficher le contenu une fois authentifié */
+        body.authenticated #authLoader {
+            display: none;
+        }
+
+        body.authenticated #mainContent {
+            display: block;
+        }
+
         .container {
             max-width: 1400px;
         }
@@ -199,6 +243,34 @@
             font-style: italic;
         }
 
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .delete-product-btn {
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            min-width: 45px;
+        }
+
+        .delete-product-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 3px 10px rgba(245, 87, 108, 0.4);
+        }
+
         .empty-message {
             text-align: center;
             color: #999;
@@ -246,6 +318,14 @@
     </style>
 </head>
 <body>
+    <!-- Loader d'authentification -->
+    <div id="authLoader">
+        <div class="spinner"></div>
+        <p>Vérification de l'authentification...</p>
+    </div>
+
+    <!-- Contenu principal (caché par défaut) -->
+    <div id="mainContent">
     <div class="container">
         <div class="header-section">
             <div>
@@ -300,6 +380,8 @@
             </div>
         </div>
     </div>
+    </div>
+    <!-- Fin du contenu principal -->
 
     <script>
         const API_URL = window.location.hostname === 'localhost'
@@ -308,6 +390,30 @@
 
         let currentType = 'doublon';
         let currentDate = null;
+
+        // Vérifier l'authentification
+        async function checkAuthentication() {
+            try {
+                const response = await fetch(`${API_URL}/api/auth/check`, {
+                    credentials: 'include'
+                });
+                const result = await response.json();
+
+                if (!result.authenticated) {
+                    // Rediriger vers la page de login
+                    window.location.href = '/login.html';
+                    return false;
+                }
+
+                // Afficher le contenu maintenant que l'utilisateur est authentifié
+                document.body.classList.add('authenticated');
+                return true;
+            } catch (error) {
+                console.error('Erreur lors de la vérification de l\'authentification:', error);
+                window.location.href = '/login.html';
+                return false;
+            }
+        }
 
         // Charger les statistiques
         async function loadStats() {
@@ -373,14 +479,29 @@
                     contentArea.innerHTML = '<div class="products-list"></div>';
                     const productsList = contentArea.querySelector('.products-list');
 
-                    data.data.forEach(item => {
+                    data.data.forEach((item, index) => {
                         const productItem = document.createElement('div');
                         productItem.className = `product-item ${type === 'doublon' ? 'duplicate' : 'error'}`;
-                        productItem.innerHTML = `
-                            ${item.name ? `<div class="product-name">${item.name}</div>` : ''}
-                            <a href="${item.url}" target="_blank" class="product-url">${item.url}</a>
-                            <div class="product-reason">Raison: ${item.reason}</div>
-                        `;
+
+                        // Ajouter un bouton de suppression uniquement pour les erreurs
+                        if (type === 'erreur') {
+                            productItem.innerHTML = `
+                                <div class="product-header">
+                                    <div class="product-info">
+                                        ${item.name ? `<div class="product-name">${item.name}</div>` : ''}
+                                        <a href="${item.url}" target="_blank" class="product-url">${item.url}</a>
+                                        <div class="product-reason">Raison: ${item.reason}</div>
+                                    </div>
+                                    <button class="delete-product-btn" onclick="deleteErrorProduct('${item.id}', this)">🗑️</button>
+                                </div>
+                            `;
+                        } else {
+                            productItem.innerHTML = `
+                                ${item.name ? `<div class="product-name">${item.name}</div>` : ''}
+                                <a href="${item.url}" target="_blank" class="product-url">${item.url}</a>
+                                <div class="product-reason">Raison: ${item.reason}</div>
+                            `;
+                        }
                         productsList.appendChild(productItem);
                     });
                 } else {
@@ -444,9 +565,55 @@
             });
         });
 
-        // Initialiser
-        loadStats();
-        loadDates(currentType);
+        // Supprimer un produit en erreur
+        async function deleteErrorProduct(id, button) {
+            if (!confirm(`Voulez-vous vraiment supprimer cette erreur ?`)) {
+                return;
+            }
+
+            // Désactiver le bouton pendant la suppression
+            button.disabled = true;
+            button.textContent = '⏳';
+
+            try {
+                const response = await fetch(`${API_URL}/api/ignored/erreur/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Recharger les produits et les statistiques
+                    await loadProducts('erreur', currentDate);
+                    await loadStats();
+                    alert('✅ Produit en erreur supprimé avec succès');
+                } else {
+                    throw new Error(data.error || 'Erreur lors de la suppression');
+                }
+            } catch (error) {
+                console.error('Erreur lors de la suppression:', error);
+                alert('❌ Erreur lors de la suppression: ' + error.message);
+                button.disabled = false;
+                button.textContent = '🗑️';
+            }
+        }
+
+        // Initialiser l'application
+        async function init() {
+            // Vérifier l'authentification d'abord
+            const authenticated = await checkAuthentication();
+            if (!authenticated) return;
+
+            // Charger les données
+            loadStats();
+            loadDates(currentType);
+        }
+
+        // Démarrer l'application
+        init();
     </script>
 </body>
 </html>

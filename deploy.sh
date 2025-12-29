@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Script de déploiement automatique pour Hetzner
+# Script de déploiement automatique
 # Usage: ./deploy.sh
 
 set -e
 
-echo "🚀 Démarrage du déploiement sur Hetzner..."
+echo "🚀 Démarrage du déploiement..."
 
 # Vérifier que le fichier .env existe
 if [ ! -f .env ]; then

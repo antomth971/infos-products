@@ -1927,8 +1927,19 @@ app.post('/api/search-vevor', async (req, res) => {
 
 // ===== Routes pour les produits ignorés (doublons/erreurs) =====
 
+// Middleware pour vérifier l'authentification
+function requireAuth(req, res, next) {
+  if (!req.session.authenticated) {
+    return res.status(403).json({
+      success: false,
+      error: 'Accès non autorisé. Veuillez vous connecter.'
+    });
+  }
+  next();
+}
+
 // Récupérer les dates disponibles pour un type (doublon ou erreur)
-app.get('/api/ignored/:type/dates', async (req, res) => {
+app.get('/api/ignored/:type/dates', requireAuth, async (req, res) => {
   try {
     const { type } = req.params;
 
@@ -1969,7 +1980,7 @@ app.get('/api/ignored/:type/dates', async (req, res) => {
 });
 
 // Récupérer les produits ignorés pour une date et un type spécifiques
-app.get('/api/ignored/:type/by-date/:date', async (req, res) => {
+app.get('/api/ignored/:type/by-date/:date', requireAuth, async (req, res) => {
   try {
     const { type, date } = req.params;
 
@@ -2014,7 +2025,7 @@ app.get('/api/ignored/:type/by-date/:date', async (req, res) => {
 });
 
 // Récupérer les statistiques générales
-app.get('/api/ignored/stats', async (req, res) => {
+app.get('/api/ignored/stats', requireAuth, async (req, res) => {
   try {
     const totalDuplicates = await IgnoredProduct.countDocuments({ type: 'doublon' });
     const totalErrors = await IgnoredProduct.countDocuments({ type: 'erreur' });
@@ -2033,6 +2044,48 @@ app.get('/api/ignored/stats', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Erreur lors de la récupération des statistiques'
+    });
+  }
+});
+
+// Supprimer un produit en erreur par son ID
+app.delete('/api/ignored/erreur/:id', requireAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Vérifier que l'ID est valide (format MongoDB ObjectId)
+    if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        error: 'ID invalide'
+      });
+    }
+
+    // Supprimer le produit en erreur par son ID
+    const result = await IgnoredProduct.deleteOne({
+      _id: id,
+      type: 'erreur'
+    });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'Produit en erreur non trouvé'
+      });
+    }
+
+    console.log(`✅ Produit en erreur supprimé (ID: ${id})`);
+
+    res.json({
+      success: true,
+      message: 'Produit en erreur supprimé avec succès'
+    });
+
+  } catch (error) {
+    console.error('Erreur lors de la suppression du produit en erreur:', error.message);
+    res.status(500).json({
+      success: false,
+      error: 'Erreur lors de la suppression du produit en erreur'
     });
   }
 });

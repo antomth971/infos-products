@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Script de configuration initiale du serveur Hetzner
+# Script de configuration initiale du serveur VPS
 # À exécuter UNE SEULE FOIS lors de la première installation
-# Usage: sudo bash setup-server.sh
+# Usage: sudo bash setup-server.sh [username]
 
 set -e
 
-echo "🔧 Configuration du serveur Hetzner..."
+echo "🔧 Configuration du serveur VPS..."
 
 # Mettre à jour le système
 echo "📦 Mise à jour du système..."

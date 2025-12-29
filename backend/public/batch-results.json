@@ -1,152 +1,218 @@
 {
-  "startTime": "2025-12-19T23:53:58.107Z",
-  "totalUrls": 24,
-  "processed": 24,
-  "added": 19,
-  "skipped": 2,
-  "errors": 3,
+  "startTime": "2025-12-24T17:48:04.791Z",
+  "totalUrls": 35,
+  "processed": 35,
+  "added": 30,
+  "skipped": 1,
+  "errors": 4,
   "details": {
     "added": [
       {
-        "url": "https://www.amazon.fr/dp/B0F9KJWNK1?ref=cm_sw_r_cso_wa_mwn_dp_7H37529VBQ0133XZX3H8&ref_=cm_sw_r_cso_wa_mwn_dp_7H37529VBQ0133XZX3H8&social_share=cm_sw_r_cso_wa_mwn_dp_7H37529VBQ0133XZX3H8",
-        "title": "Trottinette 5 en 1, pour enfants à partir de 2 ans, jusqu'à 50 kg, avec siège pliable et roues LED, hauteur réglable, pliable, pour tout-petits, garçons et filles",
+        "url": "https://www.amazon.fr/dp/B099R9RKGK?ref=cm_sw_r_cso_wa_mwn_dp_1F5V6AXS3MDH63RPDGRA&ref_=cm_sw_r_cso_wa_mwn_dp_1F5V6AXS3MDH63RPDGRA&social_share=cm_sw_r_cso_wa_mwn_dp_1F5V6AXS3MDH63RPDGRA",
+        "title": "Ensemble De 4 Pieds en éPingle à Cheveux,Jambe De Table Basse en Fer Massif à 2 Tiges,Jambes Pieds De Meubles avec Hauteur en Option Stable Et Durable,pour Table(Size:45cm/17.7in)",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.amazon.fr/dp/B0F192ZKQG?ref=cm_sw_r_cso_wa_mwn_dp_8X6T8YDV8KEY7HHQA1YY&ref_=cm_sw_r_cso_wa_mwn_dp_8X6T8YDV8KEY7HHQA1YY&social_share=cm_sw_r_cso_wa_mwn_dp_8X6T8YDV8KEY7HHQA1YY",
-        "title": "Table à Langer Pliable Multifonction, Hauteur Réglable, Table à langer pour bébé avec roues，Avec Rangement et Cintre, 80 * 66 * 98cm (Gris)",
+        "url": "https://www.amazon.fr/dp/B09XH2ZW4Y?ref=cm_sw_r_cso_wa_mwn_dp_3HS4R7RBGCYPVNW4Z5DM&ref_=cm_sw_r_cso_wa_mwn_dp_3HS4R7RBGCYPVNW4Z5DM&social_share=cm_sw_r_cso_wa_mwn_dp_3HS4R7RBGCYPVNW4Z5DM",
+        "title": "4 Pièces Support Pliable Charnière, Supports Pliables Métal Charnières, Vis Pieds Pliants, Charnière Pliante Autobloquante, Pour Les Tables, Les Meubles, Les Étagères Murales",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.amazon.fr/dp/B09YRM77JV?ref=cm_sw_r_cso_wa_mwn_dp_5VB75X4TXE16WP4B37H8&ref_=cm_sw_r_cso_wa_mwn_dp_5VB75X4TXE16WP4B37H8&social_share=cm_sw_r_cso_wa_mwn_dp_5VB75X4TXE16WP4B37H8",
-        "title": "KESHUO Musique Clavier 61Keys Digital Music Electronic Clavier Multifonctionnel Piano Piano Piano Fonction Microphone Instrument De Musique",
+        "url": "https://www.amazon.fr/dp/B08R7JWP4V?ref=cm_sw_r_cso_wa_mwn_dp_Z8Q8WPZ4T4ZBT5ETKA8R&ref_=cm_sw_r_cso_wa_mwn_dp_Z8Q8WPZ4T4ZBT5ETKA8R&social_share=cm_sw_r_cso_wa_mwn_dp_Z8Q8WPZ4T4ZBT5ETKA8R",
+        "title": "Coulisse De Tiroir D'extension Glissière De Tiroir Pleine Extension avec Roulement à Billes Glissières De Glissière De Tiroir en Acier Inoxydable Paquet De 2,Silver-40cm/16inch",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.amazon.fr/dp/B0C2HGLZSZ?ref=cm_sw_r_cso_wa_mwn_dp_B8BGEXXSCEM96YMVC9AB&ref_=cm_sw_r_cso_wa_mwn_dp_B8BGEXXSCEM96YMVC9AB&social_share=cm_sw_r_cso_wa_mwn_dp_B8BGEXXSCEM96YMVC9AB",
-        "title": "Scie électrique portable 21 V 6 pouces Petite scie à tronçonner à bois Moteur à brosse à main Outil de travail du bois pour jardin fruitier",
+        "url": "https://www.amazon.fr/dp/B0C3R4MK1W?ref=cm_sw_r_cso_wa_mwn_dp_E5AQWR71C0T5QMGXA16Q&ref_=cm_sw_r_cso_wa_mwn_dp_E5AQWR71C0T5QMGXA16Q&social_share=cm_sw_r_cso_wa_mwn_dp_E5AQWR71C0T5QMGXA16Q",
+        "title": "Chariot de Machine à Tricoter, Accessoire de Chariot de Machine à Tricoter Domestique pour Silver Reed LK100 LK150",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.amazon.fr/dp/B087FXSR76?ref=cm_sw_r_cso_wa_mwn_dp_CSP1JGDM33EMYH647QYF&ref_=cm_sw_r_cso_wa_mwn_dp_CSP1JGDM33EMYH647QYF&social_share=cm_sw_r_cso_wa_mwn_dp_CSP1JGDM33EMYH647QYF",
-        "title": "Imprimante de Tatouage, 2 Type Professionnel A5 A4 Tatouage Transfert Copieur Thermique Pochoir Imprimante Papier Machine Fournitures de Tatouage pour Transfert de Tatouage",
+        "url": "https://www.amazon.fr/dp/B0FGCQ7ZPC?ref=cm_sw_r_cso_wa_mwn_dp_WTAKV2FAA7PKP0P04WP4&ref_=cm_sw_r_cso_wa_mwn_dp_WTAKV2FAA7PKP0P04WP4&social_share=cm_sw_r_cso_wa_mwn_dp_WTAKV2FAA7PKP0P04WP4&th=1",
+        "title": "Tableau Blanc Effacable sur Pied, Mobile Paperboard de Tableau de ConféRence Magnetique de chevalet, avec Support, pour l’enseignement,la Réunion,le bureau,60 x 90 cm (noir)",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.amazon.nl/dp/B0B4R6VV1X?ref=cm_sw_r_cso_wa_mwn_dp_MEKQT1Y81ATB6PZBN3P5&ref_=cm_sw_r_cso_wa_mwn_dp_MEKQT1Y81ATB6PZBN3P5&social_share=cm_sw_r_cso_wa_mwn_dp_MEKQT1Y81ATB6PZBN3P5",
-        "title": "USB3.0 SATA motherboard LGA 1155 for desktop computer Motherboard DDR3 VGA + HDMI motherboard for Intel B75",
+        "url": "https://www.amazon.fr/dp/B0D12H14SY?ref=cm_sw_r_cso_wa_mwn_dp_XPGT5NFBGSPYRE78GTK5&ref_=cm_sw_r_cso_wa_mwn_dp_XPGT5NFBGSPYRE78GTK5&social_share=cm_sw_r_cso_wa_mwn_dp_XPGT5NFBGSPYRE78GTK5&th=1",
+        "title": "Lampe de croissance solaire pour plantes - Barre lumineuse LED de croissance pour plantes - Lumière de croissance à énergie solaire - Lumière de croissance LED pour serres extérieures et intérieures",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.amazon.fr/dp/B09L63L5YG?ref=cm_sw_r_cso_wa_mwn_dp_D5APDWB9T70NJ31ZPBR6&ref_=cm_sw_r_cso_wa_mwn_dp_D5APDWB9T70NJ31ZPBR6&social_share=cm_sw_r_cso_wa_mwn_dp_D5APDWB9T70NJ31ZPBR6",
-        "title": "Graphique Punch Punch Die Cutter Rond Punch Cutter Cutter Coffret Manche MANUEL Graphique Punch Presse Bouton Badge Make Maker Coupe Graphique Die Cutter Avec La Lame En Acier For La Fabrication D'un",
+        "url": "https://www.amazon.fr/dp/B07K3Y33SH?ref=cm_sw_r_cso_wa_mwn_dp_Z5FHZQPBQ96H0AS29Q86&ref_=cm_sw_r_cso_wa_mwn_dp_Z5FHZQPBQ96H0AS29Q86&social_share=cm_sw_r_cso_wa_mwn_dp_Z5FHZQPBQ96H0AS29Q86",
+        "title": "10pcs Ensemble Extracteur de Volant-Moteur Moto,Outils Extracteurs Universels pour Moto, Dirt Bike, Flywheel",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.amazon.fr/dp/B083NZ2YN7?ref=cm_sw_r_cso_wa_mwn_dp_16VNJEM57DTGYNFHK26F&ref_=cm_sw_r_cso_wa_mwn_dp_16VNJEM57DTGYNFHK26F&social_share=cm_sw_r_cso_wa_mwn_dp_16VNJEM57DTGYNFHK26F&th=1",
-        "title": "BelleMax Store Enrouleur Jour Nuit,Tissu Double,Rideau sans Perçage,Translucide Occultant Protection Vie privée,pour Fenêtre et Porte,(Largeur du Tissu 40 cm),Gris,40l x 140L cm",
+        "url": "https://www.amazon.fr/dp/B0C35NVWSF?ref=cm_sw_r_cso_wa_mwn_dp_VHQGZN919SJ82S7XTYFH&ref_=cm_sw_r_cso_wa_mwn_dp_VHQGZN919SJ82S7XTYFH&social_share=cm_sw_r_cso_wa_mwn_dp_VHQGZN919SJ82S7XTYFH",
+        "title": "Support Mural TV, Inclinable et Orientable Support TV pour écrans 32-65 Pouces jusqu'à 40Kg -VESA 400 x 400 mm",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.amazon.fr/dp/B08YWR1CBZ?ref=cm_sw_r_cso_wa_mwn_dp_C5VMZRKK7DXE8R2X8QCB&ref_=cm_sw_r_cso_wa_mwn_dp_C5VMZRKK7DXE8R2X8QCB&social_share=cm_sw_r_cso_wa_mwn_dp_C5VMZRKK7DXE8R2X8QCB",
-        "title": "Clavier électronique 61 Touches Piano numérique, Clavier numérique Portable Débutants Clavier de Piano électronique avec Microphone, 16 Timbres 8 Sons d'instruments de Percussion 10 rythmes",
+        "url": "https://www.amazon.fr/dp/B0DWSVCVTV?ref=cm_sw_r_cso_wa_mwn_dp_6X1APWSHBE50BBGAW5VZ&ref_=cm_sw_r_cso_wa_mwn_dp_6X1APWSHBE50BBGAW5VZ&social_share=cm_sw_r_cso_wa_mwn_dp_6X1APWSHBE50BBGAW5VZ&th=1",
+        "title": "Support à micro-ondes à 2 niveaux avec cadre en acier et étagère d'assaisonnement pour rangement de cuisine en chêne + noir",
         "supplier": "Amazon",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.cdiscount.com/bricolage/outillage/echelle-joiscope-chelle/f-1660106-aaagn59926.html",
-        "title": "Échelle pliante - JOISCOPE - Escabeau 5 étages - Capacité de charge 270 kg - Acier au carbone - Noir",
+        "url": "https://www.amazon.fr/dp/B07TJFL8X1?ref=cm_sw_r_cso_wa_mwn_dp_KHJKJ17SADWS0HB8HZ84&ref_=cm_sw_r_cso_wa_mwn_dp_KHJKJ17SADWS0HB8HZ84&social_share=cm_sw_r_cso_wa_mwn_dp_KHJKJ17SADWS0HB8HZ84",
+        "title": "Broyeur d'orge Malt Moulin à Graines Céréales Concasseur de Manuel réglables 2 Rouleaux Pour la Accueil Brewing, Avec base en métal",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/dp/B0DY7HK7JW?ref=cm_sw_r_cso_wa_mwn_dp_PZZKBEMWHZ7HZYEZQ2S1&ref_=cm_sw_r_cso_wa_mwn_dp_PZZKBEMWHZ7HZYEZQ2S1&social_share=cm_sw_r_cso_wa_mwn_dp_PZZKBEMWHZ7HZYEZQ2S1&th=1",
+        "title": "Nettoyeur Haute Pression Buse, 3000W 21V Nettoyeur Haute Pression sans Fil avec 2 Batteries, Nettoyeur Haut Pression Batterie avec Tuyau, Pot en Mousse, Adapté pour Nettoyer Les Voitures, Sols",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.ca/dp/B0B8LWQ97J?ref=cm_sw_r_cso_wa_mwn_dp_XEWQ1WHB4PP5X7K2AXJK&ref_=cm_sw_r_cso_wa_mwn_dp_XEWQ1WHB4PP5X7K2AXJK&social_share=cm_sw_r_cso_wa_mwn_dp_XEWQ1WHB4PP5X7K2AXJK",
+        "title": "ZLY Système de support mural à 3 rouleaux, y compris 3 crochets à trois plis, 6 barres extensibles, 3 chaînes, support de plafond fixé à la lampe de table",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/dp/B0G4C78SYF?ref=cm_sw_r_cso_wa_mwn_dp_SFGJ32ZP0YVWDAA82WFB&ref_=cm_sw_r_cso_wa_mwn_dp_SFGJ32ZP0YVWDAA82WFB&social_share=cm_sw_r_cso_wa_mwn_dp_SFGJ32ZP0YVWDAA82WFB",
+        "title": "Support de séparateur de pièce extensible avec tringles à rideaux, hauteur réglable de 122 à 305 cm, blanc, autoportant pour salon, chambre à coucher, balcon comme brise-vue",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/dp/B08PNVJYKR?ref=cm_sw_r_cso_wa_mwn_dp_BZ0T3M9QBEJCZWGAD7RE&ref_=cm_sw_r_cso_wa_mwn_dp_BZ0T3M9QBEJCZWGAD7RE&social_share=cm_sw_r_cso_wa_mwn_dp_BZ0T3M9QBEJCZWGAD7RE&th=1",
+        "title": "Alightup Armoire de Rangement vêtements de Placard, Rangement de Garde-Robe Portable avec 12 étagères de Rangement,150 x 45 x 175 cm (Noir)",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/dp/B08153GPP1?ref=cm_sw_r_cso_wa_mwn_dp_53NSNG9BT1F5HMDMYDAC&ref_=cm_sw_r_cso_wa_mwn_dp_53NSNG9BT1F5HMDMYDAC&social_share=cm_sw_r_cso_wa_mwn_dp_53NSNG9BT1F5HMDMYDAC",
+        "title": "Etagères Étagère À Livres Grille en Acier Présentoir De Salon Présentoir d'art Tube en Bambou Combinaison De Bricolage Étagères murales",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.cdiscount.com/maison/rangement/kedia-etagere-salle-de-bain-telescopique-etagere/f-117993201-ked1706771303793.html",
+        "title": "Étagère de salle de bain télescopique KEDIA avec 4 paniers en acier inoxydable et plateau en plastique",
         "supplier": "Cdiscount",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.amazon.fr/dp/B0FR4MVCZ2?ref=cm_sw_r_cso_wa_mwn_dp_KQQJQA2M19YNHSSRBDFD&ref_=cm_sw_r_cso_wa_mwn_dp_KQQJQA2M19YNHSSRBDFD&social_share=cm_sw_r_cso_wa_mwn_dp_KQQJQA2M19YNHSSRBDFD",
-        "title": "LEADZM Robot Tondeuse sans Fil Automatique 1200m² - Recharge Auto, Contrôle App Bluetooth/Wi-FI, Hauteur de Coupe 25-65 mm, Largeur de Coupe de 220 mm, Pente 47%, Étanche IPX5, Moins de 66",
-        "supplier": "Amazon",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.amazon.fr/dp/B0CJN5Q9SK?ref=cm_sw_r_cso_wa_mwn_dp_A4V0VPFEW1VEGJB2XMYR&ref_=cm_sw_r_cso_wa_mwn_dp_A4V0VPFEW1VEGJB2XMYR&social_share=cm_sw_r_cso_wa_mwn_dp_A4V0VPFEW1VEGJB2XMYR&th=1",
-        "title": "Colonne de Douche en Acier Inoxydable avec Jet de Massage, Buses de Massages et Douche Manuelle, Colonne Douche 5 Modes Panneau de Douche en Acier Inoxydable (130x47x15cm, Acier inoxydable)",
-        "supplier": "Amazon",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.amazon.fr/dp/B0FX7XH8YV?ref=cm_sw_r_cso_wa_mwn_dp_ZP7P9PWPQXMCKYFKSC2T&ref_=cm_sw_r_cso_wa_mwn_dp_ZP7P9PWPQXMCKYFKSC2T&social_share=cm_sw_r_cso_wa_mwn_dp_ZP7P9PWPQXMCKYFKSC2T&th=1",
-        "title": "Escabeau 5 Marches Pliable en Acier, Charge 150 kg, Marche Pied Antidérapant, Plateforme de Travail, Escabeau avec Main Courante pour Cuisine Atelier Entrepôt-152 x 87 x 39 cm - 5 marches (Blanc)",
-        "supplier": "Amazon",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.cdiscount.com/juniors/plein-air/lalaho-auto-tamponneuse/f-1200442-aabdm18936.html",
-        "title": "Voiture Electrique - Auto Tamponneuse 12V/4.5Ah - LALAHO - avec télécommande, 2 Moteurs Effet Sonore et Lumineux, rose",
+        "url": "https://www.cdiscount.com/le-sport/velos-tandem-tricycle-monocycle-remorque-casque/sige-enfant-de-vlo-pour/f-121192417-aabce47557.html",
+        "title": "Siège enfant de vélo pour enfant - Siège de sécurité avant - Poignée de garde-boue pour enfants de 1 à 7 ans pour VTT, vélos",
         "supplier": "Cdiscount",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.cdiscount.com/juniors/plein-air/lalaho-voiture-electrique-enfant-land-rover-avec/f-1200442-aaahr40614.html",
-        "title": "Voiture Electrique Enfànt LAND ROVER - LALAHO - avec télécommande à 2.4 GHz, pour Enfants 3-5 Ans, rose",
+        "url": "https://www.amazon.fr/dp/B0DW3ZF984?ref=cm_sw_r_cso_wa_mwn_dp_333JKE1VMBJZZYSTPWA6&ref_=cm_sw_r_cso_wa_mwn_dp_333JKE1VMBJZZYSTPWA6&social_share=cm_sw_r_cso_wa_mwn_dp_333JKE1VMBJZZYSTPWA6",
+        "title": "OHMG Poussette Canne Bébé 0-3 Ans avec Auvent,Poussette Haute Paysage Pliable avec Siège Réversible, Roues avec Frein, Sac de Transport, Charge 25kg,Poussette Compacte",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/dp/B0DK8X57FY?ref=cm_sw_r_cso_wa_mwn_dp_M3080PKM6P0HYEQ0KK4C&ref_=cm_sw_r_cso_wa_mwn_dp_M3080PKM6P0HYEQ0KK4C&social_share=cm_sw_r_cso_wa_mwn_dp_M3080PKM6P0HYEQ0KK4C&th=1",
+        "title": "VEVOR Nettoyeur à Ultrasons Numérique 10 L, Bac Ultrasons 240 W, Appareil de Nettoyage Ultrasonique Professionnel avec Minuterie, Chauffage et Panier, pour Pièces Automobiles, Bijoux, Lunettes, Labo",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/dp/B0D95TK5PR?ref=cm_sw_r_cso_wa_mwn_dp_9BCD4NPJY9N5P2WFNNSQ&ref_=cm_sw_r_cso_wa_mwn_dp_9BCD4NPJY9N5P2WFNNSQ&social_share=cm_sw_r_cso_wa_mwn_dp_9BCD4NPJY9N5P2WFNNSQ&th=1",
+        "title": "Boîte à riz, boîte de rangement, en ABS, pour la cuisine, le riz, les céréales, le blé, le soja, les haricots rouges, le maïs (vert, 26 x 21 x 17 cm)",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.cdiscount.com/maison/art-de-la-table/yyixing-r-etagere-a-vin-5-etages-casier-a-vin-en-b/f-1179050-auc8325204409452.html",
+        "title": "Casier à vin en bois YYIXING® - 5 étages - Blanc - Contemporain - Design",
         "supplier": "Cdiscount",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.vevor.fr/traineau-de-resistance-autres-c_12573/vevor-traineau-de-puissance-avec-poignee-luge-de-force-pour-plaque-de-poids-2-5-5-cm-equipement-d-entrainement-en-acier-pour-exercices-athletiques-et-amelioration-de-la-vitesse-musculation-gym-p_010313772917",
-        "title": "VEVOR Traineau de Puissance avec Poignée, Luge de Force pour Plaque de Poids 2,5-5 cm, Équipement d'Entraînement en Acier, pour Exercices Athlétiques et Amélioration de la Vitesse, Musculation Gym",
+        "url": "https://www.amazon.fr/dp/B0CPV67KVH?ref=cm_sw_r_cso_wa_mwn_dp_NHK0ZHX1R8CX2M4E6Y2Y&ref_=cm_sw_r_cso_wa_mwn_dp_NHK0ZHX1R8CX2M4E6Y2Y&social_share=cm_sw_r_cso_wa_mwn_dp_NHK0ZHX1R8CX2M4E6Y2Y",
+        "title": "1300W Moulin à Céréales Électrique pour Moudre Grains Secs, Avec 5 Tailles Grinder Tamis,Convient Maison,Magasins,Cuisine et Usines de Transformation",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/dp/B0CNWY55YK?ref=cm_sw_r_cso_wa_mwn_dp_0J3CWPCGCXEEP69KRGMJ&ref_=cm_sw_r_cso_wa_mwn_dp_0J3CWPCGCXEEP69KRGMJ&social_share=cm_sw_r_cso_wa_mwn_dp_0J3CWPCGCXEEP69KRGMJ",
+        "title": "Robinet de cuisine chromsdo pour évier, tête avec 4 fonctions, 5 ans de garantie, acier inoxydable, tourira cozinha.",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/dp/B0D3PVPPCT?ref=cm_sw_r_cso_wa_mwn_dp_R5B29AATW5G9BGD3CCTD&ref_=cm_sw_r_cso_wa_mwn_dp_R5B29AATW5G9BGD3CCTD&social_share=cm_sw_r_cso_wa_mwn_dp_R5B29AATW5G9BGD3CCTD&th=1",
+        "title": "Baignoire pour adulte, baignoire portable, baignoire vapeur à la sueur, baignoire pliable, baignoire mobile pour adulte, baignoire épaisse pliable en plastique (taille : 115 cm)",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/dp/B0DQPVGFKG?ref=cm_sw_r_cso_wa_mwn_dp_R29C3YY0TRV6YKPB3D6K&ref_=cm_sw_r_cso_wa_mwn_dp_R29C3YY0TRV6YKPB3D6K&social_share=cm_sw_r_cso_wa_mwn_dp_R29C3YY0TRV6YKPB3D6K",
+        "title": "Marran Ensemble de Presse à Roulement de Vélo pour L'Installation de Roulements de Roues/Moyeux, Outil D'Assemblage de Roulement de Point de Rotation de Cadre de Queue de Vélo",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/dp/B0CSYYZ8Y9?ref=cm_sw_r_cso_wa_mwn_dp_QWYA5XJDMZR82NMR0SSD&ref_=cm_sw_r_cso_wa_mwn_dp_QWYA5XJDMZR82NMR0SSD&social_share=cm_sw_r_cso_wa_mwn_dp_QWYA5XJDMZR82NMR0SSD&th=1",
+        "title": "Supfine Lit Cododo 2 en 1, dès la Naissance et Jusqu'à 9kg, Berceau Bébé avec Matelas de la Naissance et Moustiquaire, Lit Bébé 2 en 1 (96x57x77cm, Gris)",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/dp/B09BFQ8K6M?ref=cm_sw_r_cso_wa_mwn_dp_126K7XTRJRK4YQVXGVP8&ref_=cm_sw_r_cso_wa_mwn_dp_126K7XTRJRK4YQVXGVP8&social_share=cm_sw_r_cso_wa_mwn_dp_126K7XTRJRK4YQVXGVP8",
+        "title": "GLARRY Table pliante en aluminium, 90 x 60 x (40-70) CM pour pique-nique camping barbecue, tables d'extérieur portables avec poignée de transport",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.amazon.fr/dp/B0B8Z11C8P?ref=cm_sw_r_cso_wa_mwn_dp_AJVDPPAR56NT074GC06D&ref_=cm_sw_r_cso_wa_mwn_dp_AJVDPPAR56NT074GC06D&social_share=cm_sw_r_cso_wa_mwn_dp_AJVDPPAR56NT074GC06D",
+        "title": "Lot de 2 supports de fleurs en métal noir carrés pour escaliers de fleurs amovibles, faciles à transporter, pour décoration de mariage, décoration de la maison",
+        "supplier": "Amazon",
+        "usedPuppeteer": true
+      },
+      {
+        "url": "https://www.vevor.fr/cric-de-plancher-c_11489/vevor-cric-rouleur-cric-de-plancher-hydraulique-a-profil-bas-2-5-t-piston-unique-p_010647646049",
+        "title": "VEVOR Cric Hydraulique Rouleur 2,5 T Cric de Plancher Hydraulique à Profil Bas Hauteur 85-380 mm Cric de Service Profil Bas à Piston Unique avec 2 Roues Directionnelles pour Lever Camion SUV Atelier",
         "supplier": "Vevor",
         "usedPuppeteer": true
       },
       {
-        "url": "https://www.amazon.fr/dp/B0DTTV5LB9?ref=cm_sw_r_cso_wa_mwn_dp_QT31QYV31TWPS10X2WJH&ref_=cm_sw_r_cso_wa_mwn_dp_QT31QYV31TWPS10X2WJH&social_share=cm_sw_r_cso_wa_mwn_dp_QT31QYV31TWPS10X2WJH&th=1",
-        "title": "Vapeur pour le visage 750 W 220 V - Appareil à vapeur professionnel pour le visage - Vaporisateur facial rotatif à 360° - Vapeur chaude pour le visage - 58-68 cm - Hauteur réglable (noir)",
-        "supplier": "Amazon",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.ca/stainless-steel-work-table-c_10625/rolling-stainless-steel-top-kitchen-work-table-cart-casters-shelving-30-x24--p_010331291156?lang=fr",
-        "title": "Table de travail en acier inoxydable VEVOR 76 x 61 x 84 cm, capacité de charge de 318 kg, 4 roulettes, 3 niveaux de hauteur réglables, table de travail robuste pour cuisines commerciales et restaurants, argent",
-        "supplier": "Vevor",
-        "usedPuppeteer": true
-      },
-      {
-        "url": "https://www.vevor.fr/coupe-papier-massicot-c_10879/vevor-massicot-a-papier-coupe-papier-robuste-431-8-mm-pour-a3-400-feuilles-blanc-p_010236365577",
-        "title": "VEVOR Massicot à papier robuste, 431,8 mm, coupe-papier industriel et commercial pour papier A3, capacité de 400 feuilles, construction en acier massif, rogneur pour bureau, école, magasin, blanc",
+        "url": "https://www.vevor.fr/auvent-lateral-pour-camping-car-c_11515/vevor-auvent-pour-caravane-bache-de-camping-5-24-m-camping-car-bleu-ardoise-p_010462613118",
+        "title": "VEVOR Auvent pour Caravane 5,24x2,4 m, Bâche de Camping Extérieure Bleu Ardoise, Tissu de Remplacement en Vinyle de 425 g pour Auvent de Camping-car, Pare-soleil et Imperméable pour Voyage Voiture",
         "supplier": "Vevor",
         "usedPuppeteer": true
       }
     ],
     "skipped": [
       {
-        "url": "https://www.amazon.fr/Si%C3%A8ge-Baignoire-Suspendu-r%C3%A9glable-Tabouret/dp/B0BN5K5C5X",
-        "reason": "Déjà scannée"
-      },
-      {
-        "url": "https://www.vevor.fr/pompe-pour-eaux-usees-c_11101/vevor-pompe-de-relevage-pour-eaux-chargees-pompe-d-evacuation-eaux-usees-1300-w-p_010199130676",
+        "url": "https://www.vevor.fr/rampe-de-protection-de-cable-c_10747/4-pcs-passage-cables-1-canal-rampes-protection-cable-pvc-caoutchouc-charge-8t-p_010438232388",
         "reason": "Déjà scannée"
       }
     ],
     "errors": [
       {
-        "url": "https://www.kaufland.fr/product/429261371/",
+        "url": "https://m.hangkaimotor.com/products/hangkai-black-metal-square-plant-stand-2-3pcs-metal-plant-stand-rustproof-iron-flower-pot-holder-2pcs",
         "error": "Site non pris en charge"
       },
       {
-        "url": "https://www.walmart.ca/fr/ip/Jeu-de-P-che-pour-Tout-Petits-lectrique-Tournant-les-Enfants-Cadeau-d-Anniversaire-No-l-24-Poissons/2X3KKKKGJ5EB",
+        "url": "https://www.fantasysphere.net/product/yu-gi-oh-proteges-cartes-konami-xyz-black-duelist-card-protector-70-ocg?srsltid=AfmBOoom1rhCXXQfCkkcW7c9xC0I2LFavPGILMaq06gt4pZl8OjJARBO",
         "error": "Site non pris en charge"
       },
       {
-        "url": "https://www.kaufland.fr/product/533781944/",
+        "url": "https://m.kitneed.fr/products/arche-de-mariage-en-ballons-en-mtal-24x24m-support-darrire-plan-cadre-darc-de-fleurs-pour-dcoration-de-jardin-blanc",
+        "error": "Site non pris en charge"
+      },
+      {
+        "url": "https://m.cncest.fr/products/cuisinesalle-de-bain-accessoires-de-cuisine-avec-douche-rtractable-accessoires-de-cuisine-avec-3-douches-accessoires-de-lave-vaisselle-de-salle-de-bain-cuisine-noir",
         "error": "Site non pris en charge"
       }
     ]
   },
-  "endTime": "2025-12-20T00:05:12.741Z",
-  "duration": "674s"
+  "endTime": "2025-12-24T18:07:53.003Z",
+  "duration": "1188s"
 }
