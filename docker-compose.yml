@@ -8,7 +8,7 @@ services:
     ports:
       - "${PORT:-3000}:3000"
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=${NODE_ENV}
       - PORT=3000
       - MONGODB_URI=${MONGODB_URI}
       - ACCESS_CODE=${ACCESS_CODE}
