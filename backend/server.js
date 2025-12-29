@@ -2325,6 +2325,7 @@ app.get('/api/health', (_req, res) => {
 
 app.listen(PORT, () => {
   console.log(`\n✓ Serveur démarré sur http://localhost:${PORT}`);
+  console.log("mode :", NODE_ENV);
   console.log(`\n🔐 Codes d'accès :`);
   console.log(`   - Code d'accès au site : ${ACCESS_CODE}`);
   console.log(`   - Code de suppression : ${DELETE_CODE}`);
