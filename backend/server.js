@@ -640,6 +640,11 @@ async function fetchWithPuppeteer(url) {
     // Définir un user agent réaliste
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
 
+    // Définir les headers HTTP pour forcer la langue française
+    await page.setExtraHTTPHeaders({
+      'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7'
+    });
+
     // Définir la taille de la fenêtre
     await page.setViewport({ width: 1920, height: 1080 });
 
@@ -1438,6 +1443,11 @@ app.post('/api/download-image', async (req, res) => {
 
       // Définir un user agent réaliste
       await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+
+      // Définir les headers HTTP pour forcer la langue française
+      await page.setExtraHTTPHeaders({
+        'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7'
+      });
 
       // Intercepter la requête de l'image
       let imageBuffer = null;
