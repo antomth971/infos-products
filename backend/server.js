@@ -616,7 +616,7 @@ async function fetchWithPuppeteer(url) {
 
     // Configuration pour l'environnement de production
     const puppeteerConfig = {
-      headless: isLeroyMerlin ? false : 'new', // Mode visible pour Leroy Merlin
+      headless: 'new', // Toujours en mode headless en production
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
