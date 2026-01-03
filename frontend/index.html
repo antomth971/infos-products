@@ -204,6 +204,57 @@
             color: #555;
             font-size: 0.95rem;
         }
+
+        /* Styles pour le bouton info des sites acceptés */
+        .info-btn {
+            position: absolute;
+            left: 10px;
+            top: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .info-btn:hover {
+            background: #5568d3;
+            transform: scale(1.1);
+        }
+
+        /* Liste des sites acceptés */
+        .supported-sites-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .supported-sites-list li {
+            padding: 12px 15px;
+            background: #f8f9ff;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .supported-sites-list li::before {
+            content: "✓";
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 <body>
@@ -280,6 +331,33 @@
                 </div>
             </div>
 
+            <!-- Modal pour afficher les sites acceptés -->
+            <div id="supportedSitesModal" class="modal hidden">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>🌐 Sites acceptés</h3>
+                        <button id="closeSupportedSitesBtn" class="close-btn">✕</button>
+                    </div>
+                    <p style="color: #666; margin-bottom: 1rem;">
+                        Voici la liste des sites e-commerce compatibles avec notre scraper :
+                    </p>
+                    <ul class="supported-sites-list">
+                        <li>Vevor (vevor.fr, vevor.com, etc.)</li>
+                        <li>Amazon (amazon.fr, amazon.com, etc.)</li>
+                        <li>Amazon Redirections (amzn.eu)</li>
+                        <li>Cdiscount (cdiscount.com)</li>
+                        <li>Manomano (manomano.fr, manomano.com, etc.)</li>
+                        <li>Gifi (gifi.fr)</li>
+                        <li>Leroy Merlin (leroymerlin.fr)</li>
+                        <li>AliExpress (aliexpress.com, aliexpress.fr, etc.)</li>
+                        <li>Bol.com (bol.com)</li>
+                    </ul>
+                    <p style="color: #666; margin-top: 1rem; font-size: 0.9rem;">
+                        💡 <strong>Astuce :</strong> Vous pouvez entrer plusieurs URLs (une par ligne) pour un traitement en lot.
+                    </p>
+                </div>
+            </div>
+
             <!-- Sélecteur de date personnalisée -->
             <div style="background: #f8f9ff; padding: 1rem; border-radius: 12px; margin-bottom: 1rem; border: 2px solid #667eea;">
                 <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
@@ -299,17 +377,21 @@
             </div>
 
             <form id="scrapeForm">
-                <div class="input-group">
+                <div style="position: relative; margin-bottom: 10px;">
+                    <button type="button" id="showSupportedSitesBtn" class="info-btn" title="Sites acceptés">
+                        ℹ️
+                    </button>
                     <textarea
                         id="urlInput"
                         placeholder="Entrez une ou plusieurs URLs (une par ligne)"
                         required
                         rows="3"
+                        style="padding-left: 50px;"
                     ></textarea>
-                    <button type="submit" id="scrapeButton">
-                        Scraper
-                    </button>
                 </div>
+                <button type="submit" id="scrapeButton" style="width: 100%;">
+                    Scraper
+                </button>
             </form>
 
             <!-- Loader -->

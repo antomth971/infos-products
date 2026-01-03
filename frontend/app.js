@@ -42,6 +42,11 @@ class App {
         this.modeVisibleBtn = document.getElementById('modeVisibleBtn');
         this.modeBackgroundBtn = document.getElementById('modeBackgroundBtn');
 
+        // Modal des sites acceptés
+        this.showSupportedSitesBtn = document.getElementById('showSupportedSitesBtn');
+        this.supportedSitesModal = document.getElementById('supportedSitesModal');
+        this.closeSupportedSitesBtn = document.getElementById('closeSupportedSitesBtn');
+
         // Instance du scanner QR
         this.html5QrCode = null;
         this.isProcessingQR = false; // Flag pour éviter les scans multiples
@@ -81,6 +86,17 @@ class App {
         this.modeChoiceModal.addEventListener('click', (e) => {
             if (e.target === this.modeChoiceModal) {
                 this.closeModeChoice();
+            }
+        });
+
+        // Event listeners pour la modal des sites acceptés
+        this.showSupportedSitesBtn.addEventListener('click', () => this.showSupportedSites());
+        this.closeSupportedSitesBtn.addEventListener('click', () => this.closeSupportedSites());
+
+        // Fermer la modal si on clique sur le fond
+        this.supportedSitesModal.addEventListener('click', (e) => {
+            if (e.target === this.supportedSitesModal) {
+                this.closeSupportedSites();
             }
         });
 
@@ -311,6 +327,16 @@ class App {
     closeModeChoice() {
         this.modeChoiceModal.classList.add('hidden');
         this.pendingUrls = null;
+    }
+
+    // Afficher la modal des sites acceptés
+    showSupportedSites() {
+        this.supportedSitesModal.classList.remove('hidden');
+    }
+
+    // Fermer la modal des sites acceptés
+    closeSupportedSites() {
+        this.supportedSitesModal.classList.add('hidden');
     }
 
     // Gérer le choix du mode

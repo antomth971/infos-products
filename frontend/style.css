@@ -55,6 +55,7 @@ header p {
     transition: border-color 0.3s;
     resize: vertical;
     min-height: 80px;
+    width: 100%;
 }
 
 #urlInput:focus {

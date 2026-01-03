@@ -94,6 +94,26 @@ const SUPPLIERS_CONFIG = {
       }
     }
   },
+  'amzn.eu': {
+    name: 'Amazon',
+    requiresPuppeteer: true, // Lien de redirection Amazon - nécessite Puppeteer
+    isRedirect: true, // Flag pour indiquer que c'est une redirection
+    selectors: {
+      title: 'span#productTitle',
+      price: {
+        selector: '.a-offscreen',
+        type: 'text'
+      },
+      description: {
+        selector: 'div#feature-bullets',
+        type: 'textContent'
+      },
+      images: {
+        selector: '.a-dynamic-image',
+        type: 'img'
+      }
+    }
+  },
   'www.cdiscount.com': {
     name: 'Cdiscount',
     requiresPuppeteer: true, // Pour cliquer sur "Lire plus"
@@ -590,6 +610,7 @@ async function fetchWithPuppeteer(url) {
     // Détecter le site pour des stratégies spéciales
     const isLeroyMerlin = url.includes('leroymerlin');
     const isAmazon = url.includes('amazon');
+    const isAmznRedirect = url.includes('amzn.eu'); // Lien de redirection Amazon
     const isVevor = url.includes('vevor');
     const isCdiscount = url.includes('cdiscount');
 
@@ -657,6 +678,13 @@ async function fetchWithPuppeteer(url) {
           waitUntil: 'networkidle0', // Attendre qu'il n'y ait plus de requêtes réseau
           timeout: 60000 // Timeout plus long pour Vevor
         });
+      } else if (isAmznRedirect) {
+        // Pour les liens amzn.eu : attendre la redirection complète vers Amazon
+        console.log('⚡ amzn.eu - Attente de la redirection vers Amazon...');
+        await page.goto(url, {
+          waitUntil: 'networkidle0', // Attendre qu'il n'y ait plus de requêtes réseau (redirection)
+          timeout: 60000 // Timeout plus long pour la redirection
+        });
       } else {
         await page.goto(url, {
           waitUntil: 'domcontentloaded', // Plus rapide que networkidle2
@@ -681,7 +709,8 @@ async function fetchWithPuppeteer(url) {
 
     // Attendre plus longtemps pour Leroy Merlin (challenge anti-bot) et Vevor (navigations multiples)
     // Amazon nécessite aussi plus de temps lors de l'enchaînement de requêtes
-    const waitTime = isLeroyMerlin ? 15000 : (isAmazon ? 12000 : (isVevor ? 10000 : 8000));
+    // amzn.eu nécessite un délai supplémentaire pour la redirection vers Amazon
+    const waitTime = isLeroyMerlin ? 15000 : (isAmznRedirect ? 15000 : (isAmazon ? 12000 : (isVevor ? 10000 : 8000)));
     console.log(`⏳ Attente de ${waitTime/1000} secondes...`);
     await new Promise(resolve => setTimeout(resolve, waitTime));
 
@@ -690,18 +719,18 @@ async function fetchWithPuppeteer(url) {
       // Attendre qu'au moins un des sélecteurs communs soit présent
       const selectorTimeout = isLeroyMerlin ? 30000 : 15000;
 
-      if (isAmazon) {
-        // Pour Amazon, attendre spécifiquement les éléments critiques
-        console.log('🔍 Amazon - Vérification du chargement des éléments critiques...');
+      if (isAmazon || isAmznRedirect) {
+        // Pour Amazon et amzn.eu, attendre spécifiquement les éléments critiques
+        console.log(`🔍 ${isAmznRedirect ? 'amzn.eu' : 'Amazon'} - Vérification du chargement des éléments critiques...`);
         await page.waitForSelector('span#productTitle, h1#title', { timeout: selectorTimeout });
-        console.log('✓ Amazon - Titre chargé');
+        console.log(`✓ ${isAmznRedirect ? 'amzn.eu' : 'Amazon'} - Titre chargé`);
 
         // Vérifier que le prix est aussi chargé
         try {
           await page.waitForSelector('.a-offscreen, #priceblock_ourprice, .a-price', { timeout: 5000 });
-          console.log('✓ Amazon - Prix chargé');
+          console.log(`✓ ${isAmznRedirect ? 'amzn.eu' : 'Amazon'} - Prix chargé`);
         } catch (priceError) {
-          console.log('⚠️ Amazon - Prix non trouvé immédiatement, on continue...');
+          console.log(`⚠️ ${isAmznRedirect ? 'amzn.eu' : 'Amazon'} - Prix non trouvé immédiatement, on continue...`);
         }
       } else {
         await page.waitForSelector('h1, .product-name, img, body', { timeout: selectorTimeout });
@@ -711,17 +740,17 @@ async function fetchWithPuppeteer(url) {
       console.log('⚠️ Timeout en attendant les éléments, continuons quand même...');
     }
 
-    // Logique spéciale pour Amazon : cliquer sur les miniatures pour charger toutes les images
-    if (isAmazon) {
+    // Logique spéciale pour Amazon et amzn.eu : cliquer sur les miniatures pour charger toutes les images
+    if (isAmazon || isAmznRedirect) {
       try {
-        console.log('🖱️ Amazon - Chargement de toutes les images...');
+        console.log(`🖱️ ${isAmznRedirect ? 'amzn.eu' : 'Amazon'} - Chargement de toutes les images...`);
 
         // Attendre que les miniatures soient présentes
         await page.waitForSelector('#altImages li.imageThumbnail', { timeout: 10000 });
 
         // Récupérer toutes les miniatures
         const thumbnails = await page.$$('#altImages li.imageThumbnail');
-        console.log(`✓ Amazon - ${thumbnails.length} miniatures trouvées`);
+        console.log(`✓ ${isAmznRedirect ? 'amzn.eu' : 'Amazon'} - ${thumbnails.length} miniatures trouvées`);
 
         // Cliquer sur chaque miniature pour charger l'image
         for (let i = 0; i < thumbnails.length && i < 10; i++) { // Limiter à 10 images max
@@ -733,9 +762,9 @@ async function fetchWithPuppeteer(url) {
           }
         }
 
-        console.log('✓ Amazon - Toutes les images chargées');
+        console.log(`✓ ${isAmznRedirect ? 'amzn.eu' : 'Amazon'} - Toutes les images chargées`);
       } catch (error) {
-        console.log('⚠️ Amazon - Impossible de charger toutes les miniatures:', error.message);
+        console.log(`⚠️ ${isAmznRedirect ? 'amzn.eu' : 'Amazon'} - Impossible de charger toutes les miniatures:`, error.message);
       }
     }
 
@@ -764,7 +793,7 @@ async function fetchWithPuppeteer(url) {
     }
 
     // Attendre encore un peu après le chargement des éléments
-    const finalWait = isLeroyMerlin ? 5000 : (isAmazon ? 2000 : (isVevor ? 3000 : (isCdiscount ? 1000 : 2000)));
+    const finalWait = isLeroyMerlin ? 5000 : (isAmznRedirect ? 3000 : (isAmazon ? 2000 : (isVevor ? 3000 : (isCdiscount ? 1000 : 2000))));
     await new Promise(resolve => setTimeout(resolve, finalWait));
 
     // Récupérer le HTML avec gestion des erreurs de frame détaché
@@ -798,15 +827,15 @@ async function fetchWithPuppeteer(url) {
       }
     }
 
-    // Pour Amazon : vérifier si une seule image est présente et essayer la méthode alternative
-    if (isAmazon) {
+    // Pour Amazon et amzn.eu : vérifier si une seule image est présente et essayer la méthode alternative
+    if (isAmazon || isAmznRedirect) {
       try {
         const $temp = cheerio.load(html);
         const initialImageCount = $temp('.a-dynamic-image').length;
-        console.log(`📊 Amazon - Nombre d'images initiales trouvées: ${initialImageCount}`);
+        console.log(`📊 ${isAmznRedirect ? 'amzn.eu' : 'Amazon'} - Nombre d'images initiales trouvées: ${initialImageCount}`);
 
         if (initialImageCount <= 3) {
-          console.log('⚠️ Amazon - Moins de 3 images trouvées, tentative avec .ivThumbImage...');
+          console.log(`⚠️ ${isAmznRedirect ? 'amzn.eu' : 'Amazon'} - Moins de 3 images trouvées, tentative avec .ivThumbImage...`);
 
           // Stocker les URLs d'images déjà collectées pour éviter les doublons
           const collectedImageUrls = new Set();
@@ -832,24 +861,24 @@ async function fetchWithPuppeteer(url) {
 
           // Ouvrir la modal d'images en cliquant sur l'image principale
           try {
-            console.log('🖱️ Amazon - Ouverture de la modal d\'images...');
+            console.log(`🖱️ ${isAmznRedirect ? 'amzn.eu' : 'Amazon'} - Ouverture de la modal d\'images...`);
             const imgTagWrapper = await page.$('#imgTagWrapperId');
             if (imgTagWrapper) {
               await imgTagWrapper.click();
               // Attendre que la modal s'ouvre et se charge complètement
               await new Promise(resolve => setTimeout(resolve, 2000));
-              console.log('✓ Amazon - Modal d\'images ouverte');
+              console.log(`✓ ${isAmznRedirect ? 'amzn.eu' : 'Amazon'} - Modal d\'images ouverte`);
             } else {
-              console.log('⚠️ Amazon - #imgTagWrapperId non trouvé');
+              console.log(`⚠️ ${isAmznRedirect ? 'amzn.eu' : 'Amazon'} - #imgTagWrapperId non trouvé`);
             }
           } catch (modalError) {
-            console.log('⚠️ Amazon - Erreur lors de l\'ouverture de la modal:', modalError.message);
+            console.log(`⚠️ ${isAmznRedirect ? 'amzn.eu' : 'Amazon'} - Erreur lors de l\'ouverture de la modal:`, modalError.message);
           }
 
           // IMPORTANT: Récupérer les miniatures APRÈS l'ouverture de la modal
           // car la modal charge de nouveaux éléments DOM
           const ivThumbnails = await page.$$('[id^="ivImage_"]');
-          console.log(`✓ Amazon - ${ivThumbnails.length} miniatures [id^="ivImage_"] trouvées`);
+          console.log(`✓ ${isAmznRedirect ? 'amzn.eu' : 'Amazon'} - ${ivThumbnails.length} miniatures [id^="ivImage_"] trouvées`);
 
           // Cliquer sur chaque miniature et récupérer l'image générée
           for (let i = 0; i < ivThumbnails.length && i < 10; i++) {
@@ -929,12 +958,12 @@ async function fetchWithPuppeteer(url) {
             }
           }
 
-          console.log(`✅ Amazon - Total de ${collectedImageUrls.size} images uniques collectées`);
+          console.log(`✅ ${isAmznRedirect ? 'amzn.eu' : 'Amazon'} - Total de ${collectedImageUrls.size} images uniques collectées`);
 
           // Injecter les images collectées dans le HTML pour l'extraction finale
           if (collectedImageUrls.size > 0) {
             // Afficher les URLs collectées pour débogage
-            console.log('📋 Amazon - URLs collectées:');
+            console.log(`📋 ${isAmznRedirect ? 'amzn.eu' : 'Amazon'} - URLs collectées:`);
             Array.from(collectedImageUrls).forEach((url, idx) => {
               console.log(`   ${idx + 1}. ${url.substring(0, 80)}...`);
             });
@@ -947,13 +976,13 @@ async function fetchWithPuppeteer(url) {
 
             // Injecter dans le HTML
             html = html.replace('</body>', `<div id="injected-images">${imageElements}</div></body>`);
-            console.log(`✅ Amazon - ${collectedImageUrls.size} images injectées dans le HTML`);
+            console.log(`✅ ${isAmznRedirect ? 'amzn.eu' : 'Amazon'} - ${collectedImageUrls.size} images injectées dans le HTML`);
           } else {
-            console.log('⚠️ Amazon - Aucune image collectée pour injection');
+            console.log(`⚠️ ${isAmznRedirect ? 'amzn.eu' : 'Amazon'} - Aucune image collectée pour injection`);
           }
         }
       } catch (error) {
-        console.log('⚠️ Amazon - Erreur lors de la collecte alternative des images:', error.message);
+        console.log(`⚠️ ${isAmznRedirect ? 'amzn.eu' : 'Amazon'} - Erreur lors de la collecte alternative des images:`, error.message);
       }
     }
 
@@ -1736,10 +1765,10 @@ async function processBatchInBackground(urls, customDate) {
     results.processed++;
 
     // Délai entre requêtes pour éviter la détection anti-bot
-    // Plus long et aléatoire pour Amazon pour éviter le blocage
-    const isAmazonUrl = url.includes('amazon');
-    const minDelay = isAmazonUrl ? 2000 : 500;  // Min 2s pour Amazon, 0.5s pour les autres
-    const maxDelay = isAmazonUrl ? 5000 : 1500; // Max 5s pour Amazon, 1.5s pour les autres
+    // Plus long et aléatoire pour Amazon et amzn.eu pour éviter le blocage
+    const isAmazonUrl = url.includes('amazon') || url.includes('amzn.eu');
+    const minDelay = isAmazonUrl ? 2000 : 500;  // Min 2s pour Amazon/amzn.eu, 0.5s pour les autres
+    const maxDelay = isAmazonUrl ? 5000 : 1500; // Max 5s pour Amazon/amzn.eu, 1.5s pour les autres
     const randomDelay = Math.floor(Math.random() * (maxDelay - minDelay + 1)) + minDelay;
 
     console.log(`⏳ Pause de ${randomDelay/1000}s avant la prochaine requête...`);
