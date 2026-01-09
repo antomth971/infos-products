@@ -51,6 +51,57 @@ app.use(session({
   }
 }));
 
+// Système de capture des logs
+const logs = [];
+const MAX_LOGS = 1000; // Limite pour éviter la saturation mémoire
+
+const originalConsoleLog = console.log;
+const originalConsoleError = console.error;
+const originalConsoleWarn = console.warn;
+
+function formatLogEntry(type, args) {
+  const timestamp = new Date().toISOString();
+  const message = args.map(arg => {
+    if (typeof arg === 'object') {
+      try {
+        return JSON.stringify(arg, null, 2);
+      } catch (e) {
+        return String(arg);
+      }
+    }
+    return String(arg);
+  }).join(' ');
+
+  return { timestamp, type, message };
+}
+
+console.log = function(...args) {
+  const logEntry = formatLogEntry('log', args);
+  logs.push(logEntry);
+  if (logs.length > MAX_LOGS) {
+    logs.shift(); // Supprimer le plus ancien log
+  }
+  originalConsoleLog.apply(console, args);
+};
+
+console.error = function(...args) {
+  const logEntry = formatLogEntry('error', args);
+  logs.push(logEntry);
+  if (logs.length > MAX_LOGS) {
+    logs.shift();
+  }
+  originalConsoleError.apply(console, args);
+};
+
+console.warn = function(...args) {
+  const logEntry = formatLogEntry('warn', args);
+  logs.push(logEntry);
+  if (logs.length > MAX_LOGS) {
+    logs.shift();
+  }
+  originalConsoleWarn.apply(console, args);
+};
+
 // Servir les fichiers statiques du frontend
 app.use(express.static(path.join(__dirname, '../frontend')));
 
@@ -597,6 +648,175 @@ app.post('/api/auth/logout', (req, res) => {
       message: 'Déconnexion réussie'
     });
   });
+});
+
+// Route pour afficher les logs (protégée par authentification)
+app.get('/logs', (req, res) => {
+  // Vérifier l'authentification
+  if (!req.session.authenticated) {
+    return res.redirect('/login.html');
+  }
+
+  const limit = parseInt(req.query.limit) || 100;
+  const type = req.query.type; // 'log', 'error', 'warn' ou undefined pour tous
+
+  let filteredLogs = logs;
+
+  // Filtrer par type si spécifié
+  if (type) {
+    filteredLogs = logs.filter(log => log.type === type);
+  }
+
+  // Limiter le nombre de logs retournés (les plus récents)
+  const recentLogs = filteredLogs.slice(-limit);
+
+  // Générer une page HTML simple pour afficher les logs
+  const html = `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logs du serveur</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background-color: #1e1e1e;
+      color: #d4d4d4;
+      padding: 20px;
+      margin: 0;
+    }
+    .header {
+      background-color: #2d2d2d;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      margin: 0 0 10px 0;
+      color: #4ec9b0;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+    .controls a, .controls button {
+      padding: 8px 15px;
+      background-color: #0e639c;
+      color: white;
+      text-decoration: none;
+      border-radius: 3px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .controls a:hover, .controls button:hover {
+      background-color: #1177bb;
+    }
+    .log-entry {
+      padding: 10px;
+      margin-bottom: 5px;
+      border-left: 3px solid;
+      background-color: #252526;
+      border-radius: 3px;
+    }
+    .log-entry.log {
+      border-left-color: #4ec9b0;
+    }
+    .log-entry.error {
+      border-left-color: #f48771;
+      background-color: #2d1f1f;
+    }
+    .log-entry.warn {
+      border-left-color: #dcdcaa;
+      background-color: #2d2d1f;
+    }
+    .timestamp {
+      color: #858585;
+      font-size: 0.9em;
+    }
+    .type {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.8em;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+    .type.log {
+      background-color: #4ec9b0;
+      color: #000;
+    }
+    .type.error {
+      background-color: #f48771;
+      color: #000;
+    }
+    .type.warn {
+      background-color: #dcdcaa;
+      color: #000;
+    }
+    .message {
+      margin-top: 5px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .stats {
+      background-color: #2d2d2d;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .no-logs {
+      text-align: center;
+      padding: 40px;
+      color: #858585;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📋 Logs du serveur</h1>
+    <div class="stats">
+      <strong>Total des logs:</strong> ${logs.length} / ${MAX_LOGS} max |
+      <strong>Affichés:</strong> ${recentLogs.length}
+      ${type ? ` | <strong>Filtre:</strong> ${type}` : ''}
+    </div>
+    <div class="controls">
+      <a href="/logs">Tous les logs</a>
+      <a href="/logs?type=log">Info</a>
+      <a href="/logs?type=warn">Warnings</a>
+      <a href="/logs?type=error">Erreurs</a>
+      <a href="/logs?limit=50">50 derniers</a>
+      <a href="/logs?limit=500">500 derniers</a>
+      <button onclick="location.reload()">🔄 Actualiser</button>
+    </div>
+  </div>
+
+  ${recentLogs.length === 0 ?
+    '<div class="no-logs">Aucun log disponible</div>' :
+    recentLogs.map(log => `
+      <div class="log-entry ${log.type}">
+        <span class="timestamp">${log.timestamp}</span>
+        <span class="type ${log.type}">${log.type.toUpperCase()}</span>
+        <div class="message">${log.message}</div>
+      </div>
+    `).join('')
+  }
+
+  <script>
+    // Auto-refresh toutes les 10 secondes si demandé
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('autorefresh') === 'true') {
+      setTimeout(() => location.reload(), 10000);
+    }
+  </script>
+</body>
+</html>
+  `;
+
+  res.send(html);
 });
 
 // ===== Fin des routes d'authentification =====
