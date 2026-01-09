@@ -21,6 +21,7 @@ class App {
         this.exportExcelBtn = document.getElementById('exportExcelBtn');
         this.viewIgnoredBtn = document.getElementById('viewIgnoredBtn');
         this.vintedManagementBtn = document.getElementById('vintedManagementBtn');
+        this.logsBtn = document.getElementById('logsBtn');
         this.loader = document.getElementById('loader');
         this.errorMessage = document.getElementById('errorMessage');
         this.itemsList = document.getElementById('itemsList');
@@ -74,6 +75,7 @@ class App {
         this.exportExcelBtn.addEventListener('click', () => this.exportToExcel());
         this.viewIgnoredBtn.addEventListener('click', () => this.viewIgnoredProducts());
         this.vintedManagementBtn.addEventListener('click', () => this.viewVintedManagement());
+        this.logsBtn.addEventListener('click', () => this.viewLogs());
         this.scanForUrlButton.addEventListener('click', () => this.scanForUrls());
         this.closeScannerBtn.addEventListener('click', () => this.closeScanner());
 
@@ -1029,6 +1031,10 @@ class App {
 
     viewVintedManagement() {
         window.location.href = '/vinted.html';
+    }
+
+    viewLogs() {
+        window.location.href = '/logs';
     }
 
     // Formater la date au format français
