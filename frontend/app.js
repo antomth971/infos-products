@@ -182,9 +182,10 @@ class App {
 
             if (result.success) {
                 this.allItems = result.data;
-                this.filteredItems = [...this.allItems];
                 this.populateSupplierFilter();
-                this.renderList();
+                // Ré-appliquer les filtres actifs au lieu de tout réinitialiser
+                // (évite d'effacer le filtre de recherche lors de l'auto-refresh)
+                this.applyFilters();
             }
         } catch (error) {
             console.error('Erreur lors du chargement des items:', error);
